@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+"""
+Parse a given tabular file and construct the data structure
+for fast subtrees queries
+
+Usage:
+  fastsubtrees-construct [options] <inputfile>
+
+Arguments:
+  <inputfile>   Tabular file containing the IDs of the tree nodes and of their
+                parents in the first and second field, respectively
+
+Options:
+  --ncbidump   use the separator of NCBI taxonomy dump nodes.dmp (<tab>|<tab>)
+               default: <tab>
+  --quiet      be quiet
+  --debug      print debug messages
+"""
+
+from docopt import docopt
+from pathlib import Path
+from fastsubtrees import Tree, _scripts_support
+
+def main(args):
+  sep = "\t|\t" if args["--ncbidump"] else "\t"
+  tree = Tree.construct_from_csv(args["<inputfile>"], sep, 0, 1)
+  outfname=Path(args["<inputfile>"]).with_suffix(".tree")
+  tree.to_file(outfname)
+
+if __name__ == "__main__":
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)
