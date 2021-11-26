@@ -1,6 +1,16 @@
 # setup loguru by disabling it, as expected for libraries
 from loguru import logger
 logger.disable(__name__)
+import sys
+
+def enable_logger(level):
+  logger.remove()
+  logger.enable("fastsubtrees")
+  msgformat_prefix="<green><dim>{time:YYYY-MM-DD HH:mm:ss}</></>"
+  msgformat_content="<level><normal>{level.name}: {message}</></>"
+  logger.add(sys.stderr,
+        format=f"{msgformat_prefix} {msgformat_content}",
+               level=level)
 
 # create a flag to enable/disable progress bar; disable it by default;
 # the method tqdm will respect this flag and behave like tqdm.tqdm;
