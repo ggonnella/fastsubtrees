@@ -38,6 +38,6 @@ setup(name='fastsubtrees',
       zip_safe=False,
       test_suite="nose.collector",
       include_package_data=True,
-      require=['tqdm', 'loguru'],
+      install_requires=['tqdm>=4.57.0', 'loguru>=0.5.1', 'docopt>=0.6.2'],
       tests_require=['nose'],
     )
