@@ -19,6 +19,9 @@ wheel:
 cleanup:
 	rm -rf dist/ build/ gfapy.egg-info/
 
+tests:
+	# pass
+
 upload: tests cleanup sdist wheel
 	cd dist; \
   for file in *; do \
