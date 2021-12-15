@@ -55,9 +55,9 @@ class Tree():
   def __compute_treedata(parents, subtree_sizes, root_id):
     treesize = subtree_sizes[root_id] + 1
     treedata = array.array("Q", [0] * (treesize+1))
-    index = array.array("Q", [0] * len(parents))
+    coords = array.array("Q", [0] * len(parents))
     treedata[1] = root_id
-    index[root_id] = 1
+    coords[root_id] = 1
     for i in tqdm(range(len(parents))):
       if parents[i] != None:
         path = [i]
@@ -66,27 +66,27 @@ class Tree():
           path.append(parent)
           parent = parents[parent]
         for node in reversed(path):
-          if not index[node]:
-            pos = index[parents[node]]+1
+          if not coords[node]:
+            pos = coords[parents[node]]+1
             while True:
               treedatanode = treedata[pos]
               if treedatanode == 0:
                 break
               else:
                 pos += (subtree_sizes[treedatanode]+1)
-            index[node] = pos
+            coords[node] = pos
             treedata[pos] = node
-    return treedata, index
+    return treedata, coords
 
   @classmethod
   def construct(cls, generator):
     self = cls()
-    logger.info("Constructing parents table...")
+    logger.info("Constructing temporary parents table...")
     parents, self.root_id = cls.__compute_parents(generator)
     logger.info("Constructing subtree sizes table...")
     self.subtree_sizes = cls.__compute_subtree_sizes(parents)
     logger.info("Constructing tree data and index...")
-    self.treedata, self.index = \
+    self.treedata, self.coords = \
         cls.__compute_treedata(parents, self.subtree_sizes, self.root_id)
     logger.success("Tree data structure constructed")
     return self
@@ -103,7 +103,7 @@ class Tree():
     with open(outfname, "wb") as f:
       f.write(struct.pack("QQ", len(self.subtree_sizes), len(self.treedata)))
       self.subtree_sizes.tofile(f)
-      self.index.tofile(f)
+      self.coords.tofile(f)
       self.treedata.tofile(f)
     logger.success(f"Tree written to file \"{outfname}\"")
 
