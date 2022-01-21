@@ -19,7 +19,7 @@ from docopt import docopt
 from pathlib import Path
 from fastsubtrees import Tree, _scripts_support
 
-def main(args):
+def main():
   tree = Tree.from_file(args["<inputfile>"])
   subtree_root = int(args["<subtree_root>"])
   print(tree.subtree_ids(subtree_root))
@@ -27,4 +27,4 @@ def main(args):
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
   _scripts_support.setup_verbosity(args)
-  main(args)
+  main()

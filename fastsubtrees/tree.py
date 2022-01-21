@@ -6,12 +6,14 @@ import struct
 import array
 from fastsubtrees import logger, tqdm
 
+
 class Tree():
 
   def __init__(self):
     self.subtree_sizes = array.array("Q")
     self.coords = array.array("Q")
     self.treedata = array.array("Q")
+    self.genome_size = array.array("Q")
     self.root_id = None
 
   @staticmethod
@@ -106,6 +108,7 @@ class Tree():
       self.coords.tofile(f)
       self.treedata.tofile(f)
     logger.success(f"Tree written to file \"{outfname}\"")
+    return self.treedata
 
   @classmethod
   def from_file(cls, filename):
@@ -130,4 +133,4 @@ class Tree():
       return []
     subtree_size = self.subtree_sizes[subtree_root]
     logger.info(f"Subtree of node {subtree_root} has size {subtree_size+1}")
-    return self.treedata[pos:pos+subtree_size+1]
+    return self.treedata[pos:pos+subtree_size+1], pos, subtree_size
