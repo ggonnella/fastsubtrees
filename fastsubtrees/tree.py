@@ -106,6 +106,7 @@ class Tree():
       self.coords.tofile(f)
       self.treedata.tofile(f)
     logger.success(f"Tree written to file \"{outfname}\"")
+    return self.treedata
 
   @classmethod
   def from_file(cls, filename):
@@ -120,7 +121,7 @@ class Tree():
     logger.success(f"Tree loaded from file \"{filename}\"")
     return self
 
-  def subtree_ids(self, subtree_root):
+  def query_subtree(self, subtree_root):
     if subtree_root <= 0 or subtree_root > len(self.coords) - 1:
       logger.info(f"Node {subtree_root} not in tree => subtree is empty")
       return []
@@ -130,4 +131,8 @@ class Tree():
       return []
     subtree_size = self.subtree_sizes[subtree_root]
     logger.info(f"Subtree of node {subtree_root} has size {subtree_size+1}")
-    return self.treedata[pos:pos+subtree_size+1]
+    return self.treedata[pos:pos+subtree_size+1], pos, subtree_size
+
+  def subtree_ids(self, subtree_root):
+    subtree_data, pos, subtree_size = self.query_subtree(subtree_root)
+    return subtree_data
