@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """
-Return the list of IDs of the subtree of a tree
-previously constructed and stored to file by this library
+Return the list of values for the given attribute for
+a particular subtree
 
 Usage:
-  fastsubtrees-query [options] <inputfile> <subtree_root> <attributefile>
+  fastsubtrees-attribute-query.py [options] <outputfile> <subtree_root> <attributefile>
 
 Arguments:
-  <inputfile>     Output of fastsubtrees-construct
+  <outputfile>    Output of fastsubtrees-construct
   <subtree_root>  ID of the subtree root
-  <attributefile> Output of fastsubtrees-attribute-construct
+  <attributefile> Output of fastsubtrees-attribute-construct for a particular attribute
 
 Options:
   --quiet      be quiet
   --debug      print debug messages
 """
-
+import json
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support, Attributes
+from fastsubtrees import Tree, _scripts_support
 
 def get_attribute_value(self, attributefile, subtree_size, position):
   file = open(attributefile)
@@ -28,12 +28,11 @@ def get_attribute_value(self, attributefile, subtree_size, position):
   return attribute_value_list
 
 def main():
-  tree = Tree.from_file(args["<inputfile>"])
+  tree = Tree.from_file(args["<outputfile>"])
   subtree_root = int(args["<subtree_root>"])
-  treedata, position, subtree_size = tree.subtree_ids(subtree_root)
-  attr = Attributes()
-  al = attr.get_attribute_value(args["<attributefile>"], subtree_size+1, position-1)
-  print(al)
+  treedata, position, subtree_size = tree.query_subtree(subtree_root)
+  attribute_list = get_attribute_value(args["<attributefile>"], subtree_size+1, position-1)
+  print(attribute_list)
 
 
 if __name__ == "__main__":
