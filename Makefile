@@ -1,7 +1,7 @@
 default: install
 
-PYTHON=python3
-PIP=pip3
+PYTHON?=python3
+PIP?=pip3
 
 # Install using pip
 install:

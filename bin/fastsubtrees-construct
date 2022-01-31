@@ -4,30 +4,42 @@ Parse a given tabular file and construct the data structure
 for fast subtrees queries
 
 Usage:
-  fastsubtrees-construct [options] <inputfile>
+  fastsubtrees-construct [options] <pymodule> <configfile> <outputfilename>
 
 Arguments:
-  <inputfile>   Tabular file containing the IDs of the tree nodes and of their
-                parents in the first and second field, respectively
+  <pymodule>        Some module for python which defines the function get_element_parent_id
+                    for yielding the element and parent ids
+  <configfile>      Configuration file that contains the arguments required to connect to the database
+  <outputfilename>  Name of the file to store the output in
 
 Options:
-  --ncbidump   use the separator of NCBI taxonomy dump nodes.dmp (<tab>|<tab>)
-               default: <tab>
   --quiet      be quiet
   --debug      print debug messages
 """
+import importlib
 
+import yaml
 from docopt import docopt
 from pathlib import Path
 from fastsubtrees import Tree, _scripts_support
 
+
 def main(args):
-  sep = "\t|\t" if args["--ncbidump"] else "\t"
-  tree = Tree.construct_from_csv(args["<inputfile>"], sep, 0, 1)
-  outfname=Path(args["<inputfile>"]).with_suffix(".tree")
-  tree.to_file(outfname)
+    modulename = Path(args["<pymodule>"]).stem
+    spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    a = args["<configfile>"]
+    with open(a) as file:
+        data = yaml.safe_load(file)
+    elemparentid = m.ElementParentIdGenerator(data['dbname'], data['dbuser'], data['dbpass'], data['dataroot'])
+    generator = elemparentid.get_element_parent_id()
+    tree = Tree.construct(generator)
+    outfname = Path(args["<outputfilename>"])
+    tree.to_file(outfname)
+
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version="0.1")
-  _scripts_support.setup_verbosity(args)
-  main(args)
+    args = docopt(__doc__, version="0.1")
+    _scripts_support.setup_verbosity(args)
+    main(args)

@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""
+Creates json files for a given attribute present in the database
+
+Usage:
+  fastsubtrees-attributes-construct [options] <nodefile> <configfile> <subtreeroot> <attribute> <pythonmodule> <outputfile>
+
+Arguments:
+  <nodefile>        Output of fastsubtrees-construct
+  <configfile>      Configuration file that contains the arguments required to connect to the database
+  <subtreeroot>     ID of the root of the Tree
+  <attribute>       Name of the attribute
+  <pythonmodule>    Some module for python which defines the function for getting the attribute values
+                    called get_attributes_list
+  <outputfile>      Name of the file to store the output into
+
+Options:
+  --quiet      be quiet
+  --debug      print debug messages
+"""
+import yaml
+from docopt import docopt
+from fastsubtrees import Tree, _scripts_support
+import importlib
+from pathlib import Path
+
+def main():
+    modulename = Path(args["<pythonmodule>"]).stem
+    spec = importlib.util.spec_from_file_location(modulename, args["<pythonmodule>"])
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    a = args["<configfile>"]
+    with open(a) as file:
+        data = yaml.safe_load(file)
+    attr = m.Attributes(data['dbname'], data['dbuser'], data['dbpass'], data['dataroot'])
+    result = attr.get_attribute_list(args["<nodefile>"], args["<subtreeroot>"], args["<attribute>"])
+    attr.create_json_file(args["<outputfile>"], result)
+
+
+if __name__ == "__main__":
+    args = docopt(__doc__, version="0.1")
+    _scripts_support.setup_verbosity(args)
+    main()
