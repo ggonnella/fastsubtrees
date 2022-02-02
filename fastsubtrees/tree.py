@@ -114,6 +114,7 @@ class Tree():
     logger.debug(f"Reading from file \"{filename}\" ...")
     with open(filename, "rb") as f:
       idxsize, nelems = struct.unpack("QQ", f.read(16))
+      print(nelems)
       self.subtree_sizes.fromfile(f, idxsize)
       self.coords.fromfile(f, idxsize)
       self.treedata.fromfile(f, nelems)
@@ -131,7 +132,7 @@ class Tree():
       return []
     subtree_size = self.subtree_sizes[subtree_root]
     logger.info(f"Subtree of node {subtree_root} has size {subtree_size+1}")
-    return self.treedata[pos:pos+subtree_size+1], pos-1, subtree_size+1
+    return self.treedata[pos:pos+subtree_size+1], pos, subtree_size
 
   def subtree_ids(self, subtree_root):
     subtree_data, pos, subtree_size = self.query_subtree(subtree_root)

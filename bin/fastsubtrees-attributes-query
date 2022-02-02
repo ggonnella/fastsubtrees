@@ -23,7 +23,8 @@ from fastsubtrees import Tree, _scripts_support, FinalAttributeGenerator
 def main():
     tree = Tree.from_file(args["<nodefile>"])
     subtree_root = int(args["<subtree_root>"])
-    attribute_list = FinalAttributeGenerator.get_attribute_list(tree, subtree_root, args["<attributefile>"])
+    f = FinalAttributeGenerator()
+    attribute_list = f.get_attribute_list(tree, subtree_root, args["<attributefile>"])
     print(attribute_list)
 
 

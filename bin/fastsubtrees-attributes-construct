@@ -11,7 +11,7 @@ Arguments:
   <subtreeroot>     ID of the root of the Tree
   <attribute>       Name of the attribute
   <pythonmodule>    Some module for python which defines the function for getting the attribute values
-                    called get_attributes_list
+                    called get_attribute_list
   <outputfile>      Name of the file to store the output into
 
 Options:
