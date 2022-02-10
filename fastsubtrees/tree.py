@@ -114,7 +114,6 @@ class Tree():
     logger.debug(f"Reading from file \"{filename}\" ...")
     with open(filename, "rb") as f:
       idxsize, nelems = struct.unpack("QQ", f.read(16))
-      print(nelems)
       self.subtree_sizes.fromfile(f, idxsize)
       self.coords.fromfile(f, idxsize)
       self.treedata.fromfile(f, nelems)

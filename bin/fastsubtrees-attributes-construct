@@ -3,7 +3,8 @@
 Creates json files for a given attribute present in the database
 
 Usage:
-  fastsubtrees-attributes-construct [options] <nodefile> <configfile> <subtreeroot> <attribute> <pythonmodule> <outputfile>
+  fastsubtrees-attributes-construct [options] <nodefile> <configfile> <subtreeroot> <attribute>
+  <pythonmodule> <outputfile> <accessionfile> <csvfile>
 
 Arguments:
   <nodefile>        Output of fastsubtrees-construct
@@ -13,6 +14,8 @@ Arguments:
   <pythonmodule>    Some module for python which defines the function for getting the attribute values
                     called get_attribute_list
   <outputfile>      Name of the file to store the output into
+  <accessionfile>   Name of the file to store the accession values into
+  <csvfile>         Name of the file to store the database table into
 
 Options:
   --quiet      be quiet
@@ -33,7 +36,8 @@ def main():
     with open(a) as file:
         data = yaml.safe_load(file)
     attr = m.Attributes(data['dbname'], data['dbuser'], data['dbpass'], data['dataroot'])
-    result = attr.get_attribute_list(args["<nodefile>"], args["<subtreeroot>"], args["<attribute>"])
+    result = attr.get_attribute_list(args["<nodefile>"], args["<subtreeroot>"],
+                                     args["<attribute>"], args["<accessionfile>"], args["<csvfile>"])
     attr.create_json_file(args["<outputfile>"], result)
 
 
