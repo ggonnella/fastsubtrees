@@ -9,7 +9,7 @@ Usage:
 Arguments:
   <nodefile>      Output of fastsubtrees-construct
   <subtree_root>  ID of the subtree root
-  <attributefile> Output of fastsubtrees-attribute-construct for a particular attribute
+  <attributefile> Output of fastsubtrees-attributes-construct for a particular attribute
 
 Options:
   --quiet      be quiet
