@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""
+Parse a given tabular file and add a new leaf node
+to the given tree
+
+Usage:
+  fastsubtrees-add-subtree [options] <pymodule> <configfile> <nodefile>
+
+Arguments:
+  <pymodule>        Some module for python which defines the function get_element_parent_id
+                    for yielding the element and parent ids
+  <configfile>      Configuration file that contains the any parameters required by the module
+  <nodefile>        File containing the tree data
+
+Options:
+  --quiet      be quiet
+  --debug      print debug messages
+"""
+import importlib
+
+import yaml
+from docopt import docopt
+from pathlib import Path
+from fastsubtrees import Tree, _scripts_support
+
+
+def main(args):
+    modulename = Path(args["<pymodule>"]).stem
+    spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    elemparentid = m.ElementParentIdGenerator(args["<configfile>"])
+    generator = elemparentid.get_element_parent_id()
+    for elem, parent in generator:
+        Tree.add_node(args["<nodefile>"], parent, elem)
+
+
+if __name__ == "__main__":
+    args = docopt(__doc__, version="0.1")
+    _scripts_support.setup_verbosity(args)
+    main(args)

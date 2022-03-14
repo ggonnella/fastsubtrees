@@ -13,6 +13,5 @@ class FinalAttributeGenerator():
 
     def get_attribute_list(self, tree, subtree_root, attributefile):
         treedata, position, subtree_size, subtree_parents = tree.query_subtree(subtree_root)
-        print(subtree_parents)
         attribute_list = self.get_attribute_value(attributefile, subtree_size+1, position-1)
         return attribute_list
