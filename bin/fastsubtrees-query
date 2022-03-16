@@ -16,7 +16,6 @@ Options:
 """
 
 from docopt import docopt
-from pathlib import Path
 from fastsubtrees import Tree, _scripts_support
 
 def main(args):

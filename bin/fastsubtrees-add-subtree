@@ -14,7 +14,6 @@ Options:
   --quiet      be quiet
   --debug      print debug messages
 """
-import importlib
 
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support

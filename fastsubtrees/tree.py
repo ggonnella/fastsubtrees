@@ -143,7 +143,11 @@ class Tree():
 
     def subtree_ids(self, subtree_root):
         subtree_data, pos, subtree_size, subtree_parents = self.query_subtree(subtree_root)
-        return subtree_data
+        new_subtree_ids = array.array("Q")
+        for data in subtree_data:
+            if data != sys.maxsize:
+                new_subtree_ids.append(data)
+        return new_subtree_ids
 
     def add_node(self, node_tree, parent, node_number):
         tree = Tree.from_file(node_tree)
@@ -200,3 +204,14 @@ class Tree():
         while p != sys.maxsize:
             tree.subtree_sizes[p] += 1
             p = tree.parents[p]
+
+    def delete_node(self, node_tree, node_number):
+        tree = Tree.from_file(node_tree)
+        elements = tree.subtree_ids(node_number)
+        coords = tree.coords[node_number]
+        subtree_size = tree.subtree_sizes[node_number]
+        for i in range(subtree_size+1):
+            tree.treedata[coords+i] = sys.maxsize
+        for element in elements:
+            tree.coords[element] = sys.maxsize
+        tree.to_file(node_tree)
