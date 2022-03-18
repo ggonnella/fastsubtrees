@@ -17,16 +17,11 @@ Options:
 
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support
+from fastsubtrees.get_element_parent_tsv import getElementParentTSV
 
 
 def main(args):
-    tree = Tree()
-    with open(args["<inputfile>"]) as file:
-        for f in file:
-            fields = f.rstrip().split('\t')
-            element = int(fields[0])
-            parent = int(fields[1])
-            tree.add_node(args["<nodefile>"], parent, element)
+    getElementParentTSV(args["<inputfile>"], args["<nodefile>"])
 
 
 
