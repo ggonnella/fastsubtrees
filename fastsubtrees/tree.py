@@ -156,6 +156,14 @@ class Tree():
         self.update_subtree_sizes(tree, node_number)
         tree.to_file(node_tree)
 
+    def add_subtree(self, node_tree, generator):
+        tree = Tree.from_file(node_tree)
+        for node_number, parent in generator:
+            flag = self.get_treedata(tree, parent, node_number)
+            self.get_coords(tree, node_number, flag, parent)
+            self.update_subtree_sizes(tree, node_number)
+        tree.to_file(node_tree)
+
     def get_treedata(self, tree, parent, node_number):
         index = 0
         flag = None
