@@ -1,32 +1,63 @@
-Update README.md:
-- “Library API”:
-  - move the text under “Library API” to a new file called manuals/api.md
-  - Update the information adding the documentation of the newer functionality added to it
-- “Scripts”:
-  - move the text under “Scripts” to a new file called manuals/cli.md
-  - Briefly document all the scripts
-- after the introduction text:
-  - explain the attributes functionality 
-  - shortly explain that the main purpose is to handle the NCBI taxonomy tree
-  - state that the code can be run using the library API or using the scripts
-    and link the two files
+High priority:
+[ ] fixes to the interface of `add_node`, `add_subtree`, `get_treedata`,
+`get_coords`, `update_subtree_sizes` and `delete_nodes`:
+  - these are instance methods; self is the instance, there is no need for
+    further Tree objects called `node_tree` or `tree`
+  - loading the tree from file and saving to file after modification must be done
+    in the calling code (e.g. scripts under bin and tests) and not from these methods
+[ ] fix `fastsubtrees-attributes-construct` so that is not based on the database
+  but uses the abstract system used by `fastsubtrees-construct`
+  (i.e. one command line parameter is the name of a Python module
+  - which shall define a given function, specificied in the help message - and another
+  commmand line parameter is the the name of a file containing configuration information
+  which is made available to the abovementioned Python module)
+[ ] since there is no state information stored in the instances of
+"FinaleAttributeGenerator" (and the name of the class is quite confusing too),
+we do not need a class at all in that module
 
-Changes to the code:
-- The attribute files must be updated too, when nodes are deleted or added
-- Can the adding of an entire subtree be made smarter? (e.g. making updates for the entire subtree at once, instead of updating for each node separately)
+Mid priority:
+[ ] attribute files must be updated, when nodes are deleted or added:
+    - plan what changes are needed in each case (adding a leaf, adding an internal node,
+    removing a leaf, removing an internal node)
+    - implement them in API methods
+    - in the scripts which add/remove nodes: the names of the attribute files
+    which must be modified can be passed as optional parameters
+[ ] Handle invalid input:
+    - Make test cases which provide invalid inputs for each of the operations
+      - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0")
+      - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated)
+      - No root node (no node where children_id ==parent_id) e.g.
+        (eg. "2 1", "3 1", "4 3")
+      - Multiple root nodes
+        (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
+      - parent_id not referring to any node in the tree
+        (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
+      - adding a subtree with a node which already exists
+        (can be the root of the new subtree or any other node of it)
+      - removing a node which does not exist
+      - re-adding a node which was deleted before
+        (since too complicated to handle)
+    - Catch invalid inputs (and create meaningful error messages, exception shall be of the
+    class `Error` defined in the library error.py file) as much as
+    possible without impacting the perfomance
+    - Note: If some invalid input cannot be checked upon for performance reasons or because
+    the implementation takes too much time, such cases must be documented
 
-Probably invalid/unacceptable inputs (what happens? If error msg they should be meaningful; if other behaviour then it should be specified; anyway these cases should be added to the test suite):
-- Node “0” (do we really need to forbid it?)
-- Circular
-- No root node (no node where children_id ==parent_id)
-- Multiple roots
-- Some parent_id which is not referring to any node in the tree
-- repeated node_id
-
-Idea for node names:
-- String names of the nodes could be added in form of an attribute file
-  this allows to generalize the use to where the nodes are not numbers
-  e.g. assign IDs automatically if the input are not integers
-
-
+Lower priority:
+[ ] Make adding of an entire subtree smarter by making place for entire subtree at once
+    instead of repeat updating the tree for each node iteratively
+[ ] add ``if line[0] == "#": continue`` to the tree construction from csv to
+    support comment/header lines in the files
+[ ] Finish the documentation:
+  [ ] API manual:
+    - Update the information adding the documentation of the newer functionality added to it
+  [ ] CLI manual:
+    - Briefly document the function of all the scripts
+  [ ] README:
+    - add hyperlinks to the API manual and CLI manual files
+[ ] Can we handle attributes which are strings? This can be used for non-integer
+    node names; i.e. string node names would be stored as attributes
+    this allows to generalize the use of the library to cases where the nodes are not
+    "consecutive positive integer numbers"; numerical IDs could be assigned
+    automatically in such cases
 
