@@ -21,7 +21,7 @@ Options:
 """
 import yaml
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support
+from fastsubtrees import _scripts_support
 import importlib
 from pathlib import Path
 

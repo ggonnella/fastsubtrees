@@ -15,7 +15,6 @@ Options:
   --quiet      be quiet
   --debug      print debug messages
 """
-import json
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support, FinalAttributeGenerator
 

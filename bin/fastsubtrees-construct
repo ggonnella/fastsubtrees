@@ -17,8 +17,6 @@ Options:
   --debug      print debug messages
 """
 import importlib
-
-import yaml
 from docopt import docopt
 from pathlib import Path
 from fastsubtrees import Tree, _scripts_support
