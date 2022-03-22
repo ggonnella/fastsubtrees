@@ -1,0 +1,32 @@
+Update README.md:
+- “Library API”:
+  - move the text under “Library API” to a new file called manuals/api.md
+  - Update the information adding the documentation of the newer functionality added to it
+- “Scripts”:
+  - move the text under “Scripts” to a new file called manuals/cli.md
+  - Briefly document all the scripts
+- after the introduction text:
+  - explain the attributes functionality 
+  - shortly explain that the main purpose is to handle the NCBI taxonomy tree
+  - state that the code can be run using the library API or using the scripts
+    and link the two files
+
+Changes to the code:
+- The attribute files must be updated too, when nodes are deleted or added
+- Can the adding of an entire subtree be made smarter? (e.g. making updates for the entire subtree at once, instead of updating for each node separately)
+
+Probably invalid/unacceptable inputs (what happens? If error msg they should be meaningful; if other behaviour then it should be specified; anyway these cases should be added to the test suite):
+- Node “0” (do we really need to forbid it?)
+- Circular
+- No root node (no node where children_id ==parent_id)
+- Multiple roots
+- Some parent_id which is not referring to any node in the tree
+- repeated node_id
+
+Idea for node names:
+- String names of the nodes could be added in form of an attribute file
+  this allows to generalize the use to where the nodes are not numbers
+  e.g. assign IDs automatically if the input are not integers
+
+
+
