@@ -9,3 +9,4 @@ dbschema
 .DS_Store
 */.DS_store
 .idea
+*.swp
