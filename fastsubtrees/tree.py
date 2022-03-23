@@ -152,11 +152,11 @@ class Tree():
 
     def add_subtree(self, generator):
         for node_number, parent in generator:
-            inspos = self.__prepare_node_insertion(parent, node_number)
+            inspos = self.__prepare_node_insertion(node_number, parent)
             self.__get_coords(node_number, inspos, parent)
             self.__update_subtree_sizes(node_number)
 
-    def __prepare_node_insertion(self, parent, node_number):
+    def __prepare_node_insertion(self, node_number, parent):
         inspos = self.coords[parent]+1
         self.treedata.insert(inspos, node_number)
         return inspos
