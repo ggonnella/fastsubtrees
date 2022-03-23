@@ -20,10 +20,9 @@ from fastsubtrees import Tree, _scripts_support
 
 
 def main(args):
-    tree = Tree()
-    tree.delete_node(args["<nodefile>"], int(args["<node_id>"]))
-
-
+    tree = Tree.from_file(args["<nodefile>"])
+    tree.delete_node(int(args["<node_id>"]))
+    tree.to_file(args["<nodefile>"])
 
 if __name__ == "__main__":
     args = docopt(__doc__, version="0.1")

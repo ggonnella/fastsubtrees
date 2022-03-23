@@ -30,10 +30,9 @@ def main(args):
     spec.loader.exec_module(m)
     elementparentid = m.getElementParentIdFromTSV(args["<inputfile>"])
     generator = elementparentid.getElementParentTSV()
-    tree = Tree()
-    tree.add_subtree(args["<nodefile>"], generator)
-
-
+    tree = Tree.from_file(args["<nodefile>"])
+    tree.add_subtree(generator)
+    tree.to_file(args["<nodefile>"])
 
 
 if __name__ == "__main__":

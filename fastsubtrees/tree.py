@@ -139,7 +139,8 @@ class Tree():
         subtree_size = self.subtree_sizes[subtree_root]
         subtree_parents = self.parents[subtree_root]
         logger.info(f"Subtree of node {subtree_root} has size {subtree_size + 1}")
-        return self.treedata[pos:pos + subtree_size + 1], pos, subtree_size, subtree_parents
+        return self.treedata[pos:pos + subtree_size + 1], pos,
+                 subtree_size, subtree_parents
 
     def subtree_ids(self, subtree_root):
         subtree_data, pos, subtree_size, subtree_parents = self.query_subtree(subtree_root)
@@ -149,77 +150,52 @@ class Tree():
                 new_subtree_ids.append(data)
         return new_subtree_ids
 
-    def add_node(self, node_tree, parent, node_number):
-        tree = Tree.from_file(node_tree)
-        flag = self.get_treedata(tree, parent, node_number)
-        self.get_coords(tree, node_number, flag, parent)
-        self.update_subtree_sizes(tree, node_number)
-        tree.to_file(node_tree)
-
-    def add_subtree(self, node_tree, generator):
-        tree = Tree.from_file(node_tree)
+    def add_subtree(self, generator):
         for node_number, parent in generator:
-            flag = self.get_treedata(tree, parent, node_number)
-            self.get_coords(tree, node_number, flag, parent)
-            self.update_subtree_sizes(tree, node_number)
-        tree.to_file(node_tree)
+            inspos = self.__prepare_node_insertion(parent, node_number)
+            self.__get_coords(node_number, inspos, parent)
+            self.__update_subtree_sizes(node_number)
 
-    def get_treedata(self, tree, parent, node_number):
-        index = 0
-        flag = None
-        treedata = tree.treedata
-        for data in treedata:
-            if data == parent:
-                tree.treedata.insert(index + 1, node_number)
-                flag = index + 1
-            index += 1
-        return flag
+    def __prepare_node_insertion(self, parent, node_number):
+        inspos = self.coords[parent]+1
+        self.treedata.insert(inspos, node_number)
+        return inspos
 
-    def get_coords(self, tree, node_number, flag, parent):
-        if node_number < len(tree.treedata):
-            tree.coords[node_number] = flag
-            tree.parents[node_number] = parent
-            i = 1
-            for c in tree.coords[node_number + 1:]:
-                if c >= flag:
-                    tree.coords[node_number + i] += 1
-                i += 1
-            i = 0
-            for c in tree.coords[:node_number]:
-                if c >= flag:
-                    tree.coords[i] += 1
-                i += 1
+    def __get_coords(self, node_number, inspos, parent):
+        if node_number < len(self.coords):
+            self.coords[node_number] = inspos
+            self.parents[node_number] = parent
+            for i in range(len(self.coords)):
+              if i != node_number:
+                if self.coords[i] >= inspos:
+                  self.coords[i] += 1
         else:
-            max = np.amax(np.array(tree.treedata))
-            len_coords = len(tree.coords)
-            len_subtree_sizes = len(tree.subtree_sizes)
-            len_parents = len(tree.parents)
-            for i in range(int(max - len_coords)):
-                tree.coords.insert(len_coords + i + 1, 0)
-                tree.subtree_sizes.insert(len_subtree_sizes + i + 1, 0)
-                tree.parents.insert(len_parents + i + 1, sys.maxsize)
-            tree.coords.insert(node_number, flag)
-            tree.subtree_sizes.insert(node_number, 1)
-            tree.parents.insert(node_number, parent)
-            i = 0
-            for c in tree.coords[:-1]:
-                if c >= flag:
-                    tree.coords[i] += 1
-                i += 1
+            len_coords = len(self.coords)
+            diff = node_number - len_coords
+            for i in range(diff):
+              self.coords.insert(len_coords + i, 0)
+              # subtree_size of 0 would mean 1, if so we would need to use an
+              # undef value
+              self.subtree_sizes.insert(len_coords + i, 0)
+              self.parents.insert(len_coords + i, sys.maxsize)
+            self.coords.insert(node_number, inspos)
+            self.subtree_sizes.insert(node_number, 1)
+            self.parents.insert(node_number, parent)
+            for i in range(len_coords):
+              if self.coords[i] >= inspos:
+                self.coords[i] += 1
 
-    def update_subtree_sizes(self, tree, node_number):
-        p = tree.parents[node_number]
+    def __update_subtree_sizes(self, node_number):
+        p = self.parents[node_number]
         while p != sys.maxsize:
-            tree.subtree_sizes[p] += 1
-            p = tree.parents[p]
+            self.subtree_sizes[p] += 1
+            p = self.parents[p]
 
-    def delete_node(self, node_tree, node_number):
-        tree = Tree.from_file(node_tree)
-        elements = tree.subtree_ids(node_number)
-        coords = tree.coords[node_number]
-        subtree_size = tree.subtree_sizes[node_number]
+    def delete_node(self, node_number):
+        elements = self.subtree_ids(node_number)
+        coord = self.coords[node_number]
+        subtree_size = self.subtree_sizes[node_number]
         for i in range(subtree_size+1):
-            tree.treedata[coords+i] = sys.maxsize
+            self.treedata[coord+i] = sys.maxsize
         for element in elements:
-            tree.coords[element] = sys.maxsize
-        tree.to_file(node_tree)
+            self.coords[element] = sys.maxsize
