@@ -1,43 +1,44 @@
-from array import array
-
-from pytesting.generate_parent_element_id import ElementParentIdGenerator
+from fastsubtrees.get_element_parent_tsv import getElementParentIdFromTSV
 from fastsubtrees import Tree
 from pathlib import Path
+from pytesting.reference_results import *
 
 class TestClass:
-    def test_fastsubtrees_construct(self, subtree_id):
-        # elemparentid = ElementParentIdGenerator('./pytesting/config.yaml')
-        # generator = elemparentid.get_element_parent_id()
-        # tree = Tree.construct(generator)
-        # outfname = Path('./pytesting/nodes.tree')
-        # tree.to_file(outfname)
-        new_tree = Tree.from_file('./pytesting/nodes.tree')
-        subtree_ids = new_tree.subtree_ids(int(subtree_id))
-        test_tree = Tree.from_file('./data/nodes.tree')
-        test_subtree_ids = test_tree.subtree_ids(int(subtree_id))
+    def test_fastsubtrees_construct_smalltree(self):
+        elemparentid = getElementParentIdFromTSV('./testdata/small_tree.tsv')
+        generator = elemparentid.getElementParentTSV()
+        tree = Tree.construct(generator)
+        outfname = Path('./pytesting/small_tree.tree')
+        tree.to_file(outfname)
+        new_tree = Tree.from_file('./pytesting/small_tree.tree')
+        subtree_ids = new_tree.subtree_ids(int(1))
+        test_tree = Tree.from_file('./testdata/small_tree.tree')
+        test_subtree_ids = test_tree.subtree_ids(int(1))
+        assert subtree_ids == test_subtree_ids
+
+    def test_fastsubtrees_construct_middletree(self):
+        elemparentid = getElementParentIdFromTSV('./testdata/middle_tree.tsv')
+        generator = elemparentid.getElementParentTSV()
+        tree = Tree.construct(generator)
+        outfname = Path('./pytesting/middle_tree.tree')
+        tree.to_file(outfname)
+        new_tree = Tree.from_file('./pytesting/middle_tree.tree')
+        subtree_ids = new_tree.subtree_ids(int(1))
+        test_tree = Tree.from_file('./testdata/middle_tree.tree')
+        test_subtree_ids = test_tree.subtree_ids(int(1))
         assert subtree_ids == test_subtree_ids
 
 
-    def test_fastsubtrees_query(self, subtree_id):
-        tree = Tree.from_file('./data/nodes.tree')
-        subtree_ids = tree.subtree_ids(int(subtree_id))
-        assert subtree_ids == array('Q', [2242, 33003, 33004, 33005, 64091, 478009, 2597657])
+    def test_fastsubtrees_query_smalltree(self):
+        # use subtree_ids 1, 8 and change the id in variable results_query_smalltree_id_*
+        tree = Tree.from_file('./pytesting/small_tree.tree')
+        subtree_ids = tree.subtree_ids(1)
+        assert subtree_ids == results_query_smalltree_id_1
 
 
-    def test_fastsubtrees_add_subtree(self, parent, node_number):
-        create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
-        outfname = Path('./pytesting/smalltree').with_suffix(".tree")
-        create_tree.to_file(outfname)
-        tree = Tree()
-        tree.add_node('./pytesting/smalltree.tree', int(parent), int(node_number))
-        new_tree = Tree.from_file('./pytesting/smalltree.tree')
-        subtree_ids = new_tree.subtree_ids(1)
-        assert subtree_ids == array('Q', [1, 2, 8, 6, 3, 7, 9, 4, 5])
+    def test_fastsubtrees_query_middletree(self):
+        # use subtree_ids 1, 8, 566 and change the id in variable results_query_middletree_id_*
+        tree = Tree.from_file('./pytesting/middle_tree.tree')
+        subtree_ids = tree.subtree_ids(1)
+        assert subtree_ids == results_query_middletree_id_1
 
-
-    def test_fastsubtrees_delete_node(self, delete_node_number):
-        tree = Tree()
-        tree.delete_node('./pytesting/smalltree.tree', int(delete_node_number))
-        new_tree = Tree.from_file('./pytesting/smalltree.tree')
-        subtree_ids = new_tree.subtree_ids(1)
-        assert subtree_ids == array('Q', [1, 2, 8, 3, 7, 9, 4, 5])
