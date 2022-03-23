@@ -1,8 +1,8 @@
-class getElementParentIdFromTSV():
+class ElementParentIdGenerator():
     def __init__(self, inputfile):
         self.inputfile = inputfile
 
-    def getElementParentTSV(self):
+    def get_element_parent_id(self):
         with open(self.inputfile) as file:
             for f in file:
                 fields = f.rstrip().split('\t')

@@ -1,12 +1,12 @@
-from fastsubtrees.get_element_parent_tsv import getElementParentIdFromTSV
+from fastsubtrees.get_element_parent_tsv import ElementParentIdGenerator
 from fastsubtrees import Tree
 from pathlib import Path
 from pytesting.reference_results import *
 
 class TestClass:
     def test_fastsubtrees_construct_smalltree(self):
-        elemparentid = getElementParentIdFromTSV('./testdata/small_tree.tsv')
-        generator = elemparentid.getElementParentTSV()
+        elemparentid = ElementParentIdGenerator('./testdata/small_tree.tsv')
+        generator = elemparentid.get_element_parent_id()
         tree = Tree.construct(generator)
         outfname = Path('./pytesting/small_tree.tree')
         tree.to_file(outfname)
@@ -17,8 +17,8 @@ class TestClass:
         assert subtree_ids == test_subtree_ids
 
     def test_fastsubtrees_construct_middletree(self):
-        elemparentid = getElementParentIdFromTSV('./testdata/middle_tree.tsv')
-        generator = elemparentid.getElementParentTSV()
+        elemparentid = ElementParentIdGenerator('./testdata/middle_tree.tsv')
+        generator = elemparentid.get_element_parent_id()
         tree = Tree.construct(generator)
         outfname = Path('./pytesting/middle_tree.tree')
         tree.to_file(outfname)

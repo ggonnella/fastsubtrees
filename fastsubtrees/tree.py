@@ -139,8 +139,8 @@ class Tree():
         subtree_size = self.subtree_sizes[subtree_root]
         subtree_parents = self.parents[subtree_root]
         logger.info(f"Subtree of node {subtree_root} has size {subtree_size + 1}")
-        return self.treedata[pos:pos + subtree_size + 1], pos,
-                 subtree_size, subtree_parents
+        return self.treedata[pos:pos + subtree_size + 1], pos, \
+            subtree_size, subtree_parents
 
     def subtree_ids(self, subtree_root):
         subtree_data, pos, subtree_size, subtree_parents = self.query_subtree(subtree_root)
