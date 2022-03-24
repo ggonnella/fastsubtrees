@@ -16,14 +16,13 @@ Options:
   --debug      print debug messages
 """
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support, FinalAttributeGenerator
+from fastsubtrees import Tree, _scripts_support, attribute
 
 
 def main():
     tree = Tree.from_file(args["<nodefile>"])
     subtree_root = int(args["<subtree_root>"])
-    f = FinalAttributeGenerator()
-    attribute_list = f.get_attribute_list(tree, subtree_root, args["<attributefile>"])
+    attribute_list = attribute.get_attribute_list(tree, subtree_root, args["<attributefile>"])
     print(attribute_list)
 
 

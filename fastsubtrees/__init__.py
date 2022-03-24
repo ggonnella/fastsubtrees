@@ -21,4 +21,4 @@ tqdm = lambda *args, **kargs: \
 
 from fastsubtrees.error import *
 from fastsubtrees.tree import Tree
-from fastsubtrees.attribute import FinalAttributeGenerator
+from fastsubtrees.attribute import *
