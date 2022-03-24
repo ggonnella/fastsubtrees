@@ -2,6 +2,7 @@ from fastsubtrees.get_element_parent_tsv import ElementParentIdGenerator
 from fastsubtrees import Tree
 from pathlib import Path
 from pytesting.reference_results import *
+import os
 
 class TestClass:
     def test_fastsubtrees_construct_smalltree(self):
@@ -54,6 +55,7 @@ class TestClass:
         tree.to_file('./pytesting/small_tree.tree')
         new_tree = Tree.from_file('./pytesting/small_tree.tree')
         subtree_ids = new_tree.subtree_ids(1)
+        os.remove('./pytesting/small_tree.tree')
         assert subtree_ids == results_add_subtree_smalltree_id_1
 
 
@@ -68,4 +70,31 @@ class TestClass:
         tree.to_file('./pytesting/middle_tree.tree')
         new_tree = Tree.from_file('./pytesting/middle_tree.tree')
         subtree_ids = new_tree.subtree_ids(46)
+        os.remove('./pytesting/middle_tree.tree')
         assert subtree_ids == results_add_subtree_middletree_id_46
+
+
+    def test_fastsubtrees_delete_node_smalltree(self):
+        create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
+        outfname = Path('./pytesting/small_tree').with_suffix(".tree")
+        create_tree.to_file(outfname)
+        tree = Tree.from_file('./pytesting/small_tree.tree')
+        tree.delete_node(3)
+        tree.to_file('./pytesting/small_tree.tree')
+        new_tree = Tree.from_file('./pytesting/small_tree.tree')
+        subtree_ids = new_tree.subtree_ids(1)
+        os.remove('./pytesting/small_tree.tree')
+        assert subtree_ids == results_delete_subtree_smalltree_id_1
+
+
+    def test_fastsubtrees_delete_node_middletree(self):
+        create_tree = Tree.construct_from_csv('./testdata/middle_tree.tsv', '\t', 0, 1)
+        outfname = Path('./pytesting/middle_tree').with_suffix(".tree")
+        create_tree.to_file(outfname)
+        tree = Tree.from_file('./pytesting/middle_tree.tree')
+        tree.delete_node(78)
+        tree.to_file('./pytesting/middle_tree.tree')
+        new_tree = Tree.from_file('./pytesting/middle_tree.tree')
+        subtree_ids = new_tree.subtree_ids(46)
+        os.remove('./pytesting/middle_tree.tree')
+        assert subtree_ids == results_delete_subtree_middletree_id_78

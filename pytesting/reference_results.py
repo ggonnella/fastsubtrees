@@ -7,3 +7,5 @@ results_query_middletree_id_8 = array('Q', [8, 9, 10, 11, 34, 80, 140, 425, 725,
 results_query_smalltree_id_566 = array('Q', [566])
 results_add_subtree_smalltree_id_1 = array('Q', [1, 2, 8, 6, 3, 7, 9, 4, 5])
 results_add_subtree_middletree_id_46 = array('Q', [46, 1002, 78, 110, 663, 939, 836, 955, 881, 235, 358, 451, 774, 755, 914, 91, 367, 549, 164, 974, 882])
+results_delete_subtree_smalltree_id_1 = array('Q', [1, 2, 8, 4, 5])
+results_delete_subtree_middletree_id_78 = array('Q', [46, 91, 367, 549, 164, 974, 882])
