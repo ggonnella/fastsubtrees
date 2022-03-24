@@ -1,19 +1,29 @@
-High priority:
-[ ] fixes to the interface of `add_node`, `add_subtree`, `get_treedata`,
-`get_coords`, `update_subtree_sizes` and `delete_nodes`:
-  - these are instance methods; self is the instance, there is no need for
-    further Tree objects called `node_tree` or `tree`
-  - loading the tree from file and saving to file after modification must be done
-    in the calling code (e.g. scripts under bin and tests) and not from these methods
-[ ] fix `fastsubtrees-attributes-construct` so that is not based on the database
-  but uses the abstract system used by `fastsubtrees-construct`
-  (i.e. one command line parameter is the name of a Python module
-  - which shall define a given function, specificied in the help message - and another
-  commmand line parameter is the the name of a file containing configuration information
-  which is made available to the abovementioned Python module)
-[ ] since there is no state information stored in the instances of
-"FinaleAttributeGenerator" (and the name of the class is quite confusing too),
-we do not need a class at all in that module
+High priority
+[ ] Handle invalid input:
+    - Make test cases which provide invalid inputs for each of the operations
+      - query for a node which does not exist
+      - removing a node which does not exist
+      - construction/add_subtree with problematic input:
+        - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0")
+        - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated)
+        - No root node (no node where children_id ==parent_id) e.g.
+          (eg. "2 1", "3 1", "4 3")
+        - Multiple root nodes
+          (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
+        - parent_id not referring to any node in the tree
+          (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
+      - adding a subtree with a node which already exists
+        (can be the root of the new subtree or any other node of it)
+      - adding a subtree with a parent which does not exist
+        ("16 10" "14 17" but 17 does not exist)
+      - re-adding a node which was deleted before
+        (since too complicated to handle)
+        - can we detect that a node was deleted before?
+    - Catch invalid inputs (and create meaningful error messages, exception shall be of the
+    class `Error` defined in the library error.py file) as much as
+    possible without impacting the perfomance
+    - Note: If some invalid input cannot be checked upon for performance reasons or because
+    the implementation takes too much time, such cases must be documented
 
 Mid priority:
 [ ] attribute files must be updated, when nodes are deleted or added:
@@ -22,26 +32,7 @@ Mid priority:
     - implement them in API methods
     - in the scripts which add/remove nodes: the names of the attribute files
     which must be modified can be passed as optional parameters
-[ ] Handle invalid input:
-    - Make test cases which provide invalid inputs for each of the operations
-      - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0")
-      - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated)
-      - No root node (no node where children_id ==parent_id) e.g.
-        (eg. "2 1", "3 1", "4 3")
-      - Multiple root nodes
-        (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
-      - parent_id not referring to any node in the tree
-        (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
-      - adding a subtree with a node which already exists
-        (can be the root of the new subtree or any other node of it)
-      - removing a node which does not exist
-      - re-adding a node which was deleted before
-        (since too complicated to handle)
-    - Catch invalid inputs (and create meaningful error messages, exception shall be of the
-    class `Error` defined in the library error.py file) as much as
-    possible without impacting the perfomance
-    - Note: If some invalid input cannot be checked upon for performance reasons or because
-    the implementation takes too much time, such cases must be documented
+[ ] put the existing "data source" modules in own data_source_modules subdir
 
 Lower priority:
 [ ] Make adding of an entire subtree smarter by making place for entire subtree at once
