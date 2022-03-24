@@ -2,7 +2,10 @@
 Exceptions for the library
 """
 
-class Error(Exception):
+class FastsubtreesError(Exception):
   """parent class for package-specific errors"""
   pass
 
+class ConstructionError(FastsubtreesError):
+  """error while constructing the tree"""
+  pass

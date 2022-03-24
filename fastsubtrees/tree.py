@@ -33,9 +33,11 @@ class Tree():
         results = array.array("Q")
         for elem, parent in generator:
             if elem <= 0:
-                raise fastsubtrees.Error(f"The node IDs must be > 0, found: {elem}")
+                raise fastsubtrees.ConstructionError(\
+                    f"The node IDs must be > 0, found: {elem}")
             if parent <= 0:
-                raise fastsubtrees.Error(f"The node IDs must be > 0, found: {parent}")
+                raise fastsubtrees.ConstructionError(\
+                    f"The node IDs must be > 0, found: {parent}")
             n_missing = elem + 1 - len(results)
             if n_missing > 0:
                 for i in range(n_missing):
