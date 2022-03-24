@@ -19,7 +19,7 @@ Options:
   --quiet      be quiet
   --debug      print debug messages
 """
-import yaml
+
 from docopt import docopt
 from fastsubtrees import _scripts_support
 import importlib
@@ -30,12 +30,8 @@ def main():
     spec = importlib.util.spec_from_file_location(modulename, args["<pythonmodule>"])
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
-    a = args["<configfile>"]
-    with open(a) as file:
-        data = yaml.safe_load(file)
-    attr = m.Attributes(data['dbname'], data['dbuser'], data['dbpass'], data['dataroot'])
-    result = attr.get_attribute_list(args["<nodefile>"], args["<subtreeroot>"],
-                                     args["<attribute>"])
+    attr = m.Attributes(args["<configfile>"])
+    result = attr.get_attribute_list(args["<nodefile>"], args["<subtreeroot>"], args["<attribute>"])
     attr.create_json_file(args["<outputfile>"], result)
 
 
