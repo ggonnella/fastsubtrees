@@ -1,11 +1,11 @@
 High priority
 [ ] Handle invalid input:
     - Make test cases which provide invalid inputs for each of the operations
-      - query for a node which does not exist
-      - removing a node which does not exist
+      - query for a node which does not exist --done
+      - removing a node which does not exist --done
       - construction/add_subtree with problematic input:
-        - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0")
-        - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated)
+        - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0") --done
+        - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated) --done
         - No root node (no node where children_id ==parent_id) e.g.
           (eg. "2 1", "3 1", "4 3")
         - Multiple root nodes

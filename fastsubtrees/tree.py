@@ -5,8 +5,7 @@ Computation of the information necessary for the subtree query
 import struct
 import array
 import sys
-import numpy as np
-from fastsubtrees import logger, tqdm
+from fastsubtrees import logger, tqdm, error
 
 class Tree():
 
@@ -21,22 +20,27 @@ class Tree():
     @staticmethod
     def __from_csv(filename, separator, elem_field_num, parent_field_num):
         logger.info(f"Reading data from file \"{filename}\" ...")
+        element_list = list()
         with open(filename) as f:
             for line in tqdm(f):
                 fields = line.rstrip().split(separator)
                 elem = int(fields[elem_field_num])
                 parent = int(fields[parent_field_num])
-                yield elem, parent
+                if elem in element_list:
+                    raise error.NodeReplicationError('The node cannot have more than 1 parent')
+                else:
+                    element_list.append(elem)
+                    yield elem, parent
 
     @staticmethod
     def __compute_parents(self, generator):
         results = array.array("Q")
         for elem, parent in generator:
             if elem <= 0:
-                raise fastsubtrees.ConstructionError(\
+                raise error.ConstructionError(\
                     f"The node IDs must be > 0, found: {elem}")
             if parent <= 0:
-                raise fastsubtrees.ConstructionError(\
+                raise error.ConstructionError(\
                     f"The node IDs must be > 0, found: {parent}")
             n_missing = elem + 1 - len(results)
             if n_missing > 0:
@@ -145,7 +149,10 @@ class Tree():
             subtree_size, subtree_parents
 
     def subtree_ids(self, subtree_root):
-        subtree_data, pos, subtree_size, subtree_parents = self.query_subtree(subtree_root)
+        try:
+            subtree_data, pos, subtree_size, subtree_parents = self.query_subtree(subtree_root)
+        except ValueError:
+            raise error.NodeNotFoundError(f"The node ID does not exist, found: {subtree_root}")
         new_subtree_ids = array.array("Q")
         for data in subtree_data:
             if data != sys.maxsize:
