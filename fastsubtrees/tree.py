@@ -28,9 +28,8 @@ class Tree():
                 parent = int(fields[parent_field_num])
                 yield elem, parent
 
-    @staticmethod
     def __compute_parents(self, generator):
-        results = array.array("Q")
+        self.parents = array.array("Q")
         for elem, parent in generator:
             if elem <= 0:
                 raise error.ConstructionError(\
@@ -38,70 +37,64 @@ class Tree():
             if parent <= 0:
                 raise error.ConstructionError(\
                     f"The node IDs must be > 0, found: {parent}")
-            n_missing = elem + 1 - len(results)
+            n_missing = elem + 1 - len(self.parents)
             if n_missing > 0:
                 for i in range(n_missing):
-                    results.append(Tree.UNDEF)
+                    self.parents.append(Tree.UNDEF)
             if parent != elem:
-                results[elem] = parent
+                self.parents[elem] = parent
             else:
-                root_id = elem
-        return results, root_id
+                self.root_id = elem
 
-    @staticmethod
-    def __compute_subtree_sizes(self, parents):
-        results = array.array('Q', [0] * len(parents))
-        for parent in tqdm(parents):
+    def __compute_subtree_sizes(self):
+        self.subtree_sizes = array.array('Q', [0] * len(self.parents))
+        for parent in tqdm(self.parents):
             elem = parent
             while elem != Tree.UNDEF:
-                results[elem] += 1
-                elem = parents[elem]
-        return results
+                self.subtree_sizes[elem] += 1
+                elem = self.parents[elem]
 
-    @staticmethod
-    def __compute_treedata(self, parents, subtree_sizes, root_id):
-        treesize = subtree_sizes[root_id] + 1
-        treedata = array.array("Q", [0] * (treesize + 1))
-        coords = array.array("Q", [0] * len(parents))
-        treedata[1] = root_id
-        coords[root_id] = 1
-        for i in tqdm(range(len(parents))):
-            if parents[i] != Tree.UNDEF:
+    def __compute_treedata(self):
+        treesize = self.subtree_sizes[self.root_id] + 1
+        self.treedata = array.array("Q", [0] * (treesize + 1))
+        self.coords = array.array("Q", [0] * len(self.parents))
+        self.treedata[1] = self.root_id
+        self.coords[self.root_id] = 1
+        for i in tqdm(range(len(self.parents))):
+            if self.parents[i] != Tree.UNDEF:
                 path = [i]
-                parent = parents[i]
-                while parent != root_id:
+                parent = self.parents[i]
+                while parent != self.root_id:
                     path.append(parent)
-                    parent = parents[parent]
+                    parent = self.parents[parent]
                 for node in reversed(path):
-                    if not coords[node]:
-                        pos = coords[parents[node]] + 1
+                    if not self.coords[node]:
+                        pos = self.coords[self.parents[node]] + 1
                         while True:
-                            treedatanode = treedata[pos]
-                            if treedatanode == 0:
+                            self.treedatanode = self.treedata[pos]
+                            if self.treedatanode == 0:
                                 break
                             else:
-                                pos += (subtree_sizes[treedatanode] + 1)
-                        coords[node] = pos
-                        treedata[pos] = node
-        return treedata, coords
+                                pos += (self.subtree_sizes[self.treedatanode] + 1)
+                        self.coords[node] = pos
+                        self.treedata[pos] = node
 
     @classmethod
     def construct(cls, generator):
         self = cls()
         logger.info("Constructing temporary parents table...")
         try:
-            self.parents, self.root_id = cls.__compute_parents(self, generator)
+            self.__compute_parents(generator)
         except UnboundLocalError:
             raise error.RootNotFoundError("Root does not exist for the given tree")
         logger.info("Constructing subtree sizes table...")
         try:
-            self.subtree_sizes = cls.__compute_subtree_sizes(self, self.parents)
+            self.__compute_subtree_sizes()
         except IndexError:
             raise error.ParentNotFoundError("The parent node does not exist for the given child node")
         logger.info("Constructing tree data and index...")
         try:
-            self.treedata, self.coords = \
-                cls.__compute_treedata(self, self.parents, self.subtree_sizes, self.root_id)
+            self.__compute_treedata()
         except IndexError:
             raise error.MultipleRootNodeError("Cannot have multiple root nodes")
         logger.success("Tree data structure constructed")
