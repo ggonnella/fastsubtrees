@@ -1,31 +1,41 @@
-High priority
-[ ] Handle invalid input:
-    - Make test cases which provide invalid inputs for each of the operations
-      - query for a node which does not exist --done
-      - removing a node which does not exist --done
-      - construction/add_subtree with problematic input:
-        - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0") --done
-        - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated) --done
-        - No root node (no node where children_id ==parent_id) e.g. --done
-          (eg. "2 1", "3 1", "4 3")
-        - Multiple root nodes --done
-          (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
-        - parent_id not referring to any node in the tree --done
-          (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
-      - adding a subtree with a node which already exists --done
-        (can be the root of the new subtree or any other node of it)
-      - adding a subtree with a parent which does not exist --done
-        ("16 10" "14 17" but 17 does not exist)
-      - re-adding a node which was deleted before
-        (since too complicated to handle)
-        - can we detect that a node was deleted before?
-    - Catch invalid inputs (and create meaningful error messages, exception shall be of the
-    class `Error` defined in the library error.py file) as much as
-    possible without impacting the perfomance
-    - Note: If some invalid input cannot be checked upon for performance reasons or because
-    the implementation takes too much time, such cases must be documented
-
-Mid priority:
+High priority:
+[ ] Invalid input tests:
+    - put each of the tests in single test methods for clarity
+      (e.g. test_construction_no_root_node, test_construction_repeated_node_ids...)
+        - query for a node which does not exist
+        - removing a node which does not exist
+        - construction/add_subtree with problematic input:
+          - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0")
+          - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated)
+          - No root node (no node where children_id ==parent_id) e.g.
+            (eg. "2 1", "3 1", "4 3")
+          - Multiple root nodes
+            (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
+          - parent_id not referring to any node in the tree
+            (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
+        - adding a subtree with a node which already exists
+          (can be the root of the new subtree or any other node of it)
+        - adding a subtree with a parent which does not exist
+          ("16 10" "14 17" but 17 does not exist)
+[ ] Exceptions:
+    - the error messages must be more informative
+        e.g. raise error.NodeNotFoundError(f'The node ID does not exist')
+        -->
+        e.g. raise error.NodeNotFoundError(f'The node ID {node} does not exist', node)
+[ ] add_subtree:
+      you can't do if node_number in self.treedata for each element, because that means
+      iterating over all the millions elements (for each of the inserted elements)
+      just to check this... (1) remove this (2) find a more clever way to check this
+      --
+      Note: same problem was with the get_element_parent_id etc where you used a list
+      where all elements were added (this completely defies the purpose of having
+      a generator!, which is not to have a list of all elements at once);
+      I fixed this and properly checked if an element was added previously
+      by looking at the inserted values (see __construct_parents).
+[ ] Tree.DELETED:
+      I added a second undefined value (sys.maxsize - 1), assigned to the constant Tree.DELETED;
+      use this (e.g. in add_subtree and methods called from there) to make sure
+      a deleted node is not readded
 [ ] attribute files must be updated, when nodes are deleted or added:
     - plan what changes are needed in each case (adding a leaf, adding an internal node,
     removing a leaf, removing an internal node)
@@ -33,12 +43,13 @@ Mid priority:
     - in the scripts which add/remove nodes: the names of the attribute files
     which must be modified can be passed as optional parameters
 [ ] put the existing "data source" modules in own data_source_modules subdir
+[ ] add ``if line[0] == "#": continue`` to the tree construction from csv to
+    support comment/header lines in the files
 
+Mid priority:
 Lower priority:
 [ ] Make adding of an entire subtree smarter by making place for entire subtree at once
     instead of repeat updating the tree for each node iteratively
-[ ] add ``if line[0] == "#": continue`` to the tree construction from csv to
-    support comment/header lines in the files
 [ ] Finish the documentation:
   [ ] API manual:
     - Update the information adding the documentation of the newer functionality added to it
