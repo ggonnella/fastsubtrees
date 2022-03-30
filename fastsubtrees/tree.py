@@ -15,7 +15,8 @@ class Tree():
         self.treedata = array.array("Q")
         self.parents = array.array("Q")
         self.root_id = None
-        self.MAX_SIZE = sys.maxsize
+
+    UNDEF = sys.maxsize
 
     @staticmethod
     def __from_csv(filename, separator, elem_field_num, parent_field_num):
@@ -40,7 +41,7 @@ class Tree():
             n_missing = elem + 1 - len(results)
             if n_missing > 0:
                 for i in range(n_missing):
-                    results.append(self.MAX_SIZE)
+                    results.append(Tree.UNDEF)
             if parent != elem:
                 results[elem] = parent
             else:
@@ -52,7 +53,7 @@ class Tree():
         results = array.array('Q', [0] * len(parents))
         for parent in tqdm(parents):
             elem = parent
-            while elem != self.MAX_SIZE:
+            while elem != Tree.UNDEF:
                 results[elem] += 1
                 elem = parents[elem]
         return results
@@ -65,7 +66,7 @@ class Tree():
         treedata[1] = root_id
         coords[root_id] = 1
         for i in tqdm(range(len(parents))):
-            if parents[i] != self.MAX_SIZE:
+            if parents[i] != Tree.UNDEF:
                 path = [i]
                 parent = parents[i]
                 while parent != root_id:
@@ -159,7 +160,7 @@ class Tree():
             raise error.NodeNotFoundError(f"The node ID does not exist, found: {subtree_root}")
         new_subtree_ids = array.array("Q")
         for data in subtree_data:
-            if data != sys.maxsize:
+            if data != Tree.UNDEF:
                 new_subtree_ids.append(data)
         return new_subtree_ids
 
@@ -199,7 +200,7 @@ class Tree():
               # subtree_size of 0 would mean 1, if so we would need to use an
               # undef value
               self.subtree_sizes.insert(len_coords + i, 0)
-              self.parents.insert(len_coords + i, sys.maxsize)
+              self.parents.insert(len_coords + i, Tree.UNDEF)
             self.coords.insert(node_number, inspos)
             self.subtree_sizes.insert(node_number, 1)
             self.parents.insert(node_number, parent)
@@ -209,7 +210,7 @@ class Tree():
 
     def __update_subtree_sizes(self, node_number):
         p = self.parents[node_number]
-        while p != sys.maxsize:
+        while p != Tree.UNDEF:
             self.subtree_sizes[p] += 1
             p = self.parents[p]
 
@@ -218,6 +219,6 @@ class Tree():
         coord = self.coords[node_number]
         subtree_size = self.subtree_sizes[node_number]
         for i in range(subtree_size+1):
-            self.treedata[coord+i] = sys.maxsize
+            self.treedata[coord+i] = Tree.UNDEF
         for element in elements:
-            self.coords[element] = sys.maxsize
+            self.coords[element] = Tree.UNDEF
