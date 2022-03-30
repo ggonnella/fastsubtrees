@@ -20,17 +20,12 @@ class Tree():
     @staticmethod
     def __from_csv(filename, separator, elem_field_num, parent_field_num):
         logger.info(f"Reading data from file \"{filename}\" ...")
-        element_list = list()
         with open(filename) as f:
             for line in tqdm(f):
                 fields = line.rstrip().split(separator)
                 elem = int(fields[elem_field_num])
                 parent = int(fields[parent_field_num])
-                if elem in element_list:
-                    raise error.NodeReplicationError('The node cannot have more than 1 parent')
-                else:
-                    element_list.append(elem)
-                    yield elem, parent
+                yield elem, parent
 
     @staticmethod
     def __compute_parents(self, generator):
