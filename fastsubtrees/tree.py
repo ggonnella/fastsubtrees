@@ -183,7 +183,7 @@ class Tree():
                 raise error.DuplicatedNodeError('The node cannot have more than 1 parent')
             else:
                 inspos = self.__prepare_node_insertion(node_number, parent)
-                self.__get_coords(node_number, inspos, parent)
+                self.__insert_node(node_number, inspos, parent)
                 self.__update_subtree_sizes(node_number)
 
     def __prepare_node_insertion(self, node_number, parent):
@@ -194,7 +194,7 @@ class Tree():
         except IndexError:
             error.ParentNotFoundError('The parent node does not exist for the given child node')
 
-    def __get_coords(self, node_number, inspos, parent):
+    def __insert_node(self, node_number, inspos, parent):
         if node_number < len(self.coords):
             try:
                 self.coords[node_number] = inspos
