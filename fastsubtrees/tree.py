@@ -180,7 +180,7 @@ class Tree():
     def add_subtree(self, generator):
         for node_number, parent in generator:
             if node_number in self.treedata:
-                raise error.NodeReplicationError('The node cannot have more than 1 parent')
+                raise error.DuplicatedNodeError('The node cannot have more than 1 parent')
             else:
                 inspos = self.__prepare_node_insertion(node_number, parent)
                 self.__get_coords(node_number, inspos, parent)

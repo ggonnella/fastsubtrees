@@ -14,8 +14,8 @@ class NodeNotFoundError(FastsubtreesError):
   """error while querying the tree"""
   pass
 
-class NodeReplicationError(FastsubtreesError):
-  """repeating node error, a node has more than 1 parent"""
+class DuplicatedNodeError(FastsubtreesError):
+  """duplicated node error, a node has more than 1 parent"""
   pass
 
 class RootNotFoundError(FastsubtreesError):
