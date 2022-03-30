@@ -1,5 +1,7 @@
+import pytest
+
 from fastsubtrees.get_element_parent_tsv import ElementParentIdGenerator
-from fastsubtrees import Tree
+from fastsubtrees import Tree, error
 from pathlib import Path
 from pytesting.reference_results import *
 import os
@@ -33,7 +35,9 @@ class TestClass:
     def test_fastsubtrees_query_smalltree(self):
         # use subtree_ids 1, 8 and change the id in variable results_query_smalltree_id_*
         tree = Tree.from_file('./pytesting/small_tree.tree')
-        subtree_ids = tree.subtree_ids(42)
+        subtree_ids = tree.subtree_ids(1)
+        with pytest.raises(error.NodeNotFoundError):
+            tree.subtree_ids(98)
         assert subtree_ids == results_query_smalltree_id_1
 
 

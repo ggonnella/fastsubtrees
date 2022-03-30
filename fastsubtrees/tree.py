@@ -93,12 +93,21 @@ class Tree():
     def construct(cls, generator):
         self = cls()
         logger.info("Constructing temporary parents table...")
-        self.parents, self.root_id = cls.__compute_parents(self, generator)
+        try:
+            self.parents, self.root_id = cls.__compute_parents(self, generator)
+        except UnboundLocalError:
+            raise error.RootNotFoundError("Root does not exist for the given tree")
         logger.info("Constructing subtree sizes table...")
-        self.subtree_sizes = cls.__compute_subtree_sizes(self, self.parents)
+        try:
+            self.subtree_sizes = cls.__compute_subtree_sizes(self, self.parents)
+        except IndexError:
+            raise error.ParentNotFoundError("The parent node does not exist for the given child node")
         logger.info("Constructing tree data and index...")
-        self.treedata, self.coords = \
-            cls.__compute_treedata(self, self.parents, self.subtree_sizes, self.root_id)
+        try:
+            self.treedata, self.coords = \
+                cls.__compute_treedata(self, self.parents, self.subtree_sizes, self.root_id)
+        except IndexError:
+            raise error.MultipleRootNodeError("Cannot have multiple root nodes")
         logger.success("Tree data structure constructed")
         return self
 
@@ -161,18 +170,27 @@ class Tree():
 
     def add_subtree(self, generator):
         for node_number, parent in generator:
-            inspos = self.__prepare_node_insertion(node_number, parent)
-            self.__get_coords(node_number, inspos, parent)
-            self.__update_subtree_sizes(node_number)
+            if node_number in self.treedata:
+                raise error.NodeReplicationError('The node cannot have more than 1 parent')
+            else:
+                inspos = self.__prepare_node_insertion(node_number, parent)
+                self.__get_coords(node_number, inspos, parent)
+                self.__update_subtree_sizes(node_number)
 
     def __prepare_node_insertion(self, node_number, parent):
-        inspos = self.coords[parent]+1
-        self.treedata.insert(inspos, node_number)
-        return inspos
+        try:
+            inspos = self.coords[parent]+1
+            self.treedata.insert(inspos, node_number)
+            return inspos
+        except IndexError:
+            error.ParentNotFoundError('The parent node does not exist for the given child node')
 
     def __get_coords(self, node_number, inspos, parent):
         if node_number < len(self.coords):
-            self.coords[node_number] = inspos
+            try:
+                self.coords[node_number] = inspos
+            except TypeError:
+                raise error.NodeNotFoundError(f'The node ID does not exist')
             self.parents[node_number] = parent
             for i in range(len(self.coords)):
               if i != node_number:

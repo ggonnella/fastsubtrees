@@ -6,15 +6,15 @@ High priority
       - construction/add_subtree with problematic input:
         - Node “0” (3 examples: A) "1 1" "0 1" B) "1 1" "1 0" C) just "0 0") --done
         - Repeated node_ids (e.g. "1 1", "2 1", "3 1", "2 3", thereby 2 is repeated) --done
-        - No root node (no node where children_id ==parent_id) e.g.
+        - No root node (no node where children_id ==parent_id) e.g. --done
           (eg. "2 1", "3 1", "4 3")
-        - Multiple root nodes
+        - Multiple root nodes --done
           (eg. "1 1", "2 1", "3 2", "4 4" 1 and 4 are both roots)
-        - parent_id not referring to any node in the tree
+        - parent_id not referring to any node in the tree --done
           (eg. "1 1" "2 1", "3 1", "4 5", 5 is not defined)
-      - adding a subtree with a node which already exists
+      - adding a subtree with a node which already exists --done
         (can be the root of the new subtree or any other node of it)
-      - adding a subtree with a parent which does not exist
+      - adding a subtree with a parent which does not exist --done
         ("16 10" "14 17" but 17 does not exist)
       - re-adding a node which was deleted before
         (since too complicated to handle)
