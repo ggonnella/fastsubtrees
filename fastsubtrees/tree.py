@@ -17,6 +17,7 @@ class Tree():
         self.root_id = None
 
     UNDEF = sys.maxsize
+    DELETED = sys.maxsize - 1
 
     @staticmethod
     def __from_csv(filename, separator, elem_field_num, parent_field_num):
@@ -173,7 +174,7 @@ class Tree():
             raise error.NodeNotFoundError(f"The node ID does not exist, found: {subtree_root}")
         new_subtree_ids = array.array("Q")
         for data in subtree_data:
-            if data != Tree.UNDEF:
+            if data != Tree.UNDEF and data != Tree.DELETED:
                 new_subtree_ids.append(data)
         return new_subtree_ids
 
@@ -232,6 +233,6 @@ class Tree():
         coord = self.coords[node_number]
         subtree_size = self.subtree_sizes[node_number]
         for i in range(subtree_size+1):
-            self.treedata[coord+i] = Tree.UNDEF
+            self.treedata[coord+i] = Tree.DELETED
         for element in elements:
             self.coords[element] = Tree.UNDEF
