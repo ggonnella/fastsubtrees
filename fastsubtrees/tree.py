@@ -30,7 +30,12 @@ class Tree():
 
     def __compute_parents(self, generator):
         self.parents = array.array("Q")
+        assert(self.root_id is None)
         for elem, parent in generator:
+            if elem == self.root_id:
+                raise error.ConstructionError(\
+                    f"Node {elem} had already been added as root, cannot "+\
+                    f"add it again with parent {parent}")
             if elem <= 0:
                 raise error.ConstructionError(\
                     f"The node IDs must be > 0, found: {elem}")
@@ -41,18 +46,42 @@ class Tree():
             if n_missing > 0:
                 for i in range(n_missing):
                     self.parents.append(Tree.UNDEF)
+            if self.parents[elem] != Tree.UNDEF:
+                raise error.ConstructionError(\
+                    f"Node {elem} had already been added with parent "+\
+                    f"{self.parents[elem]}, cannot add it again with "+\
+                    f"parent {parent}")
             if parent != elem:
                 self.parents[elem] = parent
-            else:
+            elif self.root_id is None:
                 self.root_id = elem
+            else:
+                raise error.ConstructionError(\
+                    f"The tree already has a root node {self.root_id}, "+\
+                    f"cannot add a second root node {elem}")
+        if self.root_id is None:
+            raise error.ConstructionError(\
+                "The tree does not have any root node")
 
     def __compute_subtree_sizes(self):
         self.subtree_sizes = array.array('Q', [0] * len(self.parents))
-        for parent in tqdm(self.parents):
-            elem = parent
-            while elem != Tree.UNDEF:
-                self.subtree_sizes[elem] += 1
-                elem = self.parents[elem]
+        for elem, parent in tqdm(enumerate(self.parents)):
+          while parent != Tree.UNDEF:
+            if parent >= len(self.parents):
+              raise error.ConstructionError(\
+                 f"The node {elem} has parent {parent}, "+\
+                 f"which is not in the tree")
+            self.subtree_sizes[parent] += 1
+            if parent == self.root_id:
+              break
+            else:
+              grandparent = self.parents[parent]
+              if grandparent == Tree.UNDEF:
+                raise error.ConstructionError(\
+                    f"The parent of node {elem} is {parent}, "+\
+                    f"but this is not correctly connected to the tree")
+              elem = parent
+              parent = grandparent
 
     def __compute_treedata(self):
         treesize = self.subtree_sizes[self.root_id] + 1
@@ -83,20 +112,11 @@ class Tree():
     def construct(cls, generator):
         self = cls()
         logger.info("Constructing temporary parents table...")
-        try:
-            self.__compute_parents(generator)
-        except UnboundLocalError:
-            raise error.RootNotFoundError("Root does not exist for the given tree")
+        self.__compute_parents(generator)
         logger.info("Constructing subtree sizes table...")
-        try:
-            self.__compute_subtree_sizes()
-        except IndexError:
-            raise error.ParentNotFoundError("The parent node does not exist for the given child node")
+        self.__compute_subtree_sizes()
         logger.info("Constructing tree data and index...")
-        try:
-            self.__compute_treedata()
-        except IndexError:
-            raise error.MultipleRootNodeError("Cannot have multiple root nodes")
+        self.__compute_treedata()
         logger.success("Tree data structure constructed")
         return self
 
