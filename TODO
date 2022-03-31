@@ -36,17 +36,15 @@ High priority:
       I added a second undefined value (sys.maxsize - 1), assigned to the constant Tree.DELETED;
       use this (e.g. in add_subtree and methods called from there) to make sure
       a deleted node is not readded
+
+Mid priority:
 [ ] attribute files must be updated, when nodes are deleted or added:
     - plan what changes are needed in each case (adding a leaf, adding an internal node,
     removing a leaf, removing an internal node)
     - implement them in API methods
     - in the scripts which add/remove nodes: the names of the attribute files
     which must be modified can be passed as optional parameters
-[ ] put the existing "data source" modules in own data_source_modules subdir
-[ ] add ``if line[0] == "#": continue`` to the tree construction from csv to
-    support comment/header lines in the files
 
-Mid priority:
 Lower priority:
 [ ] Make adding of an entire subtree smarter by making place for entire subtree at once
     instead of repeat updating the tree for each node iteratively

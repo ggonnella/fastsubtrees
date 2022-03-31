@@ -24,6 +24,8 @@ class Tree():
         logger.info(f"Reading data from file \"{filename}\" ...")
         with open(filename) as f:
             for line in tqdm(f):
+                if line[0] == "#":
+                  continue
                 fields = line.rstrip().split(separator)
                 elem = int(fields[elem_field_num])
                 parent = int(fields[parent_field_num])
