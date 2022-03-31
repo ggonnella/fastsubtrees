@@ -182,8 +182,14 @@ class Tree():
 
     def add_subtree(self, generator):
         for node_number, parent in generator:
-            if node_number in self.treedata:
-                raise error.DuplicatedNodeError('The node cannot have more than 1 parent')
+            if node_number < len(self.parents):
+                if self.parents[node_number] != Tree.UNDEF:
+                    raise error.DuplicatedNodeError(f'Parent node {self.parents[node_number]} '+\
+                                                    f'already exists for node {node_number}. Cannot add new parent node {parent}')
+                else:
+                    inspos = self.__prepare_node_insertion(node_number, parent)
+                    self.__insert_node(node_number, inspos, parent)
+                    self.__update_subtree_sizes(node_number)
             else:
                 inspos = self.__prepare_node_insertion(node_number, parent)
                 self.__insert_node(node_number, inspos, parent)
