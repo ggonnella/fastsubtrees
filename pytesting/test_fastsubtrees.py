@@ -1,6 +1,7 @@
 import pytest
 
-from fastsubtrees.get_element_parent_tsv import ElementParentIdGenerator
+from fastsubtrees.data_source_modules.get_element_parent_tsv \
+    import ElementParentIdGenerator
 from fastsubtrees import Tree, error
 from pathlib import Path
 from pytesting.reference_results import *
