@@ -183,13 +183,17 @@ class Tree():
     def add_subtree(self, generator):
         for node_number, parent in generator:
             if node_number < len(self.parents):
-                if self.parents[node_number] != Tree.UNDEF:
-                    raise error.DuplicatedNodeError(f'Parent node {self.parents[node_number]} '+\
-                                                    f'already exists for node {node_number}. Cannot add new parent node {parent}')
+                if self.coords[node_number] == Tree.UNDEF:
+                    raise error.DeletedNodeError(f'Node {node_number} was already deleted once. '+\
+                                                 f'Cannot add the same node again')
                 else:
-                    inspos = self.__prepare_node_insertion(node_number, parent)
-                    self.__insert_node(node_number, inspos, parent)
-                    self.__update_subtree_sizes(node_number)
+                    if self.parents[node_number] != Tree.UNDEF:
+                        raise error.DuplicatedNodeError(f'Parent node {self.parents[node_number]} '+\
+                                                        f'already exists for node {node_number}. Cannot add new parent node {parent}')
+                    else:
+                        inspos = self.__prepare_node_insertion(node_number, parent)
+                        self.__insert_node(node_number, inspos, parent)
+                        self.__update_subtree_sizes(node_number)
             else:
                 inspos = self.__prepare_node_insertion(node_number, parent)
                 self.__insert_node(node_number, inspos, parent)
@@ -201,7 +205,7 @@ class Tree():
             self.treedata.insert(inspos, node_number)
             return inspos
         except IndexError:
-            error.ParentNotFoundError('The parent node does not exist for the given child node')
+            raise error.ParentNotFoundError(f'Parent {parent} does not exist for the given child {node_number}')
 
     def __insert_node(self, node_number, inspos, parent):
         if node_number < len(self.coords):
@@ -244,3 +248,4 @@ class Tree():
             self.treedata[coord+i] = Tree.DELETED
         for element in elements:
             self.coords[element] = Tree.UNDEF
+            self.parents[element] = Tree.UNDEF

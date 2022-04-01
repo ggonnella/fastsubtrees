@@ -29,3 +29,7 @@ class MultipleRootNodeError(FastsubtreesError):
 class ParentNotFoundError(FastsubtreesError):
   """parent does not exist for a given child node"""
   pass
+
+class DeletedNodeError(FastsubtreesError):
+  """cannot add a node which has already been deleted once"""
+  pass

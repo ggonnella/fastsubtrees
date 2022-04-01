@@ -22,7 +22,7 @@ High priority:
         e.g. raise error.NodeNotFoundError(f'The node ID does not exist')
         -->
         e.g. raise error.NodeNotFoundError(f'The node ID {node} does not exist', node)
-[ ] add_subtree:
+[done] add_subtree:
       you can't do if node_number in self.treedata for each element, because that means
       iterating over all the millions elements (for each of the inserted elements)
       just to check this... (1) remove this (2) find a more clever way to check this
@@ -32,7 +32,7 @@ High priority:
       a generator!, which is not to have a list of all elements at once);
       I fixed this and properly checked if an element was added previously
       by looking at the inserted values (see __construct_parents).
-[ ] Tree.DELETED:
+[done] Tree.DELETED:
       I added a second undefined value (sys.maxsize - 1), assigned to the constant Tree.DELETED;
       use this (e.g. in add_subtree and methods called from there) to make sure
       a deleted node is not readded
