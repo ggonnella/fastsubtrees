@@ -11,23 +11,11 @@ class ConstructionError(FastsubtreesError):
   pass
 
 class NodeNotFoundError(FastsubtreesError):
-  """error while querying the tree"""
+  """error because node does not exist in the tree"""
   pass
 
 class DuplicatedNodeError(FastsubtreesError):
   """duplicated node error, a node has more than 1 parent"""
-  pass
-
-class RootNotFoundError(FastsubtreesError):
-  """no root node exist for the given tree"""
-  pass
-
-class MultipleRootNodeError(FastsubtreesError):
-  """multiple root nodes cannot exist for a tree"""
-  pass
-
-class ParentNotFoundError(FastsubtreesError):
-  """parent does not exist for a given child node"""
   pass
 
 class DeletedNodeError(FastsubtreesError):

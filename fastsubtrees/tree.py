@@ -182,22 +182,29 @@ class Tree():
 
     def add_subtree(self, generator):
         for node_number, parent in generator:
-            if node_number < len(self.parents):
-                if self.coords[node_number] == Tree.UNDEF:
-                    raise error.DeletedNodeError(f'Node {node_number} was already deleted once. '+\
-                                                 f'Cannot add the same node again')
-                else:
-                    if self.parents[node_number] != Tree.UNDEF:
-                        raise error.DuplicatedNodeError(f'Parent node {self.parents[node_number]} '+\
-                                                        f'already exists for node {node_number}. Cannot add new parent node {parent}')
-                    else:
-                        inspos = self.__prepare_node_insertion(node_number, parent)
-                        self.__insert_node(node_number, inspos, parent)
-                        self.__update_subtree_sizes(node_number)
+            if node_number <= 0:
+                raise error.ConstructionError(f"The node IDs must be > 0, found: {node_number}")
+            elif parent <= 0:
+                raise error.ConstructionError(f"The node IDs must be > 0, found: {parent}")
             else:
-                inspos = self.__prepare_node_insertion(node_number, parent)
-                self.__insert_node(node_number, inspos, parent)
-                self.__update_subtree_sizes(node_number)
+                if node_number < len(self.parents):
+                    if self.coords[node_number] == Tree.UNDEF:
+                        raise error.DeletedNodeError(f'Node {node_number} was already deleted once. '+\
+                                                     f'Cannot add the same node again')
+                    else:
+                        if self.parents[node_number] != Tree.UNDEF:
+                            raise error.ConstructionError( \
+                                f"Node {node_number} had already been added with parent " + \
+                                f"{self.parents[node_number]}, cannot add it again with " + \
+                                f"parent {parent}")
+                        else:
+                            inspos = self.__prepare_node_insertion(node_number, parent)
+                            self.__insert_node(node_number, inspos, parent)
+                            self.__update_subtree_sizes(node_number)
+                else:
+                    inspos = self.__prepare_node_insertion(node_number, parent)
+                    self.__insert_node(node_number, inspos, parent)
+                    self.__update_subtree_sizes(node_number)
 
     def __prepare_node_insertion(self, node_number, parent):
         try:
@@ -205,14 +212,15 @@ class Tree():
             self.treedata.insert(inspos, node_number)
             return inspos
         except IndexError:
-            raise error.ParentNotFoundError(f'Parent {parent} does not exist for the given child {node_number}')
+            raise error.ConstructionError(f"The node {node_number} has parent {parent}, "+\
+                                          f"which is not in the tree")
 
     def __insert_node(self, node_number, inspos, parent):
         if node_number < len(self.coords):
             try:
                 self.coords[node_number] = inspos
             except TypeError:
-                raise error.NodeNotFoundError(f'The node ID does not exist')
+                raise error.NodeNotFoundError(f'The node ID {node_number} does not exist')
             self.parents[node_number] = parent
             for i in range(len(self.coords)):
               if i != node_number:

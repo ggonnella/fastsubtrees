@@ -17,7 +17,7 @@ High priority:
           (can be the root of the new subtree or any other node of it)
         - adding a subtree with a parent which does not exist
           ("16 10" "14 17" but 17 does not exist)
-[ ] Exceptions:
+[done] Exceptions:
     - the error messages must be more informative
         e.g. raise error.NodeNotFoundError(f'The node ID does not exist')
         -->
