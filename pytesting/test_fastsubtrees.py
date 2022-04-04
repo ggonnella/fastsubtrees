@@ -141,18 +141,6 @@ class TestClass:
             tree.add_subtree(generator)
             os.remove('./pytesting/small_tree_repeated_node_id.tree')
 
-    def test_add_already_deleted_node(self):
-        create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
-        outfname = Path('./pytesting/add_already_deleted_node').with_suffix(".tree")
-        create_tree.to_file(outfname)
-        tree = Tree.from_file('./pytesting/add_already_deleted_node.tree')
-        tree.delete_node(3)
-        new_tree = Tree.from_file('./pytesting/add_already_deleted_node.tree')
-        elemparentid = ElementParentIdGenerator('./testdata/add_already_deleted_node.tsv')
-        generator = elemparentid.get_element_parent_id()
-        with pytest.raises(error.DeletedNodeError):
-            tree.add_subtree(generator)
-            os.remove('./pytesting/add_already_deleted_node.tree')
 
     def test_fastsubtrees_delete_node_smalltree(self):
         create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
@@ -187,5 +175,4 @@ class TestClass:
         with pytest.raises(error.NodeNotFoundError):
             tree.delete_node(99)
             os.remove('./pytesting/small_tree.tree')
-
 
