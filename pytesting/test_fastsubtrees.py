@@ -35,27 +35,32 @@ class TestClass:
     def test_construction_with_node_0(self):
         elemparentid = ElementParentIdGenerator('./testdata/construction_node0.tsv')
         generator = elemparentid.get_element_parent_id()
-        Tree.construct(generator)
+        with pytest.raises(error.ConstructionError):
+            Tree.construct(generator)
 
     def test_construction_repeated_node_ids(self):
         elemparentid = ElementParentIdGenerator('./testdata/repeated_nodes.tsv')
         generator = elemparentid.get_element_parent_id()
-        Tree.construct(generator)
+        with pytest.raises(error.ConstructionError):
+            Tree.construct(generator)
 
     def test_construction_no_root_node(self):
         elemparentid = ElementParentIdGenerator('./testdata/no_root_node.tsv')
         generator = elemparentid.get_element_parent_id()
-        Tree.construct(generator)
+        with pytest.raises(error.ConstructionError):
+            Tree.construct(generator)
 
     def test_construction_multiple_root_nodes(self):
         elemparentid = ElementParentIdGenerator('./testdata/multiple_root_nodes.tsv')
         generator = elemparentid.get_element_parent_id()
-        Tree.construct(generator)
+        with pytest.raises(error.ConstructionError):
+            Tree.construct(generator)
 
     def test_construction_parent_not_exist(self):
         elemparentid = ElementParentIdGenerator('./testdata/parent_not_exist.tsv')
         generator = elemparentid.get_element_parent_id()
-        Tree.construct(generator)
+        with pytest.raises(error.ConstructionError):
+            Tree.construct(generator)
 
     def test_fastsubtrees_query_smalltree(self):
         # use subtree_ids 1, 8 and change the id in variable results_query_smalltree_id_*
@@ -71,7 +76,8 @@ class TestClass:
 
     def test_query_node_not_exist(self):
         tree = Tree.from_file('./pytesting/small_tree.tree')
-        tree.subtree_ids(87)
+        with pytest.raises(error.NodeNotFoundError):
+            tree.subtree_ids(87)
 
     def test_fastsubtrees_add_subtree_smalltree(self):
         create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
@@ -109,8 +115,9 @@ class TestClass:
         tree = Tree.from_file('./pytesting/small_tree_repeated_node_id.tree')
         elemparentid = ElementParentIdGenerator('./testdata/add_subtree_repeated_nodes.tsv')
         generator = elemparentid.get_element_parent_id()
-        tree.add_subtree(generator)
-        os.remove('./pytesting/small_tree_repeated_node_id.tree')
+        with pytest.raises(error.ConstructionError):
+            tree.add_subtree(generator)
+            os.remove('./pytesting/small_tree_repeated_node_id.tree')
 
     def test_add_subtree_parent_not_exist(self):
         create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
@@ -119,8 +126,9 @@ class TestClass:
         tree = Tree.from_file('./pytesting/small_tree_repeated_node_id.tree')
         elemparentid = ElementParentIdGenerator('./testdata/add_subtree_parent_not_exist.tsv')
         generator = elemparentid.get_element_parent_id()
-        tree.add_subtree(generator)
-        os.remove('./pytesting/small_tree_repeated_node_id.tree')
+        with pytest.raises(error.ConstructionError):
+            tree.add_subtree(generator)
+            os.remove('./pytesting/small_tree_repeated_node_id.tree')
 
     def test_add_subtree_node0(self):
         create_tree = Tree.construct_from_csv('./testdata/small_tree.tsv', '\t', 0, 1)
@@ -129,8 +137,9 @@ class TestClass:
         tree = Tree.from_file('./pytesting/small_tree_repeated_node_id.tree')
         elemparentid = ElementParentIdGenerator('./testdata/construction_node0.tsv')
         generator = elemparentid.get_element_parent_id()
-        tree.add_subtree(generator)
-        os.remove('./pytesting/small_tree_repeated_node_id.tree')
+        with pytest.raises(error.ConstructionError):
+            tree.add_subtree(generator)
+            os.remove('./pytesting/small_tree_repeated_node_id.tree')
 
 
     def test_fastsubtrees_delete_node_smalltree(self):
@@ -163,6 +172,7 @@ class TestClass:
         outfname = Path('./pytesting/small_tree').with_suffix(".tree")
         create_tree.to_file(outfname)
         tree = Tree.from_file('./pytesting/small_tree.tree')
-        tree.delete_node(99)
-        os.remove('./pytesting/small_tree.tree')
+        with pytest.raises(error.NodeNotFoundError):
+            tree.delete_node(99)
+            os.remove('./pytesting/small_tree.tree')
 
