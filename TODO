@@ -4,8 +4,16 @@ High priority:
         [ ] implemented IN the library instead of in the external module
         [ ] instead of creating JSON of the whole list, it should create JSON of each element
             and output one element per line
+              for element in attribute_value:
+                outfile.write(json.dumps(element) +"\n")
     [ ] change the get_attribute_value()/_list() in attributes.py to use the new format
     [ ] add_subtree() pass optionally the attributefilenames
+          def add_subtree(self, generator, attributefilenames=[])
+            self.__insert_none_in_attribute_list(inspos, attributefiles) [line 201 AND 205]
+               copy inspos-1 lines from attr file
+               output None
+               copy the rest of the file
+
     [ ] change the binary script for adding a subtree to accept attributefilenames AS OPTIONS
 
 
