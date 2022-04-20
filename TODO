@@ -1,12 +1,12 @@
 High priority:
 [ ] attribute files:
     [ ] create_json_file
-        [ ] implemented IN the library instead of in the external module
-        [ ] instead of creating JSON of the whole list, it should create JSON of each element
+        [done] implemented IN the library instead of in the external module
+        [done] instead of creating JSON of the whole list, it should create JSON of each element
             and output one element per line
               for element in attribute_value:
                 outfile.write(json.dumps(element) +"\n")
-    [ ] change the get_attribute_value()/_list() in attributes.py to use the new format
+    [done] change the get_attribute_value()/_list() in attributes.py to use the new format
     [ ] add_subtree() pass optionally the attributefilenames
           def add_subtree(self, generator, attributefilenames=[])
             self.__insert_none_in_attribute_list(inspos, attributefiles) [line 201 AND 205]
