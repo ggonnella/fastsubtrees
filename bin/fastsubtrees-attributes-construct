@@ -16,8 +16,8 @@ Arguments:
   <outputfile>      Name of the file to store the output into
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --quiet           be quiet
+  --debug           print debug messages
 """
 
 from docopt import docopt

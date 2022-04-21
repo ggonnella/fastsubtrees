@@ -13,8 +13,9 @@ Arguments:
   <nodefile>        File containing the tree data
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --quiet                               be quiet
+  --debug                               print debug messages
+  --attributefilenames=attribute_file   File containing the names of all attributes
 """
 
 import importlib
@@ -31,7 +32,12 @@ def main(args):
     elemparentid = m.ElementParentIdGenerator(args["<inputfile>"])
     generator = elemparentid.get_element_parent_id()
     tree = Tree.from_file(args["<nodefile>"])
-    tree.add_subtree(generator)
+    contents = []
+    if args['--attributefilenames']:
+        with open(args['--attributefilenames'], 'r') as file:
+            contents = file.read().splitlines()
+            print(contents)
+    tree.add_subtree(generator, contents)
     tree.to_file(args["<nodefile>"])
 
 
