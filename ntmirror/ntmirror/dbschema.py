@@ -1,6 +1,9 @@
 #
 # (c) 2020-2022 Giorgio Gonnella, University of Goettingen, Germany
 #
+"""
+Defines the local database schema
+"""
 
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
