@@ -6,6 +6,9 @@ Loads the data into the database
 """
 
 import MySQLdb
+from pathlib import Path
+from .dbschema import NtName, NtGencode, NtMerged, NtDivision, NtDelnode, \
+                      NtCitation, NtNode
 
 def connect_and_execute(host, user, passwd, db, unix_socket, statements):
   db = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db,
@@ -44,13 +47,11 @@ def load_data_sql(datafile, tablename, columns):
   result.append("SET foreign_key_checks = 1;")
   return result
 
-def load_data(host, user, passwd, db, unix_socket, datafile, dbmodel):
+def load_data(datafile, dbmodel, host, user, passwd, db, unix_socket):
   tablename = dbmodel.__tablename__
   columns = dbmodel.file_column_names()
   connect_and_execute(host, user, passwd, db, unix_socket,
                       load_data_sql(datafile, tablename, columns))
-
-from pathlib import Path
 
 FILE2CLASS = {
   'names': NtName,
@@ -62,9 +63,8 @@ FILE2CLASS = {
   'nodes': NtNode,
 }
 
-def load_all(host, user, passwd, db, unix_socket, dumpdir):
+def load_all(dumpdir, host, user, passwd, db, unix_socket):
   for filepfx, klass in FILE2CLASS.items():
     filepath = Path(dumpdir) / f"{filepfx}.dmp"
     if filepath.exists():
-      load_data(host, user, passwd, db, unix_socket, filepath,
-                FILE2CLASS[filepfx])
+      load_data(filepath, klass, host, user, passwd, db, unix_socket)

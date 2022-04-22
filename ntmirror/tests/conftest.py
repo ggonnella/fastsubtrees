@@ -18,15 +18,22 @@ def testout():
 def testdata():
   return lambda fn: Path(__file__).parent / 'testdata' / fn
 
-@pytest.fixture(scope="session")
-def connection_string():
-  # if config.yaml does not exist, raise an error
+@pytest.fixture
+def testdatadir():
+  return Path(__file__).parent / 'testdata'
+
+def get_config():
   config_file_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
   if not os.path.exists(config_file_path):
     raise FileNotFoundError(\
         'Connection configuration file config.yaml not found')
   with open(config_file_path) as f:
     config = yaml.safe_load(f)
+  return config
+
+@pytest.fixture(scope="session")
+def connection_string():
+  config = get_config()
   args = {k: v for k, v in config.items() if k in ['drivername',
                                            'host', 'port', 'database',
                                            'username', 'password']}
@@ -42,3 +49,9 @@ def connection(connection_string):
     with conn.begin():
       yield conn
       conn.commit()
+
+@pytest.fixture(scope="session")
+def mysql_connection_data(connection_string):
+  config = get_config()
+  return [config["host"], config["username"], config["password"],
+          config["database"], config["socket"]]
