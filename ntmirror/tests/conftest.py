@@ -14,6 +14,10 @@ VERBOSE_CONNECTION = True
 def testout():
   return lambda fn: Path(__file__).parent / 'output' / fn
 
+@pytest.fixture
+def testdata():
+  return lambda fn: Path(__file__).parent / 'testdata' / fn
+
 @pytest.fixture(scope="session")
 def connection_string():
   # if config.yaml does not exist, raise an error
