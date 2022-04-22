@@ -7,15 +7,19 @@ import time
 import os
 from ntmirror import Downloader
 
+USE_REAL_FILE = False
+
 def test_first_download(testout):
   # test download from NCBI taxonomy when no timestamp file exists
   sh.rm(testout("first_download"), "-rf")
   sh.mkdir(testout("first_download"), "-p")
   downloader = Downloader(str(testout("first_download")))
-  downloader.DUMPFILENAME = "taxdump_readme.txt"
-  was_downloaded = downloader.run(decompress=False)
+  if not USE_REAL_FILE:
+    downloader.DUMPFILENAME = "taxdump_readme.txt"
+  was_downloaded = downloader.run(decompress=USE_REAL_FILE)
   assert(was_downloaded)
-  assert(os.path.exists(testout("first_download")/downloader.DUMPFILENAME))
+  if not USE_REAL_FILE:
+    assert(os.path.exists(testout("first_download")/downloader.DUMPFILENAME))
   assert(os.path.exists(testout("first_download/timestamp")))
 
 def test_no_newer_version(testout):
