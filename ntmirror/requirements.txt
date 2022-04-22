@@ -1,2 +1,4 @@
 sqlalchemy
 sqlalchemy_repr
+mysql
+mariadb

@@ -8,11 +8,14 @@ mirror of the NCBI Taxonomy database
 The software is distributed as a Python 3 package.
 The file ``requirements.txt`` lists the required pip modules
 (installable using ``pip -r requirements.txt``).
-In particular, the database connection is based on SqlAlchemy.
 
 A relational database management system (RDBMS) is required.
-NtMirror has been developed and tested using MariaDB as RDBMS, however it
-can likely be used on other RDBMS as well.
+NtMirror has been developed and tested using MariaDB as RDBMS,
+thus only this database is supported (although the software can
+be adapted to other RDBMS).
+
+In particular, the database data loading is performed using the mysql library
+(and not using SqlAlchemy, since the raw loading is faster).
 
 ## Usage manual
 
