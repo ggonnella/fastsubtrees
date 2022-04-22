@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#
+# (c) 2020-2022 Giorgio Gonnella, University of Goettingen, Germany
+#
+
 """
 Downloads the NCBI taxonomy dump, if it is newer than the timestamp flag file
 """
