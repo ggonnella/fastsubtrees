@@ -10,12 +10,11 @@ The file ``requirements.txt`` lists the required pip modules
 (installable using ``pip -r requirements.txt``).
 
 A relational database management system (RDBMS) is required.
-NtMirror has been developed and tested using MariaDB as RDBMS,
-thus only this database is supported (although the software can
-be adapted to other RDBMS).
+NtMirror has been developed and tested using MariaDB as RDBMS.
+However, it can be probably used with any RDBMS supported by SqlAlchemy.
 
-In particular, the database data loading is performed using the mysql library
-(and not using SqlAlchemy, since the raw loading is faster).
+Optionally, on MariaDB, the database data loading is performed using the
+``mysql`` library and not using SqlAlchemy, since the loading is faster.
 
 ## Usage manual
 

@@ -128,6 +128,16 @@ tablename2class = {
   'nt_nodes': NtNode,
 }
 
+FILE2CLASS = {
+  'names': NtName,
+  'gencode': NtGencode,
+  'merged': NtMerged,
+  'division': NtDivision,
+  'delnodes': NtDelnode,
+  'citations': NtCitation,
+  'nodes': NtNode,
+}
+
 DB_MODEL_CLASSES = tablename2class.values()
 
 def create(connection):
