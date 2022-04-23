@@ -18,44 +18,43 @@ from ntmirror import Downloader
 USE_REAL_FILE = False
 
 def test_first_download(testout):
-  # test download from NCBI taxonomy when no timestamp file exists
-  sh.rm(testout("first_download"), "-rf")
-  sh.mkdir(testout("first_download"), "-p")
-  downloader = Downloader(str(testout("first_download")))
+  outdir=testout("first_download")
+  sh.rm(outdir, "-rf")
+  downloader = Downloader(str(outdir))
   if not USE_REAL_FILE:
-    downloader.DUMPFILENAME = "taxdump_readme.txt"
-  was_downloaded = downloader.run(decompress=USE_REAL_FILE)
-  assert(was_downloaded)
+    downloader.set_testmode()
+  was_downloaded = downloader.run()
+  assert was_downloaded
   if not USE_REAL_FILE:
-    assert(os.path.exists(testout("first_download")/downloader.DUMPFILENAME))
-  assert(os.path.exists(testout("first_download/timestamp")))
+    assert os.path.exists(outdir/downloader.DUMPFILENAME)
+  assert os.path.exists(outdir/"timestamp")
 
 def test_no_newer_version(testout):
-  sh.rm(testout("no_newer_version"), "-rf")
-  sh.mkdir(testout("no_newer_version"), "-p")
-  sh.touch(testout("no_newer_version/timestamp"))
-  os.utime(testout("no_newer_version/timestamp"), \
-           (time.time() + 1800, time.time() + 1800))
-  downloader = Downloader(str(testout("no_newer_version")))
-  downloader.DUMPFILENAME = "taxdump_readme.txt"
-  was_downloaded = downloader.run(decompress=False)
-  assert(not was_downloaded)
-  assert(not os.path.exists(testout("no_newer_version")/\
-                                    downloader.DUMPFILENAME))
+  outdir=testout("no_newer_version")
+  sh.rm(outdir, "-rf")
+  sh.mkdir(outdir, "-p")
+  sh.touch(outdir/"timestamp")
+  future = time.time() + 3600
+  os.utime(outdir/"timestamp", (future, future))
+  downloader = Downloader(str(outdir))
+  downloader.set_testmode()
+  was_downloaded = downloader.run()
+  assert not was_downloaded
+  assert not os.path.exists(outdir/downloader.DUMPFILENAME)
 
 def test_newer_version(testout):
-  sh.rm(testout("newer_version"), "-rf")
-  sh.mkdir(testout("newer_version"), "-p")
-  downloader = Downloader(str(testout("newer_version")))
-  downloader.DUMPFILENAME = "taxdump_readme.txt"
+  outdir=testout("newer_version")
+  sh.rm(outdir, "-rf")
+  downloader = Downloader(str(outdir))
+  downloader.set_testmode()
   downloader.run(decompress=False)
-  stinfo = os.stat(testout("newer_version")/downloader.DUMPFILENAME)
+  stinfo = os.stat(outdir/downloader.DUMPFILENAME)
   mtime = stinfo.st_mtime
-  os.utime(testout("newer_version/timestamp"), \
-           (mtime - 18000, mtime - 18000))
-  os.unlink(testout("newer_version")/downloader.DUMPFILENAME)
-  assert(not os.path.exists(testout("newer_version")/downloader.DUMPFILENAME))
-  was_downloaded = downloader.run(decompress=False)
-  assert(was_downloaded)
-  assert(os.path.exists(testout("newer_version")/downloader.DUMPFILENAME))
+  before_last_version = mtime - 18000
+  os.utime(outdir/"timestamp", (before_last_version, before_last_version))
+  os.unlink(outdir/downloader.DUMPFILENAME)
+  assert not os.path.exists(outdir/downloader.DUMPFILENAME)
+  was_downloaded = downloader.run()
+  assert was_downloaded
+  assert os.path.exists(outdir/downloader.DUMPFILENAME)
 

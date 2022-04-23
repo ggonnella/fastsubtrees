@@ -12,11 +12,17 @@ import os
 class Downloader():
   REMOTE = "ftp://ftp.ncbi.nih.gov/pub/taxonomy"
   DUMPFILENAME = "taxdump.tar.gz"
+  TESTFILENAME = "taxdump_readme.txt"
   TIMESTAMP = "timestamp"
 
   def __init__(self, outdir):
     self.outdir = outdir
     os.makedirs(self.outdir, exist_ok=True)
+    self.testmode = False
+
+  def set_testmode(self):
+    self.DUMPFILENAME = self.TESTFILENAME
+    self.testmode = True
 
   def run(self, decompress=True):
     remotefile = self.REMOTE + "/" + self.DUMPFILENAME
@@ -28,7 +34,7 @@ class Downloader():
     ret = sh.curl(*args)
     downloaded = int(ret.rstrip())
     if downloaded > 0:
-      if decompress:
+      if decompress and not self.testmode:
         sh.tar("-xzf", localfile, "-C", self.outdir)
         os.unlink(localfile)
       sh.touch(timestampfile)
