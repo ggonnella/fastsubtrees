@@ -5,7 +5,7 @@
 SQL statements for loading the data into the database
 """
 
-def load_data_sql(datafile, tablename, columns):
+def _load_data_sql(datafile, tablename, columns):
   """Create SQL script for bulk loading NCBI Taxonomy dump data.
 
   Non-unique indices are dropped before loading and recomputed afterwards.
