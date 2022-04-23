@@ -7,6 +7,14 @@ import time
 import os
 from ntmirror import Downloader
 
+#
+# By default, the test will be done downloading a smaller file
+# (taxdump_readme.txt) instead of the dump file (taxdump.tar.gz).
+#
+# If the following variable is set to True, the test "test_first_download"
+# will be done downloading the full dump file (and using the "decompress"
+# option).
+#
 USE_REAL_FILE = False
 
 def test_first_download(testout):
