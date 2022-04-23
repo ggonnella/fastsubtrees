@@ -55,7 +55,15 @@ def connection(connection_string):
       conn.commit()
 
 @pytest.fixture(scope="session")
-def mysql_connection_data(connection_string):
+def mysql_connection_data():
   config = get_config()
   return [config["host"], config["username"], config["password"],
           config["database"], config["socket"]]
+
+@pytest.fixture(scope="session")
+def connection_args():
+  config = get_config()
+  return [config["username"],
+          config["password"],
+          config["database"],
+          config["socket"]]
