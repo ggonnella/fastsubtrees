@@ -27,15 +27,15 @@ def test_first_download(testout):
   assert was_downloaded
   if not USE_REAL_FILE:
     assert os.path.exists(outdir/downloader.DUMPFILENAME)
-  assert os.path.exists(outdir/"timestamp")
+  assert os.path.exists(outdir/downloader.TIMESTAMP)
 
 def test_no_newer_version(testout):
   outdir=testout("no_newer_version")
   sh.rm(outdir, "-rf")
   sh.mkdir(outdir, "-p")
-  sh.touch(outdir/"timestamp")
+  sh.touch(outdir/Downloader.TIMESTAMP)
   future = time.time() + 3600
-  os.utime(outdir/"timestamp", (future, future))
+  os.utime(outdir/Downloader.TIMESTAMP, (future, future))
   downloader = Downloader(str(outdir))
   downloader.set_testmode()
   was_downloaded = downloader.run()
@@ -47,11 +47,12 @@ def test_newer_version(testout):
   sh.rm(outdir, "-rf")
   downloader = Downloader(str(outdir))
   downloader.set_testmode()
-  downloader.run(decompress=False)
+  downloader.run()
   stinfo = os.stat(outdir/downloader.DUMPFILENAME)
   mtime = stinfo.st_mtime
   before_last_version = mtime - 18000
-  os.utime(outdir/"timestamp", (before_last_version, before_last_version))
+  os.utime(outdir/Downloader.TIMESTAMP, \
+           (before_last_version, before_last_version))
   os.unlink(outdir/downloader.DUMPFILENAME)
   assert not os.path.exists(outdir/downloader.DUMPFILENAME)
   was_downloaded = downloader.run()
