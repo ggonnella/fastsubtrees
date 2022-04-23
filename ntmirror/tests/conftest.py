@@ -22,6 +22,10 @@ def testdata():
 def testdatadir():
   return Path(__file__).parent / 'testdata'
 
+@pytest.fixture
+def script():
+  return lambda fn: Path(__file__).parent.parent / 'bin' / fn
+
 def get_config():
   config_file_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
   if not os.path.exists(config_file_path):

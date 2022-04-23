@@ -38,5 +38,5 @@ setup(name='ntmirror',
       zip_safe=False,
       test_suite="pytest",
       include_package_data=True,
-      tests_require=['pytest', 'pytest-console-scripts'],
+      tests_require=['pytest', 'pytest-console-scripts', 'sh'],
     )
