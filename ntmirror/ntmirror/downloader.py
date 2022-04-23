@@ -16,6 +16,7 @@ class Downloader():
 
   def __init__(self, outdir):
     self.outdir = outdir
+    os.makedirs(self.outdir, exist_ok=True)
 
   def run(self, decompress=True):
     remotefile = self.REMOTE + "/" + self.DUMPFILENAME
@@ -29,6 +30,7 @@ class Downloader():
     if downloaded > 0:
       if decompress:
         sh.tar("-xzf", localfile, "-C", self.outdir)
+        os.unlink(localfile)
       sh.touch(timestampfile)
       return True
     else:
