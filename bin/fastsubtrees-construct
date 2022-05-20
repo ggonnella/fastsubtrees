@@ -27,7 +27,7 @@ def main(args):
     spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
-    elemparentid = m.ElementParentIdGenerator(args["<configfile>"])
+    elemparentid = m.ElementParentIdGenerator()
     generator = elemparentid.get_element_parent_id()
     tree = Tree.construct(generator)
     outfname = Path(args["<outputfilename>"])

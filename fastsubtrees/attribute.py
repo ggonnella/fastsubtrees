@@ -1,11 +1,14 @@
 import json
 
 def get_attribute_value(attributefile, subtree_size, position):
-    file = open(attributefile)
-    data = json.load(file)
+    # file = open(attributefile)
+    # data = json.load(file)
+    with open(attributefile, 'r') as file:
+        contents = file.read().splitlines()
     attribute_value_list = list()
     for i in range(position, (position + subtree_size)):
-        attribute_value_list.append(data[i])
+        data = json.loads(contents[i])
+        attribute_value_list.append(data)
     return attribute_value_list
 
 def get_attribute_list(tree, subtree_root, attributefile):

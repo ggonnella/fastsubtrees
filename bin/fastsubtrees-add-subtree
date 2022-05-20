@@ -36,7 +36,6 @@ def main(args):
     if args['--attributefilenames']:
         with open(args['--attributefilenames'], 'r') as file:
             contents = file.read().splitlines()
-            print(contents)
     tree.add_subtree(generator, contents)
     tree.to_file(args["<nodefile>"])
 
