@@ -3,12 +3,10 @@
 Creates json files for a given attribute present in the database
 
 Usage:
-  fastsubtrees-attributes-construct [options] <nodefile> <configfile> <subtreeroot> <attribute>
-  <pythonmodule> <outputfile>
+  fastsubtrees-attributes-construct [options] <nodefile> <subtreeroot> <attribute> <pythonmodule> <outputfile>
 
 Arguments:
   <nodefile>        Output of fastsubtrees-construct
-  <configfile>      Configuration file that contains the arguments required to connect to the database
   <subtreeroot>     ID of the root of the Tree
   <attribute>       Name of the attribute
   <pythonmodule>    Some module for python which defines the function for getting the attribute values

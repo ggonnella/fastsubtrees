@@ -4,12 +4,11 @@ Parse a given tabular file and construct the data structure
 for fast subtrees queries
 
 Usage:
-  fastsubtrees-construct [options] <pymodule> <configfile> <outputfilename>
+  fastsubtrees-construct [options] <pymodule> <outputfilename>
 
 Arguments:
   <pymodule>        Some module for python which defines the function get_element_parent_id
                     for yielding the element and parent ids
-  <configfile>      Configuration file that contains the any parameters required by the module
   <outputfilename>  Name of the file to store the output in
 
 Options:
