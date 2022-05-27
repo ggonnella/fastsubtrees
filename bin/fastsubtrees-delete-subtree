@@ -4,10 +4,10 @@ Parse a given tabular file and delete a given node
 from the the tree
 
 Usage:
-  fastsubtrees-delete-subtree [options] <node_id> <nodefile>
+  fastsubtrees-delete-subtree [options] <nodeid> <nodefile>
 
 Arguments:
-  <node_id>         ID of the node that has to be deleted
+  <nodeid>         ID of the node that has to be deleted
   <nodefile>        File containing the tree data
 
 Options:
@@ -21,7 +21,7 @@ from fastsubtrees import Tree, _scripts_support
 
 def main(args):
     tree = Tree.from_file(args["<nodefile>"])
-    tree.delete_node(int(args["<node_id>"]))
+    tree.delete_node(int(args["<nodeid>"]))
     tree.to_file(args["<nodefile>"])
 
 if __name__ == "__main__":

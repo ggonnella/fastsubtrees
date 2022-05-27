@@ -4,11 +4,11 @@ Return the list of IDs of the subtree of a tree
 previously constructed and stored to file by this library
 
 Usage:
-  fastsubtrees-query [options] <inputfile> <subtree_root>
+  fastsubtrees-query [options] <nodefile> <subtreeroot>
 
 Arguments:
-  <inputfile>     Output of fastsubtrees-construct
-  <subtree_root>  ID of the subtree root
+  <nodefile>     Output of fastsubtrees-construct
+  <subtreeroot>  ID of the subtree root
 
 Options:
   --quiet      be quiet
@@ -19,8 +19,8 @@ from docopt import docopt
 from fastsubtrees import Tree, _scripts_support
 
 def main(args):
-  tree = Tree.from_file(args["<inputfile>"])
-  subtree_root = int(args["<subtree_root>"])
+  tree = Tree.from_file(args["<nodefile>"])
+  subtree_root = int(args["<subtreeroot>"])
   print(tree.subtree_ids(subtree_root))
 
 if __name__ == "__main__":

@@ -4,11 +4,11 @@ Return the list of values for the given attribute for
 a particular subtree
 
 Usage:
-  fastsubtrees-attributes-query [options] <nodefile> <subtree_root> <attributefile>
+  fastsubtrees-attributes-query [options] <nodefile> <subtreeroot> <attributefile>
 
 Arguments:
   <nodefile>      Output of fastsubtrees-construct
-  <subtree_root>  ID of the subtree root
+  <subtreeroot>  ID of the subtree root
   <attributefile> Output of fastsubtrees-attributes-construct for a particular attribute
 
 Options:
@@ -21,7 +21,7 @@ from fastsubtrees import Tree, _scripts_support, attribute
 
 def main():
     tree = Tree.from_file(args["<nodefile>"])
-    subtree_root = int(args["<subtree_root>"])
+    subtree_root = int(args["<subtreeroot>"])
     attribute_list = attribute.get_attribute_list(tree, subtree_root, args["<attributefile>"])
     print(attribute_list)
 
