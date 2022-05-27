@@ -1,0 +1,12 @@
+- (1) NCBI taxonomy will be loaded from the dump files
+- (2) Example application: Taxonomy names will be used as attribute (scientific name' column = YES)
+      - one will provide scripts that:
+        - construct the tree
+        - loads the names as attributes
+- (3) Example application: like prost-db-viewer but stripped down:
+      - no comparison, only one attribute
+      - no attribute metadata
+      - attribute will be just genome size
+      - one will provide scripts that:
+        - construct the tree
+        - loads the genome sizes from a TSV file as attributes
