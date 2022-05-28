@@ -1,27 +1,33 @@
 #!/usr/bin/env python3
 """
-Return the list of IDs of the subtree of a tree
-previously constructed and stored to file by this library
+List all IDs of a subtree under a given node.
+
+It uses as input a tree representation constructed
+by this library and stored to file (<tree>).
 
 Usage:
-  fastsubtrees-query [options] <nodefile> <subtreeroot>
+  fastsubtrees-query [options] <tree> <subtreeroot>
 
 Arguments:
-  <nodefile>     Output of fastsubtrees-construct
-  <subtreeroot>  ID of the subtree root
+  tree         tree representation file
+               (e.g. output of fastsubtrees-construct script)
+  subtreeroot  ID of the subtree root
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
 
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support
+from fastsubtrees import Tree, logger, _scripts_support
 
 def main(args):
-  tree = Tree.from_file(args["<nodefile>"])
-  subtree_root = int(args["<subtreeroot>"])
-  print(tree.subtree_ids(subtree_root))
+  logger.debug(f"Loading tree file '{args['<tree>']}'")
+  tree = Tree.from_file(args["<tree>"])
+  logger.debug(f"Extracting subtree under node '{args['<subtreeroot>']}'")
+  print(tree.subtree_ids(int(args["<subtreeroot>"])))
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
