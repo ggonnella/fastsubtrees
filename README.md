@@ -73,7 +73,7 @@ defined by the user and passed to the scripts as Python code
 and configuration data. Modules for the most common cases (database,
 tabular file) are provided.
 
-The scripts are described in the document ``manuals/cli.md``.
+The scripts are described in the document ``docs/cli.md``.
 Alternatively, the library functionality can be also directly accessed using
-the API, which are documented in ``manuals/api.md`.
+the API, which are documented in ``docs/api.md`.
 
