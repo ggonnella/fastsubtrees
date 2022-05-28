@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Return the list of values for the given attribute for
-a particular subtree
+List the values of a specified attribute in a specified subtree
 
 Usage:
-  fastsubtrees-attributes-query [options] <nodefile> <subtreeroot> <attributefile>
+  fastsubtrees-attributes-query [options] <tree> <subtreeroot> <attributefile>
 
 Arguments:
-  <nodefile>      Output of fastsubtrees-construct
-  <subtreeroot>  ID of the subtree root
-  <attributefile> Output of fastsubtrees-attributes-construct for a particular attribute
+  tree           fastsubtrees-construct output
+  subtreeroot    ID of the subtree root
+  attributefile  file containing the attribute data for an attributem
+                 as output by fastsubtrees-attributes-construct
 
 Options:
   --quiet      disable log messages
@@ -20,13 +20,14 @@ Options:
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support, attribute
 
-def main():
-    tree = Tree.from_file(args["<nodefile>"])
-    subtree_root = int(args["<subtreeroot>"])
-    attribute_list = attribute.get_attribute_list(tree, subtree_root, args["<attributefile>"])
-    print(attribute_list)
+def main(args):
+  tree = Tree.from_file(args["<tree>"])
+  subtree_root = int(args["<subtreeroot>"])
+  attribute_list = attribute.get_attribute_list(tree, subtree_root,
+                                                args["<attributefile>"])
+  print(attribute_list)
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="0.1")
-    _scripts_support.setup_verbosity(args)
-    main()
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)
