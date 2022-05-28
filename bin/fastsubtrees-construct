@@ -59,7 +59,6 @@ def main(args):
   tree = Tree.construct(m.element_parent_ids(*posargs, **keyargs))
   logger.success("Tree constructed")
   tree.to_file(args["<outfname>"])
-  logger.success("Tree written to file {}".format(args["<outfname>"]))
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
