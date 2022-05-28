@@ -4,11 +4,11 @@ Parse a given tabular file and delete a given node
 from the the tree
 
 Usage:
-  fastsubtrees-delete-subtree [options] <nodeid> <nodefile>
+  fastsubtrees-delete-subtree [options] <nodeid> <tree>
 
 Arguments:
-  <nodeid>         ID of the node that has to be deleted
-  <nodefile>        File containing the tree data
+  nodeid      ID of the node that has to be deleted
+  tree        File containing the tree data
 
 Options:
   --quiet      disable log messages
@@ -21,9 +21,9 @@ from docopt import docopt
 from fastsubtrees import Tree, _scripts_support
 
 def main(args):
-  tree = Tree.from_file(args["<nodefile>"])
+  tree = Tree.from_file(args["<tree>"])
   tree.delete_node(int(args["<nodeid>"]))
-  tree.to_file(args["<nodefile>"])
+  tree.to_file(args["<tree>"])
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
