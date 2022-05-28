@@ -1,19 +1,32 @@
 #!/usr/bin/env python3
 """
-Parse a given tabular file and add a new leaf node
-to the given tree
+Add a subtree to an existing tree representation
+
+The subtree may consist of a single leaf node, or of an internal node
+to be attached to the existing tree and the subtree under that internal node.
+
+To add multiple leaves or subtrees under different nodes of an existing tree,
+call this script separately for each subtree.
 
 Usage:
-  fastsubtrees-add-subtree [options] <pymodule> <inputfile> <nodefile>
+  fastsubtrees-add-subtree [options] <tree> <idsmod> [<idsmod_data>...]
 
 Arguments:
-  <pymodule>        Some module for python which defines the function get_element_parent_id
-                    for yielding the element and parent ids
-  <inputfile>       TSV file containing elements and parents
-  <nodefile>        File containing the tree data
+  tree         File containing the tree data
+  idsmod       Python module defining a function element_parent_ids()
+               which may take arguments (<idsmod_data>) and yield pairs
+               (element_id, parent_id) for all nodes of the subtree to add.
+  idsmod_data  [optional] arguments to be passed to the element_parent_ids()
+               function of the module specified as <idsmod>; to pass keyword
+               arguments, use the syntax "key=value" and the option --keyargs
 
 Options:
-  --attributefilenames=attribute_file   File containing the names of all attributes
+  --keyargs    split the arguments specified in <idsmod_data> into
+               keywords and values by splitting on the first instance of '=';
+               arguments which do not contain '=' are passed as positional,
+               before any keyword argument
+  --attrs      file containing a list of filenames of attribute files that
+               exist for the tree (so that they are updated too)
   --quiet      disable log messages
   --debug      print debug information
   --help       show this help message and exit
@@ -23,22 +36,41 @@ Options:
 import importlib
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, _scripts_support
+from fastsubtrees import Tree, logger, _scripts_support
 
 def main(args):
-  modulename = Path(args["<pymodule>"]).stem
-  spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
+  logger.debug("Loading Python module '{}'".format(args['<idsmod>']))
+  modulename = Path(args["<idsmod>"]).stem
+  spec = importlib.util.spec_from_file_location(modulename,
+                                                args["<idsmod>"])
   m = importlib.util.module_from_spec(spec)
   spec.loader.exec_module(m)
-  elemparentid = m.ElementParentIdGenerator(args["<inputfile>"])
-  generator = elemparentid.get_element_parent_id()
-  tree = Tree.from_file(args["<nodefile>"])
-  contents = []
-  if args['--attributefilenames']:
-    with open(args['--attributefilenames'], 'r') as file:
-      contents = file.read().splitlines()
-  tree.add_subtree(generator, contents)
-  tree.to_file(args["<nodefile>"])
+  if not m.__dict__.get("element_parent_ids"):
+    raise ValueError("The specified Python module {} does not define a "
+                     "function element_parent_ids()".format(args["<idsmod>"]))
+  logger.success("Ids module loaded, found generator element_parent_ids()")
+  logger.info("Constructing tree using IDs yielded by the generator...")
+  if args["--keyargs"]:
+    keyargs = {k: v for k, v in \
+        [a.split("=", 1) for a in args["<idsmod_data>"] if "=" in a]}
+    posargs = [a for a in args["<idsmod_data>"] if "=" not in a]
+  else:
+    keyargs = {}
+    posargs = args["<idsmod_data>"]
+  if posargs:
+    logger.debug(f"Positional arguments passed to the generator: {posargs}")
+  if keyargs:
+    logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
+  logger.debug("Loading tree from file '{}'".format(args['<tree>']))
+  tree = Tree.from_file(args["<tree>"])
+  logger.debug("Successfully loaded tree from file '{}'".format(args['<tree>']))
+  attrfiles = []
+  if args['--attrs']:
+    with open(args['--attrs'], 'r') as file:
+      attrfiles = file.read().splitlines()
+  generator = m.element_parent_ids(*posargs, **keyargs)
+  tree.add_subtree(generator, attrfiles)
+  tree.to_file(args["<tree>"])
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
