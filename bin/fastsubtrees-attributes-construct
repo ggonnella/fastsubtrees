@@ -14,8 +14,10 @@ Arguments:
   <outputfile>      Name of the file to store the output into
 
 Options:
-  --quiet           be quiet
-  --debug           print debug messages
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
 
 from docopt import docopt
@@ -24,24 +26,22 @@ import importlib
 import json
 from pathlib import Path
 
-
-def main():
-    modulename = Path(args["<pymodule>"]).stem
-    spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    attr = m.Attributes()
-    tree = Tree.from_file(args["<nodefile>"])
-    subtree_root = int(args["<subtreeroot>"])
-    subtree_ids = tree.subtree_ids(subtree_root)
-    result = attr.get_attribute_list(subtree_ids, args["<attribute>"])
-    filename = args["<outputfile>"]
-    with open(f"tree-cache/{filename}.attr", "w") as outfile:
-        for element in result:
-            outfile.write(json.dumps(element) + "\n")
-
+def main(args):
+  modulename = Path(args["<pymodule>"]).stem
+  spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
+  m = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(m)
+  attr = m.Attributes()
+  tree = Tree.from_file(args["<nodefile>"])
+  subtree_root = int(args["<subtreeroot>"])
+  subtree_ids = tree.subtree_ids(subtree_root)
+  result = attr.get_attribute_list(subtree_ids, args["<attribute>"])
+  filename = args["<outputfile>"]
+  with open(f"tree-cache/{filename}.attr", "w") as outfile:
+    for element in result:
+      outfile.write(json.dumps(element) + "\n")
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="0.1")
-    _scripts_support.setup_verbosity(args)
-    main()
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)

@@ -12,20 +12,19 @@ Arguments:
   <attributefile> Output of fastsubtrees-attributes-construct for a particular attribute
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support, attribute
-
 
 def main():
     tree = Tree.from_file(args["<nodefile>"])
     subtree_root = int(args["<subtreeroot>"])
     attribute_list = attribute.get_attribute_list(tree, subtree_root, args["<attributefile>"])
     print(attribute_list)
-
-
 
 if __name__ == "__main__":
     args = docopt(__doc__, version="0.1")

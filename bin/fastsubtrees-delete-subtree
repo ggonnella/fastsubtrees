@@ -11,20 +11,21 @@ Arguments:
   <nodefile>        File containing the tree data
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
 
 from docopt import docopt
 from fastsubtrees import Tree, _scripts_support
 
-
 def main(args):
-    tree = Tree.from_file(args["<nodefile>"])
-    tree.delete_node(int(args["<nodeid>"]))
-    tree.to_file(args["<nodefile>"])
+  tree = Tree.from_file(args["<nodefile>"])
+  tree.delete_node(int(args["<nodeid>"]))
+  tree.to_file(args["<nodefile>"])
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="0.1")
-    _scripts_support.setup_verbosity(args)
-    main(args)
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)

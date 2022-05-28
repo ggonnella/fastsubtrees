@@ -13,9 +13,11 @@ Arguments:
   <nodefile>        File containing the tree data
 
 Options:
-  --quiet                               be quiet
-  --debug                               print debug messages
   --attributefilenames=attribute_file   File containing the names of all attributes
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
 
 import importlib
@@ -23,24 +25,22 @@ from docopt import docopt
 from pathlib import Path
 from fastsubtrees import Tree, _scripts_support
 
-
 def main(args):
-    modulename = Path(args["<pymodule>"]).stem
-    spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    elemparentid = m.ElementParentIdGenerator(args["<inputfile>"])
-    generator = elemparentid.get_element_parent_id()
-    tree = Tree.from_file(args["<nodefile>"])
-    contents = []
-    if args['--attributefilenames']:
-        with open(args['--attributefilenames'], 'r') as file:
-            contents = file.read().splitlines()
-    tree.add_subtree(generator, contents)
-    tree.to_file(args["<nodefile>"])
-
+  modulename = Path(args["<pymodule>"]).stem
+  spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
+  m = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(m)
+  elemparentid = m.ElementParentIdGenerator(args["<inputfile>"])
+  generator = elemparentid.get_element_parent_id()
+  tree = Tree.from_file(args["<nodefile>"])
+  contents = []
+  if args['--attributefilenames']:
+    with open(args['--attributefilenames'], 'r') as file:
+      contents = file.read().splitlines()
+  tree.add_subtree(generator, contents)
+  tree.to_file(args["<nodefile>"])
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="0.1")
-    _scripts_support.setup_verbosity(args)
-    main(args)
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)
