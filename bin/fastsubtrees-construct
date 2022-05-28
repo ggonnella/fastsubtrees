@@ -4,36 +4,64 @@ Parse a given tabular file and construct the data structure
 for fast subtrees queries
 
 Usage:
-  fastsubtrees-construct [options] <pymodule> <outputfilename>
+  fastsubtrees-construct [options] <outfname> <idsmod> [<idsmod_data>...]
 
 Arguments:
-  <pymodule>        Some module for python which defines the function get_element_parent_id
-                    for yielding the element and parent ids
-  <outputfilename>  Name of the file to store the output in
+  outfname     desired name for the output file
+  idsmod       Python module defining a function element_parent_ids()
+               which may take arguments (<idsmod_data>) and yield pairs
+               of IDs for all tree nodes (element_id, parent_id).
+               For the root node, the parent_id shall be equal to the
+               element_id.
+  idsmod_data  [optional] arguments to be passed to the element_parent_ids()
+               function of the module specified as <idsmod>; to pass keyword
+               arguments, use the syntax "key=value" and the option --keyargs
 
 Options:
-  --quiet      be quiet
-  --debug      print debug messages
+  --keyargs    split the arguments specified in <idsmod_data> into
+               keywords and values by splitting on the first instance of '=';
+               arguments which do not contain '=' are passed as positional,
+               before any keyword argument
+  --quiet      disable log messages
+  --debug      print debug information
+  --help       show this help message and exit
+  --version    show program's version number and exit
 """
+
 import importlib
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, _scripts_support
-
+from fastsubtrees import Tree, logger, _scripts_support
 
 def main(args):
-    modulename = Path(args["<pymodule>"]).stem
-    spec = importlib.util.spec_from_file_location(modulename, args["<pymodule>"])
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    elemparentid = m.ElementParentIdGenerator()
-    generator = elemparentid.get_element_parent_id()
-    tree = Tree.construct(generator)
-    outfname = Path(args["<outputfilename>"])
-    tree.to_file(outfname)
-
+  logger.debug("Loading Python module '{}'".format(args['<idsmod>']))
+  modulename = Path(args["<idsmod>"]).stem
+  spec = importlib.util.spec_from_file_location(modulename,
+                                                args["<idsmod>"])
+  m = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(m)
+  if not m.__dict__.get("element_parent_ids"):
+    raise ValueError("The specified Python module {} does not define a "
+                     "function element_parent_ids()".format(args["<idsmod>"]))
+  logger.success("Ids module loaded, found generator element_parent_ids()")
+  logger.info("Constructing tree using IDs yielded by the generator...")
+  if args["--keyargs"]:
+    keyargs = {k: v for k, v in \
+        [a.split("=", 1) for a in args["<idsmod_data>"] if "=" in a]}
+    posargs = [a for a in args["<idsmod_data>"] if "=" not in a]
+  else:
+    keyargs = {}
+    posargs = args["<idsmod_data>"]
+  if posargs:
+    logger.debug(f"Positional arguments passed to the generator: {posargs}")
+  if keyargs:
+    logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
+  tree = Tree.construct(m.element_parent_ids(*posargs, **keyargs))
+  logger.success("Tree constructed")
+  tree.to_file(args["<outfname>"])
+  logger.success("Tree written to file {}".format(args["<outfname>"]))
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="0.1")
-    _scripts_support.setup_verbosity(args)
-    main(args)
+  args = docopt(__doc__, version="0.1")
+  _scripts_support.setup_verbosity(args)
+  main(args)
