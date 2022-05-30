@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 from loguru import logger
+from tqdm import tqdm
 from ntmirror import Downloader
 import fastsubtrees
 
@@ -45,10 +46,10 @@ def scientific_names(ntdumps):
   names = {}
   filename = os.path.join(ntdumps, NAMESFILE)
   with open(filename) as f:
-    for line in f:
+    for line in tqdm(f, f"Reading scientific names from {NAMESFILE}"):
       elems = line.split(SEPARATOR)
       if elems[NAMETYPE_COLUMN] == "scientific name":
         names[int(elems[NAMES_ID_COLUMN])] = elems[NAME_COLUMN]
   return names
 
-
+snames = scientific_names(ntdumps)
