@@ -71,12 +71,19 @@ the same depth-first traversal order as the nodes in the tree representation,
 so that the list of attribute values for an entire subtree can be queried
 efficiently.
 
-# Application using NCBI taxonomy
+# Extracting NCBI taxonomy subtrees
 
 Although the _fastsubtrees_ library can be applied to any tree, it was developed
 with the main purpose of extracting subtrees of the NCBI taxonomy tree.
 
 Dump files containing the tree information can be obtained from the NCBI FTP
-site (XXX).
+site (XXX). To facilitate obtaining the dump file and keeping the local copy
+up-to-date, a Python package _ntmirror_ (XXX) was developed, which allows to
+download the latest copy of the taxonomy database, if needed, and optionally
+load the information into a local database.
+
+The tree contains 2949637 nodes as of May 28, 2022. The generation of the tree
+representation from the dump files required (in average)
+23 minutes and 35 seconds.
 
 
