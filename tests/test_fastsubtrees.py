@@ -55,23 +55,23 @@ class TestClass:
         generator = element_parent_ids('../tests/testdata/parent_not_exist.tsv')
         with pytest.raises(error.ConstructionError):
             Tree.construct(generator)
-    #
-    # def test_fastsubtrees_query_smalltree(self):
-    #     # use subtree_ids 1, 8 and change the id in variable results_query_smalltree_id_*
-    #     tree = Tree.from_file('./tests/small_tree.tree')
-    #     subtree_ids = tree.subtree_ids(1)
-    #     assert subtree_ids == results_query_smalltree_id_1
-    #
-    # def test_fastsubtrees_query_middletree(self):
-    #     # use subtree_ids 1, 8, 566 and change the id in variable results_query_middletree_id_*
-    #     tree = Tree.from_file('./tests/middle_tree.tree')
-    #     subtree_ids = tree.subtree_ids(1)
-    #     assert subtree_ids == results_query_middletree_id_1
-    #
-    # def test_query_node_not_exist(self):
-    #     tree = Tree.from_file('./tests/small_tree.tree')
-    #     with pytest.raises(error.NodeNotFoundError):
-    #         tree.subtree_ids(87)
+
+    def test_fastsubtrees_query_smalltree(self):
+        # use subtree_ids 1, 8 and change the id in variable results_query_smalltree_id_*
+        tree = Tree.from_file('../tests/small_tree.tree')
+        subtree_ids = tree.subtree_ids(1)
+        assert subtree_ids == results_query_smalltree_id_1
+
+    def test_fastsubtrees_query_middletree(self):
+        # use subtree_ids 1, 8, 566 and change the id in variable results_query_middletree_id_*
+        tree = Tree.from_file('../tests/middle_tree.tree')
+        subtree_ids = tree.subtree_ids(1)
+        assert subtree_ids == results_query_middletree_id_1
+
+    def test_query_node_not_exist(self):
+        tree = Tree.from_file('../tests/small_tree.tree')
+        with pytest.raises(error.NodeNotFoundError):
+            tree.subtree_ids(87)
     #
     # def test_fastsubtrees_add_subtree_smalltree(self):
     #     create_tree = Tree.construct_from_csv('./tests/testdata/small_tree.tsv', '\t', 0, 1)
