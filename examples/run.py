@@ -7,6 +7,12 @@ import fastsubtrees
 # constants
 OUTDIR = "ntdumps"
 NODESFILE = "nodes.dmp"
+ELEM_COLUMN = 0
+PARENT_COLUMN = 1
+NAMESFILE = "names.dmp"
+NAMES_ID_COLUMN = 0
+NAME_COLUMN = 1
+NAMETYPE_COLUMN = 3
 SEPARATOR = "\t|\t"
 TREEFILE = "nt.tree"
 
@@ -28,9 +34,21 @@ def elements_parents_ids(ntdumps):
   with open(filename) as f:
     for line in f:
       elems = line.split(SEPARATOR)
-      yield int(elems[0]), int(elems[1])
+      yield int(elems[ELEM_COLUMN]), int(elems[PARENT_COLUMN])
 
 if has_dwn:
   tree = fastsubtrees.Tree.construct(elements_parents_ids(ntdumps))
   fullpath_treefile = os.path.join(scriptdir, TREEFILE)
   tree.to_file(fullpath_treefile)
+
+def scientific_names(ntdumps):
+  names = {}
+  filename = os.path.join(ntdumps, NAMESFILE)
+  with open(filename) as f:
+    for line in f:
+      elems = line.split(SEPARATOR)
+      if elems[NAMETYPE_COLUMN] == "scientific name":
+        names[int(elems[NAMES_ID_COLUMN])] = elems[NAME_COLUMN]
+  return names
+
+
