@@ -20,7 +20,7 @@ cleanup:
 	rm -rf dist/ build/ gfapy.egg-info/
 
 tests:
-	# pass
+	pytest
 
 upload: tests cleanup sdist wheel
 	cd dist; \
