@@ -86,4 +86,18 @@ The tree contains 2949637 nodes as of May 28, 2022. The generation of the tree
 representation from the dump files required (in average)
 23 minutes and 35 seconds.
 
+# Author Contributions
+
+Aman Modi: software development, test suite, documentation writing.
+
+Giorgio Gonnella: funding acquisition, conceptualization,
+software development, project supervision and manuscript redaction.
+
+# Funding
+
+Giorgio Gonnella has been supported by the DFG Grant GO 3192/1-1 ‘‘Automated
+characterization of microbial genomes and metagenomes by collection and
+verification of association rules’’. The funders had no role in study design,
+data collection and analysis, decision to publish, or preparation of the
+manuscript.
 
