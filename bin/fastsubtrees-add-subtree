@@ -70,6 +70,7 @@ def main(args):
       attrfiles = file.read().splitlines()
   generator = m.element_parent_ids(*posargs, **keyargs)
   tree.add_subtree(generator, attrfiles)
+  logger.success("Subtree added to the existing tree")
   tree.to_file(args["<tree>"])
 
 if __name__ == "__main__":

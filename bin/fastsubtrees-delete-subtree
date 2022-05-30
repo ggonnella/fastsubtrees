@@ -18,11 +18,14 @@ Options:
 """
 
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support
+from fastsubtrees import Tree, logger, _scripts_support
 
 def main(args):
+  logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
+  logger.debug("Successfully loaded tree from file '{}'".format(args['<tree>']))
   tree.delete_node(int(args["<nodeid>"]))
+  logger.success("Node deleted successfully")
   tree.to_file(args["<tree>"])
 
 if __name__ == "__main__":
