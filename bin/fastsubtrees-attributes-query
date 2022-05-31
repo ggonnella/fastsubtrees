@@ -8,7 +8,7 @@ Usage:
 Arguments:
   tree           fastsubtrees-construct output
   subtreeroot    ID of the subtree root
-  attributefile  file containing the attribute data for an attributem
+  attributefile  file containing the attribute data for an attribute
                  as output by fastsubtrees-attributes-construct
 
 Options:
@@ -18,9 +18,10 @@ Options:
   --version    show program's version number and exit
 """
 from docopt import docopt
-from fastsubtrees import Tree, _scripts_support, attribute
+from fastsubtrees import Tree, logger, _scripts_support, attribute
 
 def main(args):
+  logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   subtree_root = int(args["<subtreeroot>"])
   attribute_list = attribute.get_attribute_list(tree, subtree_root,
