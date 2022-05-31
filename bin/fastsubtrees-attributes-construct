@@ -7,7 +7,7 @@ Usage:
                                               <attrmod> [<attrmod_data>...]
 
 Arguments:
-  outfile    desired name for the output file
+  outfile       desired name for the output file
   tree          fastsubtrees tree representation file,
                 e.g. output by fastsubtrees-construct
   attribute     name of the attribute
