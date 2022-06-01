@@ -11,8 +11,8 @@ Arguments:
   tree          fastsubtrees tree representation file,
                 e.g. output by fastsubtrees-construct
   attribute     name of the attribute
-  attrmod       Python module defining a generator function attribute_values()
-                which may take arguments (<attrmod_data>) and yields pairs
+  attrmod       Python module defining a function attribute_values()
+                which may take arguments (<attrmod_data>) and returns pairs
                 (element_id, attribute_value) for each node to which an
                 attribute value exists.
   attrmod_data  [optional] arguments to be passed to the attribute_values()
