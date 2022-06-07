@@ -266,14 +266,14 @@ class Tree():
     subtree_size = self.subtree_sizes[node_number]
     for i in range(subtree_size + 1):
       self.treedata[coord + i] = Tree.DELETED
-      self.__delete_node_in_attribute_list(coord+i, attributefilenames)
-    for element in elements:
-      self.coords[element] = Tree.UNDEF
-      self.parents[element] = Tree.UNDEF
+      self.__delete_node_in_attribute_list(coord + i, attributefilenames)
+    # for element in elements:
+    #   self.coords[element] = Tree.UNDEF
+    #   self.parents[element] = Tree.UNDEF
 
   def __insert_none_in_attribute_list(self, inspos, attributefilenames):
     for filename in attributefilenames:
-      with open(f'./tree-cache/{filename}.attr', 'r+') as file:
+      with open(f'{filename}.attr', 'r+') as file:
         contents = file.readlines()
         contents.insert(inspos-1, 'null' + "\n")
         file.seek(0)
@@ -281,8 +281,8 @@ class Tree():
 
   def __delete_node_in_attribute_list(self, pos, attributefilenames):
     for filename in attributefilenames:
-      with open(f'./tree-cache/{filename}.attr', 'r+') as file:
+      with open(f'{filename}.attr', 'r+') as file:
         contents = file.readlines()
-        contents.insert(pos, str(Tree.DELETED) + "\n")
+        contents[pos-1] = str(Tree.DELETED) + "\n"
         file.seek(0)
         file.writelines(contents)
