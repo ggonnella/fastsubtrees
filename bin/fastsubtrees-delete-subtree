@@ -11,6 +11,8 @@ Arguments:
   tree        File containing the tree data
 
 Options:
+  --attrs FN   file containing a list of filenames of attribute files that
+               exist for the tree (so that they are updated too)
   --quiet      disable log messages
   --debug      print debug information
   --help       show this help message and exit
@@ -24,7 +26,11 @@ def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   logger.debug("Successfully loaded tree from file '{}'".format(args['<tree>']))
-  tree.delete_node(int(args["<nodeid>"]))
+  attrfiles = []
+  if args['--attrs']:
+    with open(args['--attrs'], 'r') as file:
+      attrfiles = file.read().splitlines()
+  tree.delete_node(int(args["<nodeid>"]), attrfiles)
   logger.success("Node deleted successfully")
   tree.to_file(args["<tree>"])
 

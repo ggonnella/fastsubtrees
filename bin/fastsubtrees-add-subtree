@@ -25,7 +25,7 @@ Options:
                keywords and values by splitting on the first instance of '=';
                arguments which do not contain '=' are passed as positional,
                before any keyword argument
-  --attrs      file containing a list of filenames of attribute files that
+  --attrs FN   file containing a list of filenames of attribute files that
                exist for the tree (so that they are updated too)
   --quiet      disable log messages
   --debug      print debug information
