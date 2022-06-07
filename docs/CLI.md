@@ -29,6 +29,10 @@ The script `bin/fastsubtrees-add-subtree` adds a node or multiple nodes
 to the already existing tree. Either a single node in the form of
 a leaf node or multiple nodes as an internal node can be added in this case.
 
+It must be noted that once a user has generated attribute files as mentioned in the following section,
+it is important to pass the names of those attribute files with `--attrs` option,
+so that the attribute files could also be updated with the new subtree values.
+
 The user needs to provide two parameters as input along
 with an optional parameter to run this script:
 - `tree`: File containing the tree that has to be updated.
