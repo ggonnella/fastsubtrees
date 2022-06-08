@@ -30,7 +30,7 @@ to the already existing tree. Either a single node in the form of
 a leaf node or multiple nodes as an internal node can be added in this case.
 
 It must be noted that once a user has generated attribute files as mentioned in the following section,
-it is important to pass the names of those attribute files with `--attrs` option,
+it is important to pass a file containing the path of the attribute files with `--attrs` option,
 so that the attribute files could also be updated with the new subtree values.
 
 The user needs to provide two parameters as input along
@@ -51,6 +51,11 @@ The script `bin/fastsubtrees-delete-subtree` will delete a node from the
 exiting tree representation. If the specified node is a leaf node, then only
 that node it is deleted. If it is an internal node, then the entire subtree is
 also deleted, i.e. the set of all the descendants of the specified node.
+
+When a node is deleted from a subtree, the attribute values corresponding to that node must
+also be deleted. In order to do that, the user must pass a file containing the path of the attribute files with `--attrs` option,
+so that the attribute files could also be updated such that the existing attribute values for the deleted
+node could also be deleted.
 
 The following parameters are used for the script:
 - `nodeid`: ID of a leaf node to be deleted, or of an internal node, i.e.
