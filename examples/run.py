@@ -4,6 +4,7 @@ from loguru import logger
 from tqdm import tqdm
 from ntmirror import Downloader
 import fastsubtrees
+import json
 
 # constants
 OUTDIR = "ntdumps"
@@ -43,13 +44,17 @@ if has_dwn:
   tree.to_file(fullpath_treefile)
 
 def scientific_names(ntdumps):
-  names = {}
+  names = []
   filename = os.path.join(ntdumps, NAMESFILE)
   with open(filename) as f:
     for line in tqdm(f, f"Reading scientific names from {NAMESFILE}"):
       elems = line.split(SEPARATOR)
-      if elems[NAMETYPE_COLUMN] == "scientific name":
-        names[int(elems[NAMES_ID_COLUMN])] = elems[NAME_COLUMN]
+      if elems[NAMETYPE_COLUMN] == "scientific name\t|\n":
+        option = {'label': elems[NAME_COLUMN] + ' (taxid: ' + str(elems[NAMES_ID_COLUMN]) + ')', 'value': elems[NAME_COLUMN] + ' (' + str(elems[NAMES_ID_COLUMN])}
+        names.append(option)
+        option = {}
   return names
 
 snames = scientific_names(ntdumps)
+with open(os.path.join(scriptdir,'dictionary.txt'), 'w+') as file:
+  file.write(json.dumps(snames))
