@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+import gzip
 
 import fastsubtrees
 
@@ -9,7 +10,7 @@ GC_CONTENT_COLUMN = 3
 attributes = ['genome_size', 'GC_content']
 
 def generate_attribute_file():
-  with open('./accession_taxid_attribute.tsv', 'r') as file:
+  with gzip.open('./accession_taxid_attribute.tsv.gz', 'r') as file:
     taxid_genome_dictionary = defaultdict(list)
     taxid_gccontent_dictionary = defaultdict(list)
     for line in file:
