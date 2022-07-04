@@ -15,12 +15,12 @@ with open('../examples/dictionary.txt') as f:
 options = json.loads(data)
 
 app.layout = html.Div(style={'marginLeft': '2%', 'marginRight': '2%'}, children=[
-  html.H1(style={'textAlign': 'center'}, children='ProstDB'),
+  html.H1(style={'textAlign': 'center'}, children='Genome Attribute Viewer'),
   dbc.NavbarSimple(
     children=[
       dbc.NavItem(dbc.NavLink("Comparison", active=True, disabled=True)),
     ],
-    brand="ProstDB",
+    brand="Genome Attribute Viewer",
     color="primary",
     dark=True,
   ),
