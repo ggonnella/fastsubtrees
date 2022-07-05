@@ -13,7 +13,7 @@ attributes = ['genome_size', 'GC_content']
 scriptdir = os.path.dirname(os.path.realpath(__file__))
 
 def generate_attribute_file():
-  with gzip.open(f'{scriptdir}/accession_taxid_attribute.tsv.gz', 'r') as file:
+  with gzip.open(f'{scriptdir}/accession_taxid_attribute.tsv.gz', 'rt') as file:
     taxid_genome_dictionary = defaultdict(list)
     taxid_gccontent_dictionary = defaultdict(list)
     for line in file:
