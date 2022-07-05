@@ -1,6 +1,6 @@
 import pytest
 
-from bin.ids_modules.ids_from_tabular_file import element_parent_ids
+from fastsubtrees.ids_modules.ids_from_tabular_file import element_parent_ids
 from fastsubtrees import Tree, error
 from pathlib import Path
 from tests.reference_results import *
