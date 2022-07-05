@@ -12,13 +12,13 @@ class TestClass:
         filename = os.path.join(dir, 'testdata/small_tree.tsv')
         generator = element_parent_ids(filename)
         tree = Tree.construct(generator)
-        outfname = Path('../tests/small_tree.tree')
+        outfname = os.path.join(dir, 'small_tree.tree')
         tree.to_file(outfname)
-        new_tree = Tree.from_file('../tests/small_tree.tree')
+        new_tree = Tree.from_file(outfname)
         subtree_ids = new_tree.subtree_ids(int(1))
-        test_tree = Tree.from_file('../tests/testdata/small_tree.tree')
+        test_tree = Tree.from_file(os.path.join(dir, 'testdata/small_tree.tree'))
         test_subtree_ids = test_tree.subtree_ids(int(1))
-        os.remove('../tests/small_tree.tree')
+        os.remove(outfname)
         assert subtree_ids == test_subtree_ids
 
     # def test_fastsubtrees_construct_middletree(self):
