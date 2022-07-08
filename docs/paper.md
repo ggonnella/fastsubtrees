@@ -116,8 +116,8 @@ using the _fastsubtrees-construct_ script required
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
-this solution in the script _ncbi_taxonomy_db_extract_subtree.py_,
-based on SQLAlchemy and tested using MariaDB version 10.6.8
+this solution in the script _ntmirror-extract-subtree_
+based on SQLAlchemy and MariaDB version 10.6.8
 as relational database management system.
 
 To select subtrees of different sizes for the benchmarks, we started from the
