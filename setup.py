@@ -13,6 +13,7 @@ setup(name='fastsubtrees',
       description='Tree representation for fast queries of '+\
                   'the list of IDs of any subtree',
       long_description=readme(),
+      long_description_content_type="text/markdown",
       url='https://github.com/ggonnella/fastsubtrees',
       keywords="bioinformatics genomics taxonomy trees",
       author='Giorgio Gonnella and Aman Modi and others (see CONTRIBUTORS)',
