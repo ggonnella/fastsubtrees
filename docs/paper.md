@@ -55,10 +55,11 @@ in multiple subtrees, which are compared to each other.
 This allows for instance to identify uncommon values in some members of a taxon,
 which in turn can be used in a primer for new biological hypotheses.
 
-While software exists for visualizing data associated with phylogenetic
-or taxonomic trees (EXAMPLES), 
-no Python package currently allows for a simple and efficient extraction of a
+No Python package currently allows for a simple and efficient extraction of a
 subtree, including data associated with the subtree nodes.
+While software exists for visualizing data associated with phylogenetic
+or taxonomic trees (e.g. AnnoTree, Mendler et al, 2019), these are not simple
+to integrate in other applications.
 
 # The fastsubtrees Python package
 
@@ -198,4 +199,6 @@ Schoch CL, et al. NCBI Taxonomy: a comprehensive update on curation,
 resources and tools. Database (Oxford). 2020: baaa062.
 
 O'Leary NA, Wright MW, Brister JR, Ciufo S, Haddad D, McVeigh R, Rajput B, Robbertse B, Smith-White B, Ako-Adjei D, Astashyn A, Badretdin A, Bao Y, Blinkova O, Brover V, Chetvernin V, Choi J, Cox E, Ermolaeva O, Farrell CM, Goldfarb T, Gupta T, Haft D, Hatcher E, Hlavina W, Joardar VS, Kodali VK, Li W, Maglott D, Masterson P, McGarvey KM, Murphy MR, O'Neill K, Pujar S, Rangwala SH, Rausch D, Riddick LD, Schoch C, Shkeda A, Storz SS, Sun H, Thibaud-Nissen F, Tolstoy I, Tully RE, Vatsan AR, Wallin C, Webb D, Wu W, Landrum MJ, Kimchi A, Tatusova T, DiCuccio M, Kitts P, Murphy TD, Pruitt KD. Reference sequence (RefSeq) database at NCBI: current status, taxonomic expansion, and functional annotation. Nucleic Acids Res. 2016 Jan 4;44(D1):D733-45
+
+Mendler K, Chen H, Parks DH, Hug LA, Doxey AC. (2019) AnnoTree: visualization and exploration of a functionally annotated microbial tree of life. Nucleic Acids Research 47:4442-4448. doi: http://dx.doi.org/10.1093/nar/gkz246
 
