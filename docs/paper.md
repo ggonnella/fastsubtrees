@@ -58,7 +58,8 @@ which in turn can be used in a primer for new biological hypotheses.
 No Python package currently allows for a simple and efficient extraction of a
 subtree, including data associated with the subtree nodes.
 While software exists for visualizing data associated with phylogenetic
-or taxonomic trees (e.g. AnnoTree, Mendler et al, 2019), these are not simple
+or taxonomic subtrees (e.g. AnnoTree, Mendler et al, 2019; Treehouse, Steenwyk and
+Rokas, 2019), these are standalone software not simple
 to integrate in other applications.
 
 # The fastsubtrees Python package
