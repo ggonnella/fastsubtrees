@@ -1,2 +1,5 @@
+== 1.1.0 ==
+- add ntmirror-extract-subtree script
+
 == 1.0.0 ==
 - Initial release
