@@ -19,6 +19,8 @@ authors:
 affiliations:
 - name: Department of Bioinformatics (IMG), University of Göttingen, Göttingen, Germany
   index: 1
+- name: Center for Bioinformatics (ZBH), University of Hamburg, Hamburg, Germany
+  index: 2
 date: 8 July 2022
 bibliography: paper.bib
 ---
