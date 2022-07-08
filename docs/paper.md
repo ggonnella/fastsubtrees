@@ -40,12 +40,12 @@ with the NCBI taxonomy tree.
 # Statement of need
 
 Tree data structures are commonly used in different fields of computer science
-to represent hierarchical information (Black, 1999). In
+to represent hierarchical information [@Black:1999]. In
 phylogenetics, trees are used to represent the common ancestry of
 organisms or macromolecules. Based on phylogenetics is the hierarchical
 biological classification of organisms, which is also representable
 as a tree. An example of this
-is the NCBI taxonomy database (Schoch et al., 2020).
+is the NCBI taxonomy database [@Schoch:2020].
 
 If the taxonomic tree
 is annotated with data associated to taxa, hereafter called _attributes_
@@ -58,13 +58,13 @@ which in turn can be used in a primer for new biological hypotheses.
 No Python package currently allows for a simple and efficient extraction of a
 subtree, including data associated with the subtree nodes.
 While software exists for visualizing data associated with phylogenetic
-or taxonomic subtrees (e.g. AnnoTree, Mendler et al, 2019; Treehouse, Steenwyk and
-Rokas, 2019), these are standalone software not simple
+or taxonomic subtrees, e.g. AnnoTree [@Mendler:2019] and Treehouse
+[@Steenwyk:2019], these are standalone software not simple
 to integrate in other applications.
 
 # The fastsubtrees Python package
 
-Here we present the  _fastsubtrees_ Python package, which was developed
+Here we present the  _fastsubtrees_ Python package [@FastsubtreesRepo], which was developed
 for storing tree information using a compact representation,
 suitable for fast extraction of any subtree.
 This package can be applied to any tree in which the nodes
@@ -101,14 +101,14 @@ dynamic, i.e. it is possible to add and remove subtrees.
 
 Benchmarks were performed on a Linux server with Intel Xeon E7-4850 2.0 Ghz
 CPU and 1 Tb RAM. Running times were measured as an average of 3 runs using
-GNU time version 1.9.
-(Free Software Foundation. GNU Time; 2018. Available from: https://www.gnu.org/software/time/.)
+GNU time version 1.9 [@GNUtime].
 For the tests Python version 3.10.2 was used.
 
 The NCBI taxonomy tree used for the tests was downloaded on May 28, 2022
-from the NCBI FTP website (https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/).
+from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
-we developed the _ntmirror_ package (installable using ``pip install ntmirror``.
+we developed the _ntmirror_ package
+[@NTMIRROR] installable using ``pip install ntmirror``.
 The tree contained 2949637 nodes as of May 28, 2022. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees-construct_ script required
@@ -142,7 +142,7 @@ hierarchical SQL queries in Table 1.
 | 2          | 532460       | 43,27                             | 1,06                                       | 186,35             | 1,51                           | 1372496         | 174780                   |
 
 As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
-genome in the NCBI Refseq database (O'Leary et al, 2016). The results, available
+genome in the NCBI Refseq database [@Oleary:2016]. The results, available
 in the repository, contain values for 27967 genomes.
 The attribute files generation using the
 _fastsubtrees-attributes-construct_ script required 29 seconds.
@@ -162,8 +162,8 @@ of the attribute values for different subtrees.
 | 2          | 532460       | 2                             | 4,35           | 324052      | 10043                    | 27515         |
 
 Finally, to provide an example of usage of fastsubtrees we implemented an interactive
-web application based on the _dash_ library (version 2.0.0,
-https://dash.plotly.com/).  The application allows displaying diagrams of the
+web application based on the _dash_ library version 2.0.0 [@Dash]
+The application allows displaying diagrams of the
 value distribution of GC content and genome size values in any subtree of the
 NCBI taxonomy tree (we have included in the example only values for
 bacterial genomes, see above). Values for multiple subtrees can be compared.
@@ -189,18 +189,3 @@ manuscript.
 The authors would like to thank Serena Lam (Department of Bioinformatics,
 University of Göttingen) for language style suggestions and grammar corrections
 
-# References
-
-Paul E. Black, CRC Press LLC,
- 1999, "tree", in Dictionary of Algorithms and Data Structures [online],
-  Paul E. Black, ed. 15 December 2017.
-  Available from: https://www.nist.gov/dads/HTML/tree.html
-
-Schoch CL, et al. NCBI Taxonomy: a comprehensive update on curation,
-resources and tools. Database (Oxford). 2020: baaa062.
-
-O'Leary NA, Wright MW, Brister JR, Ciufo S, Haddad D, McVeigh R, Rajput B, Robbertse B, Smith-White B, Ako-Adjei D, Astashyn A, Badretdin A, Bao Y, Blinkova O, Brover V, Chetvernin V, Choi J, Cox E, Ermolaeva O, Farrell CM, Goldfarb T, Gupta T, Haft D, Hatcher E, Hlavina W, Joardar VS, Kodali VK, Li W, Maglott D, Masterson P, McGarvey KM, Murphy MR, O'Neill K, Pujar S, Rangwala SH, Rausch D, Riddick LD, Schoch C, Shkeda A, Storz SS, Sun H, Thibaud-Nissen F, Tolstoy I, Tully RE, Vatsan AR, Wallin C, Webb D, Wu W, Landrum MJ, Kimchi A, Tatusova T, DiCuccio M, Kitts P, Murphy TD, Pruitt KD. Reference sequence (RefSeq) database at NCBI: current status, taxonomic expansion, and functional annotation. Nucleic Acids Res. 2016 Jan 4;44(D1):D733-45
-
-Mendler K, Chen H, Parks DH, Hug LA, Doxey AC. (2019) AnnoTree: visualization and exploration of a functionally annotated microbial tree of life. Nucleic Acids Research 47:4442-4448. doi: http://dx.doi.org/10.1093/nar/gkz246
-
-Steenwyk JL, Rokas A. Treehouse: a user-friendly application to obtain subtrees from large phylogenies. BMC Res Notes. 2019 Aug 27;12(1):541. doi: 10.1186/s13104-019-4577-5. PMID: 31455362; PMCID: PMC6712805.
