@@ -1,40 +1,7 @@
-High priority:
-[done] attribute files:
-    [done] create_json_file
-        [done] implemented IN the library instead of in the external module
-        [done] instead of creating JSON of the whole list, it should create JSON of each element
-            and output one element per line
-              for element in attribute_value:
-                outfile.write(json.dumps(element) +"\n")
-    [done] change the get_attribute_value()/_list() in attributes.py to use the new format
-    [done] add_subtree() pass optionally the attributefilenames
-          def add_subtree(self, generator, attributefilenames=[])
-            self.__insert_none_in_attribute_list(inspos, attributefiles) [line 201 AND 205]
-               copy inspos-1 lines from attr file
-               output None
-               copy the rest of the file
-
-    [done] change the binary script for adding a subtree to accept attributefilenames AS OPTIONS
-
-
-[done] attribute files must be updated, when nodes are deleted or added:
-    - plan what changes are needed in each case (adding a leaf, adding an internal node,
-    removing a leaf, removing an internal node)
-    - implement them in API methods
-    - in the scripts which add/remove nodes: the names of the attribute files
-    which must be modified can be passed as optional parameters
-
-Lower priority:
+Possible enhancements:
 [ ] Make adding of an entire subtree smarter by making place for entire subtree at once
     instead of repeat updating the tree for each node iteratively
-[ ] Finish the documentation:
-  [ ] API manual:
-    - Update the information adding the documentation of the newer functionality added to it
-  [ ] CLI manual:
-    - Briefly document the function of all the scripts
-  [ ] README:
-    - add hyperlinks to the API manual and CLI manual files
-[ ] Can we handle attributes which are strings? This can be used for non-integer
+[ ] String attributes could be used for non-integer
     node names; i.e. string node names would be stored as attributes
     this allows to generalize the use of the library to cases where the nodes are not
     "consecutive positive integer numbers"; numerical IDs could be assigned
