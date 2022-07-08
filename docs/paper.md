@@ -203,3 +203,4 @@ O'Leary NA, Wright MW, Brister JR, Ciufo S, Haddad D, McVeigh R, Rajput B, Robbe
 
 Mendler K, Chen H, Parks DH, Hug LA, Doxey AC. (2019) AnnoTree: visualization and exploration of a functionally annotated microbial tree of life. Nucleic Acids Research 47:4442-4448. doi: http://dx.doi.org/10.1093/nar/gkz246
 
+Steenwyk JL, Rokas A. Treehouse: a user-friendly application to obtain subtrees from large phylogenies. BMC Res Notes. 2019 Aug 27;12(1):541. doi: 10.1186/s13104-019-4577-5. PMID: 31455362; PMCID: PMC6712805.
