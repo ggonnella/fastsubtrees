@@ -129,7 +129,7 @@ node (TaxID 2), i.e. nodes 83333 (_Escherichia coli_ K12),
 The running time and memory usage of _fastsubtree_ are compared with those for
 hierarchical SQL queries in Table 1.
 
-| Subtree Id | Subtree Size | Avg. CPU Time (System + User) SQL | Avg. CPU Time (System + User) Fastsubtrees | Avg. Real Time SQL | Average Real Time Fastsubtrees | Memory Peak SQL | Memory Peak Fastsubtrees |
+| Subtree Id | Subtree Size | Avg. CPU Time SQL (s) | Avg. CPU Time Fastsubtrees (s) | Avg. Real Time SQL (s) | Average Real Time Fastsubtrees (s) | Memory Peak SQL (kb) | Memory Peak Fastsubtrees (kb) |
 |------------|--------------|-----------------------------------|--------------------------------------------|--------------------|--------------------------------|-----------------|--------------------------|
 | 511145     | 1            | 0,34                              | 0,37                                       | 0,68               | 0,74                           | 33184           | 159340                   |
 | 83333      | 36           | 0,33                              | 0,35                                       | 0,67               | 0,7                            | 33236           | 159920                   |
@@ -149,7 +149,7 @@ _fastsubtrees-attributes-construct_ script required 29 seconds.
 Table 2 reports the running time and memory usage for the extraction
 of the attribute values for different subtrees.
 
-| Subtree Id | Subtree Size | Avg. CPU Time (System + User) | Avg. Real Time | Memory Peak | No. of Nodes with Values | No. of Values |
+| Subtree Id | Subtree Size | Avg. CPU Time (s) | Avg. Real Time (s) | Memory Peak (kb) | No. of Nodes with Values | No. of Values |
 |------------|--------------|-------------------------------|----------------|-------------|--------------------------|---------------|
 | 511145     | 1            | 0,55                          | 1,11           | 321952      | 1                        | 9             |
 | 83333      | 36           | 0,55                          | 1,1            | 319604      | 8                        | 38            |
