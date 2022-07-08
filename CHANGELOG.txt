@@ -1,4 +1,5 @@
-=== 0.2 ===
+=== 1.0 ===
+- version described in the paper
 
 === 0.1 ===
 - initial alpha release
