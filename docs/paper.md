@@ -98,7 +98,7 @@ yielding pairs of node numbers (parent and child node), describing the tree, in
 any order. Each node must be represented by a unique positive ID. The IDs space
 must be compact, i.e. the numbers must not be necessarily all consecutive, but the
 largest node ID (_idmax_) should not be much larger than the total number of
-nodes, because the memory consumption is in O(idmax). If this condition is not
+nodes, because the memory consumption is in _O(idmax)_. If this condition is not
 met, the existing node labels must be mapped to a compact set of positive
 integers. The generator function mechanism allows using the library for
 constructing trees from any source (e.g. from tabular files, or from database
@@ -131,7 +131,7 @@ efficiently.
 # The ntmirror package
 
 In order to apply the _fastsubtrees_ package to the NCBI taxonomy tree, the
-NCBI taxonomy dump files must be obtained(
+NCBI taxonomy dump files must be obtained
 from the NCBI FTP website (https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/).
 We developed a
 package, named _ntmirror_, which automatically downloads (if needed) and keeps
