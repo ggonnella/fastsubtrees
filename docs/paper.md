@@ -207,6 +207,18 @@ script of the _fastsubtrees_ package with hierarchical SQL queries, as
 implemented in the _ncbi_taxonomy_db_extract_subtree.py_ script of the
 _ntmirror_ package.
 
+| Subtree Id | Subtree Size | Avg. CPU Time (System + User) SQL | Avg. CPU Time (System + User) Fastsubtrees | Avg. Real Time SQL | Average Real Time Fastsubtrees | Memory Peak SQL | Memory Peak Fastsubtrees |
+|------------|--------------|-----------------------------------|--------------------------------------------|--------------------|--------------------------------|-----------------|--------------------------|
+| 511145     | 1            | 0,34                              | 0,37                                       | 0,68               | 0,74                           | 33184           | 159340                   |
+| 83333      | 36           | 0,33                              | 0,35                                       | 0,67               | 0,7                            | 33236           | 159920                   |
+| 562        | 3379         | 0,65                              | 0,36                                       | 1,75               | 0,72                           | 41772           | 156916                   |
+| 561        | 4434         | 0,79                              | 0,37                                       | 2,74               | 0,74                           | 44052           | 158940                   |
+| 543        | 22580        | 2,22                              | 0,36                                       | 7,61               | 0,72                           | 90012           | 157884                   |
+| 91347      | 31394        | 2,97                              | 0,37                                       | 9,85               | 0,74                           | 111576          | 159396                   |
+| 1236       | 122607       | 10,35                             | 0,4                                        | 37,5               | 0,81                           | 341864          | 163800                   |
+| 1224       | 226821       | 18,87                             | 0,43                                       | 78,4               | 0,95                           | 605384          | 165136                   |
+| 2          | 532460       | 43,27                             | 1,06                                       | 186,35             | 1,51                           | 1372496         | 174780                   |
+
 ## Extraction of attribute values for subtrees
 
 We evaluated the time needed for the extraction of attributes in a given subtree,
@@ -221,6 +233,18 @@ _fastsubtrees-attributes-construct_ script required 29 seconds
 
 Table 2 reports the running time and memory usage for the extraction
 of the attribute values for different subtrees.
+
+| Subtree Id | Subtree Size | Avg. CPU Time (System + User) | Avg. Real Time | Memory Peak | No. of Nodes with Values | No. of Values |
+|------------|--------------|-------------------------------|----------------|-------------|--------------------------|---------------|
+| 511145     | 1            | 0,55                          | 1,11           | 321952      | 1                        | 9             |
+| 83333      | 36           | 0,55                          | 1,1            | 319604      | 8                        | 38            |
+| 562        | 3379         | 0,56                          | 1,16           | 318804      | 165                      | 2160          |
+| 561        | 4434         | 0,56                          | 1,12           | 321520      | 174                      | 2246          |
+| 543        | 22580        | 0,66                          | 1,33           | 321116      | 839                      | 5774          |
+| 91347      | 31394        | 0,68                          | 1,38           | 320444      | 1150                     | 6709          |
+| 1236       | 122607       | 1                             | 2,01           | 323028      | 2819                     | 11167         |
+| 1224       | 226821       | 1,22                          | 2,73           | 322664      | 5090                     | 16063         |
+| 2          | 532460       | 2                             | 4,35           | 324052      | 10043                    | 27515         |
 
 ## Genome Attribute Viewer
 
