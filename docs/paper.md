@@ -1,3 +1,28 @@
+---
+title: 'Fastsubtrees: simple and efficient subtrees extractions in Python with applications to NCBI taxonomy'
+tags:
+- Python
+- tree
+- subtrees extraction
+- bioinformatics
+- taxonomy
+authors:
+- name: Aman Modi
+  orcid: 0000-0002-9843-7133
+  equal-contrib: true
+  affiliation: "1"
+- name: Giorgio Gonnella
+  orcid: 0000-0003-3900-5397
+  equal-contrib: true
+  corresponding: true
+  affiliation: "1, 2"
+affiliations:
+- name: Department of Bioinformatics (IMG), University of Göttingen, Göttingen, Germany
+  index: 1
+date: 8 July 2022
+bibliography: paper.bib
+---
+
 # Summary
 
 Tree data structures are commonly used for representing hierarchical data. A
@@ -222,6 +247,11 @@ verification of association rules’’. The funders had no role in study design
 data collection and analysis, decision to publish, or preparation of the
 manuscript.
 
+# Aknownledgements
+
+The authors would like to thank Serena Lam (Department of Bioinformatics,
+University of Göttingen) for language style suggestions and grammar corrections
+
 # References
 
 Paul E. Black, CRC Press LLC,
@@ -230,7 +260,7 @@ Paul E. Black, CRC Press LLC,
   Available from: https://www.nist.gov/dads/HTML/tree.html
 
 Schoch CL, et al. NCBI Taxonomy: a comprehensive update on curation,
-resources and tools. Database (Oxford). 2020: baaa062. [PubMed]
+resources and tools. Database (Oxford). 2020: baaa062.
 
-O'Leary NA, Wright MW, Brister JR, Ciufo S, Haddad D, McVeigh R, Rajput B, Robbertse B, Smith-White B, Ako-Adjei D, Astashyn A, Badretdin A, Bao Y, Blinkova O, Brover V, Chetvernin V, Choi J, Cox E, Ermolaeva O, Farrell CM, Goldfarb T, Gupta T, Haft D, Hatcher E, Hlavina W, Joardar VS, Kodali VK, Li W, Maglott D, Masterson P, McGarvey KM, Murphy MR, O'Neill K, Pujar S, Rangwala SH, Rausch D, Riddick LD, Schoch C, Shkeda A, Storz SS, Sun H, Thibaud-Nissen F, Tolstoy I, Tully RE, Vatsan AR, Wallin C, Webb D, Wu W, Landrum MJ, Kimchi A, Tatusova T, DiCuccio M, Kitts P, Murphy TD, Pruitt KD. Reference sequence (RefSeq) database at NCBI: current status, taxonomic expansion, and functional annotation. Nucleic Acids Res. 2016 Jan 4;44(D1):D733-45 PubMed PubMedCentral
+O'Leary NA, Wright MW, Brister JR, Ciufo S, Haddad D, McVeigh R, Rajput B, Robbertse B, Smith-White B, Ako-Adjei D, Astashyn A, Badretdin A, Bao Y, Blinkova O, Brover V, Chetvernin V, Choi J, Cox E, Ermolaeva O, Farrell CM, Goldfarb T, Gupta T, Haft D, Hatcher E, Hlavina W, Joardar VS, Kodali VK, Li W, Maglott D, Masterson P, McGarvey KM, Murphy MR, O'Neill K, Pujar S, Rangwala SH, Rausch D, Riddick LD, Schoch C, Shkeda A, Storz SS, Sun H, Thibaud-Nissen F, Tolstoy I, Tully RE, Vatsan AR, Wallin C, Webb D, Wu W, Landrum MJ, Kimchi A, Tatusova T, DiCuccio M, Kitts P, Murphy TD, Pruitt KD. Reference sequence (RefSeq) database at NCBI: current status, taxonomic expansion, and functional annotation. Nucleic Acids Res. 2016 Jan 4;44(D1):D733-45
 
