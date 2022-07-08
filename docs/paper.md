@@ -27,7 +27,7 @@ bibliography: paper.bib
 
 Tree data structures are commonly used for representing hierarchical data. A
 prominent example in bioinformatics is the taxonomic tree, representing the
-biological classification of organisms, currently including millions of nodes.
+biological classification of organisms, currently containing millions of nodes.
 
 An interesting operation for such trees is the extraction of the IDs and other
 associated values for each node in a given subtree.
@@ -43,7 +43,7 @@ which simplifies the task of keeping a local updated version of the NCBI
 taxonomy data.
 
 Finally, a web application, Genome Attribute Viewer, is provided,
-which examplifies the use of the
+which illustrates the use of the
 software for extracting and comparing the distribution of values of attributes
 (e.g. genome size and GC content) from any subtree of the NCBI taxonomy tree.
 
@@ -51,9 +51,9 @@ software for extracting and comparing the distribution of values of attributes
 
 Tree data structures are commonly used in different fields of computer science
 to represent hierarchical information (Black, 1999). A prominent use case is in
-philogenetics, where trees are used to represent the common ancestry of
+phylogenetics, where trees are used to represent the common ancestry of
 organisms or macromolecules. Taxonomy, the hierarchical biological
-classification of organisms, is based on their phylogenetic relationships, and
+classification of organisms, is constructed from their phylogenetic relationships, and
 is thus representable as a tree.
 
 The NCBI taxonomy (Schoch et al., 2020) database is a curated database of
@@ -67,15 +67,15 @@ and multiple common names).
 Given a taxonomic tree,
 quantitative or qualitative data can be associated to taxa (e.g. sequence or
 annotation statistics). Variables associated with tree nodes are
-hereafter called attributes. Interesting applications of the taxonomic tree
+therefore called attributes. Interesting applications of the taxonomic tree
 are the investigation of the range of values of an attribute in a given subtree,
 and the comparison of the value distributions in different subtrees.
-This allows e.g. to identify uncommon values in some members of a taxon,
-which in turn can be a primer for new biological hypotheses.
+This allows for instance to identify uncommon values in some members of a taxon,
+which in turn can be used in a primer for new biological hypotheses.
 In order to enable such investigations of subtrees of
 the taxonomic tree, the IDs of the subtree nodes, and the attributes
-associated with those nodes, must be efficiently extracted.
-However, no simple and efficient package offering this operation in Python
+associated with those nodes must be efficiently extracted.
+However, no simple and efficient package offers this operation in Python
 was available until now.
 
 # The fastsubtrees Python package
@@ -96,7 +96,7 @@ The first step to use _fastsubtrees_ is to generate the file containing the
 tree representation. For this step, the user must provide a generator function
 yielding pairs of node numbers (parent and child node), describing the tree, in
 any order. Each node must be represented by a unique positive ID. The IDs space
-must be compact, i.e. the numbers are not necessarily all consecutive, bu the
+must be compact, i.e. the numbers must not be necessarily all consecutive, but the
 largest node ID (_idmax_) should not be much larger than the total number of
 nodes, because the memory consumption is in O(idmax). If this condition is not
 met, the existing node labels must be mapped to a compact set of positive
@@ -104,17 +104,17 @@ integers. The generator function mechanism allows using the library for
 constructing trees from any source (e.g. from tabular files, or from database
 tables). Examples of generator functions are provided.
 
-After the tree representation has been created or loaded from file, it can be
+After the tree representation has been created or loaded from the file, it can be
 used for finding any node in constant time and extracting the subtree under
-that node in time proportional to the output subtree size. To achieve this, in
-the tree representation the node numbers and the subtree sizes under each node
+that node in the time proportional to the output subtree size. To achieve this, in
+the tree representation, the node numbers and the subtree sizes under each node
 are stored in depth-first traversal order. Furthermore, an index table is
 provided which gives the ordinal position of each node in the depth-first
 representation.
 
 The tree representation is dynamic, i.e. it is possible to add and remove
 subtrees. The subtree adding is achieved by finding the insertion position
-in the depth-first representation and adding there the subtree, and
+in the depth-first representation and inserting the subtree, and
 correcting accordingly the node positions in the index table. The subtree
 removing is achieved by marking the corresponding nodes as deleted.
 
@@ -223,7 +223,7 @@ _ntmirror_ package.
 
 We evaluated the time needed for the extraction of attributes in a given subtree,
 by applying the _fastsubtrees-attributes-query_ script for
-subtrees of different sizes, for extracting the GC content and genome size
+subtrees of different sizes, extracting the GC content and genome size
 data (provided in the _fastsubtrees_ source code repository
 as a table in the _examples_ subdirectory).
 
@@ -248,11 +248,11 @@ of the attribute values for different subtrees.
 
 ## Genome Attribute Viewer
 
-To provide an example of usage of _fastsubtrees_ we implemented an interactive
+To provide an example of usage of fastsubtrees we implemented an interactive
 web application based on the _dash_ library (version 2.0.0,
 https://dash.plotly.com/).  The application allows displaying diagrams of the
 value distribution of GC content and genome size values in any subtree of the
-NCBI taxonomy tree (we actually included in the example only values for
+NCBI taxonomy tree (we have included in the example only values for
 bacterial genomes, see above).  Values for multiple subtrees can be compared.
 
 # Author Contributions
