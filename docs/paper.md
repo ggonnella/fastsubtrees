@@ -142,7 +142,7 @@ hierarchical SQL queries in Table 1.
 | 2          | 532460       | 43,27                             | 1,06                                       | 186,35             | 1,51                           | 1372496         | 174780                   |
 
 As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
-genome in the NCBI Refseq database [@Oleary:2016]. The results, available
+genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
 The attribute files generation using the
 _fastsubtrees-attributes-construct_ script required 29 seconds.
