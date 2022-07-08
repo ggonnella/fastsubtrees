@@ -66,10 +66,10 @@ in subsequent node or subtree adding operations.
 
 ## Defining an attribute
 
-XXX: there is no clear interface for doing this right now
-XXX: the script fastsubtrees-attributes-construct is wrongly implemented,
-since it is based on the database, it should be fixed instead to use the
-same system as tree construction.
+At first from `Tree.from_file(tree)` the tree is loaded and then a dictionary
+is created using `module_name.attribute_values(attribute_name, database_connection_data)`. This
+dictionary contains the taxonomy id of the organisms along with their
+attribute values. These are finally saved into an output file with the extension `.attr`.
 
 ## Subtree queries
 
@@ -83,7 +83,12 @@ values (it can be used as a Python list for most purposes, and converted to
 a list if needed).
 
 ### List of values of an attribute for a subtree
+For a given node `n`, the list of its attribute values can be obtained
+using the method `attribute.get_attribute_list(tree, n, attribute_file)`.
 
+The return value is again an instance of `array` containing unsigned long long
+values (it can be used as a Python list for most purposes, and converted to
+a list if needed).
 
 ## Verbosity
 
