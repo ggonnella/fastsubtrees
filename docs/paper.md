@@ -107,7 +107,7 @@ For the tests Python version 3.10.2 was used.
 The NCBI taxonomy tree used for the tests was downloaded on May 28, 2022
 from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
-we developed the _ntmirror_ package
+we developed the _ntmirror_ package (version 1.1.0)
 [@NTMIRROR] installable using ``pip install ntmirror``.
 The tree contained 2949637 nodes as of May 28, 2022. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
