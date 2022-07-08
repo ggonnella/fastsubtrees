@@ -13,6 +13,9 @@ Arguments:
 
 Options:
   --quiet      disable log messages
+  --filter     filter out None values in the output
+  --countN     count the number of nodes with attributes
+  --countV     count the number of attribute values
   --debug      print debug information
   --help       show this help message and exit
   --version    show program's version number and exit
@@ -24,8 +27,22 @@ def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   subtree_root = int(args["<subtreeroot>"])
-  attribute_list = attribute.get_attribute_list(tree, subtree_root, args["<attributefile>"])
-  print(attribute_list)
+  attribute_list = attribute.get_attribute_list(tree, subtree_root,
+                     args["<attributefile>"])
+  filtered = None
+  if args["--filter"] or args["--countN"] or args["--countV"]:
+    filtered = [a for a in attribute_list if a is not None]
+    if args["--countN"]:
+      count = len(filtered)
+      logger.info("Number of nodes with attributes: {}".format(count))
+    if args["--countV"]:
+      flattened = [e for sl in filtered for e in sl]
+      count = len(flattened)
+      logger.info("Number of attribute values: {}".format(count))
+  if args["--filter"]:
+    print(filtered)
+  else:
+    print(attribute_list)
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
