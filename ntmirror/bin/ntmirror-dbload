@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+
+"""
+Load a NCBI taxonomy dump file into a database.
+
+Usage:
+  ntmirror-dbload [options] <dbuser> <dbpass> <dbname> <dbsocket> <dumpdir>
+
+Arguments:
+  dbuser:       database user to use
+  dbpass:       password of the database user
+  dbname:       database name
+  dbsocket:     connection socket file
+  dumpdir:      path to the directory containing the NCBI taxonomy dump
+
+If the <outdir> contains no (decompressed) dump files, then nothing is loaded.
+The dump files are deleted after loading.
+
+Options:
+{common}
+  --exitcode       exit with code 100 if no dump files were found
+                   (default: exit with code 0 also in this case)
+  --sqlalchemy     use SqlAlchemy to connect to the database
+                   (default: use MySQLdb)
+  --dbecho         turn on SQLAlchemy engine echo
+                   (default: off)
+  --testmode       do not delete the dump files after loading
+"""
+
+import os
+import sys
+import snacli
+from sqlalchemy.engine.url import URL
+from sqlalchemy import create_engine
+from schema import And, Or
+from ntmirror import scripts_helper, Downloader, dbloader_mysql,\
+                     dbloader_sqlalchemy, dbschema
+
+def sqlalchemy_connection_from(args):
+  connection_string = URL.create(drivername="mysql+mysqldb",
+                    username=args["<dbuser>"],
+                    password=args["<dbpass>"],
+                    database=args["<dbname>"],
+                    host="localhost",
+                    query={"unix_socket":args["<dbsocket>"]})
+  engine = create_engine(connection_string, echo=args["--dbecho"],
+                         future=True)
+  connection = engine.connect()
+  return connection
+
+def main(args):
+  logger = scripts_helper.setup_logger(args["--verbose"])
+  connection = sqlalchemy_connection_from(args)
+  dbschema.create(connection)
+  connection.commit()
+  try:
+    if args["--sqlalchemy"]:
+      connection = sqlalchemy_connection_from(args)
+      loaded = dbloader_sqlalchemy.load_all(args["<dumpdir>"], connection)
+      connection.commit()
+    else:
+      loaded = dbloader_mysql.load_all(args["<dumpdir>"], "localhost",
+                                       args["<dbuser>"], args["<dbpass>"],
+                                       args["<dbname>"], args["<dbsocket>"])
+  except Exception as e:
+    logger.error(e)
+    exit(1)
+  if loaded:
+    for filepfx, filepath in loaded:
+      logger.info(f"Loaded {filepfx} from dump file: {filepath}")
+      if not args["--testmode"]:
+        os.unlink(filepath)
+  else:
+    logger.info("No dump files found in directory: {}".format(args["<dumpdir>"]))
+    if args["--exitcode"]:
+      exit(100)
+
+def check_db_args(args):
+  if not(args["<dbsocket>"]):
+    raise RuntimeError("DB unix socket not provided")
+  elif not os.path.exists(args["<dbsocket>"]):
+    raise RuntimeError(f"DB unix socket does not exist: {args['<dbsocket>']}")
+  elif not(args["<dbuser>"]):
+    raise RuntimeError("Database user name not provided")
+  elif not(args["<dbpass>"]):
+    raise RuntimeError("Database password for user '{}' not provided".\
+                      format(args["<dbuser>"]))
+  elif not(args["<dbname>"]):
+    raise RuntimeError("Database name not provided")
+
+def validated(args):
+  check_db_args(args)
+  args = scripts_helper.validate(args, scripts_helper.ARGS_SCHEMA,
+                  {"<dumpdir>": And(str, len, os.path.exists),
+                   "<dbuser>": And(str, len),
+                   "<dbpass>": And(str, len),
+                   "<dbname>": And(str, len),
+                   "<dbsocket>": And(str, len, os.path.exists)})
+  return args
+
+with snacli.args(output=["<output>"],
+                 params=["--exitcode", "--verbose", "--dbecho"],
+                 config=["<dbuser>", "<dbpass>", "<dbname>"],
+                 input=["<dbsocket>"],
+                 docvars={"common": scripts_helper.ARGS_DOC},
+                 version="1.0") as args:
+  if args: main(validated(args))
+

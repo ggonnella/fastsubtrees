@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+"""
+Download the NCBI taxonomy database dump if a newer version is available
+
+Usage:
+  ntmirror-download [options] <outdir>
+
+Arguments:
+  outdir  path to the download directory
+
+If in the <outdir> contains a file called "timestamp" then the download will
+only occur if the timestamp in the file is older than the timestamp of the
+NCBI taxonomy database dump on the NCBI FTP site.
+
+After download, the dump is decompressed and the compressed file is deleted.
+
+Options:
+{common}
+  --exitcode       exit with code 100 if no download was performed
+                   because the local copy is up to date
+                   (default: exit with code 0 also in this case)
+  --testmode       download a test file instead of the database dump
+"""
+
+import snacli
+import sys
+from ntmirror import scripts_helper, Downloader
+
+def main(args):
+  d = Downloader(args["<outdir>"])
+  logger = scripts_helper.setup_logger(args["--verbose"])
+  if args["--testmode"]:
+    d.set_testmode()
+  try:
+    has_download = d.run()
+  except Exception as e:
+    logger.error(e)
+    exit(1)
+  if has_download:
+    logger.success("Newer version of NCBI taxonomy database "+\
+                   "dump downloaded")
+  else:
+    logger.info("Not downloaded. Local copy of NCBI taxonomy database dump "+\
+                "up to date")
+    if args["--exitcode"]:
+      exit(100)
+
+def validated(args):
+  return scripts_helper.validate(args, scripts_helper.ARGS_SCHEMA)
+
+with snacli.args(output=["<output>"],
+                 params=["--exitcode", "--verbose"],
+                 docvars={"common": scripts_helper.ARGS_DOC},
+                 version="1.0") as args:
+  if args: main(validated(args))

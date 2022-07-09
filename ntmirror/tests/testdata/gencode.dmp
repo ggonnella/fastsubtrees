@@ -1,0 +1,10 @@
+0	|		|	Unspecified	|	                                                                 	|	                                                                 	|
+1	|		|	Standard	|	FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	---M------**--*----M---------------M---------------------------- 	|
+2	|		|	Vertebrate Mitochondrial	|	FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIMMTTTTNNKKSS**VVVVAAAADDEEGGGG 	|	----------**--------------------MMMM----------**---M------------ 	|
+3	|		|	Yeast Mitochondrial	|	FFLLSSSSYY**CCWWTTTTPPPPHHQQRRRRIIMMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	----------**----------------------MM---------------M------------ 	|
+4	|		|	Mold Mitochondrial; Protozoan Mitochondrial; Coelenterate Mitochondrial; Mycoplasma; Spiroplasma	|	FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	--MM------**-------M------------MMMM---------------M------------ 	|
+5	|		|	Invertebrate Mitochondrial	|	FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIMMTTTTNNKKSSSSVVVVAAAADDEEGGGG 	|	---M------**--------------------MMMM---------------M------------ 	|
+6	|		|	Ciliate Nuclear; Dasycladacean Nuclear; Hexamita Nuclear	|	FFLLSSSSYYQQCC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	--------------*--------------------M---------------------------- 	|
+9	|		|	Echinoderm Mitochondrial; Flatworm Mitochondrial	|	FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIIMTTTTNNNKSSSSVVVVAAAADDEEGGGG 	|	----------**-----------------------M---------------M------------ 	|
+10	|		|	Euplotid Nuclear	|	FFLLSSSSYY**CCCWLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	----------**-----------------------M---------------------------- 	|
+11	|		|	Bacterial, Archaeal and Plant Plastid	|	FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG 	|	---M------**--*----M------------MMMM---------------M------------ 	|

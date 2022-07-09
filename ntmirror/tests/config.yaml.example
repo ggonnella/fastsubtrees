@@ -1,0 +1,7 @@
+database: ntmirror_test
+username: ntmirror_user
+password: ntmirror_pass
+host: localhost
+port: 3306
+socket: ntmirror.sock
+drivername: "mysql+mysqldb"

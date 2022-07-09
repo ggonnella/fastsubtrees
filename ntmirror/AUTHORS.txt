@@ -1,0 +1,4 @@
+Giorgio Gonnella (project founder, main developer)
+
+# Note: this file contains the list of the main developers of the project.
+# Minor contributors, patches, etc, are added to CONTRIBUTORS.txt.
