@@ -75,5 +75,30 @@ tabular file) are provided.
 
 The scripts are described in the document ``docs/cli.md``.
 Alternatively, the library functionality can be also directly accessed using
-the API, which are documented in ``docs/api.md`.
+the API, which are documented in ``docs/api.md``.
+
+# Subpackages
+
+## ntmirror
+
+When working with the NCBI taxonomy database, a local copy of the NCBI taxonomy
+dump can be obtained and kept up-to-date using the _ntmirror_ package, which
+is located in the directory ``ntmirror``. It is a Python package, which can
+be installed using ``pip``, separately from _fastsubtrees_.
+
+Besides downloading the dump, when needed, the package also allows to load
+the NCBI taxonomy database in a local SQL database, and to extract subtrees
+from it using hierarchical SQL queries.
+
+Please refer to the user manual of _ntmirror_ located under ``ntmirror/docs``
+for more information.
+
+## Genomes Attributes Viewer
+
+An interactive web application based on ``fastsubtrees`` was developed using _dash_.
+It allows to graphically display the distribution of values of attributes in subtrees
+of the NCBI taxonomic tree.
+
+This example application is located under ``genomes-attributes-viewer``. For more
+information see the ``genomes-attributes-viewer/README.md`` file.
 
