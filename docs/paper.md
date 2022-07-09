@@ -109,7 +109,8 @@ For the tests Python version 3.10.2 was used.
 The NCBI taxonomy tree used for the tests was downloaded on May 28, 2022
 from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
-we developed the _ntmirror_ package (version 1.1.0)
+we developed the _ntmirror_ package (located in the directory ``ntmirror`` of
+the source code repository, version 1.1.0)
 [@NTMIRROR] installable using ``pip install ntmirror``.
 The tree contained 2949637 nodes as of May 28, 2022. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
@@ -118,9 +119,9 @@ using the _fastsubtrees-construct_ script required
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
-this solution in the script _ntmirror-extract-subtree_
-based on SQLAlchemy and MariaDB version 10.6.8
-as relational database management system.
+this solution in _ntmirror_: the dump data is loaded into a MariaDB
+database (version 10.6.8) and the script _ntmirror-extract-subtree_, based on
+SQLAlchemy allows to extract a subtree using SQL.
 
 To select subtrees of different sizes for the benchmarks, we started from the
 taxonomy ID of _Escherichia coli_ K12 MG1655 (511145) and climbed up the
@@ -164,11 +165,13 @@ of the attribute values for different subtrees.
 | 2          | 532460       | 2                             | 4,35           | 324052      | 10043                    | 27515         |
 
 Finally, to provide an example of usage of fastsubtrees we implemented an interactive
-web application based on the _dash_ library version 2.0.0 [@Dash]
-The application allows displaying diagrams of the
+web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
+The application (in the subdirectory _genomes-attributes-viewer_ of the source
+code repository) allows displaying diagrams of the
 value distribution of GC content and genome size values in any subtree of the
 NCBI taxonomy tree (we have included in the example only values for
-bacterial genomes, see above). Values for multiple subtrees can be compared.
+bacterial genomes, see above). Attribute value distributions for multiple
+subtrees can be thereby compared graphically.
 
 # Author Contributions
 

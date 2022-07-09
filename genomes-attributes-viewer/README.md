@@ -1,6 +1,6 @@
-# Genome Attribute Viewer
+# Genomes Attributes Viewer
 
-Genome Attribute Viewer is an example application that is 
+Genomes Attributes Viewer is an example application that is 
 built on top of fastsubtrees to depict its usage. The application 
 consists of a comparison page to compare the attributes like genome size or 
 GC content for two or more organisms. 
