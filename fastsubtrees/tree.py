@@ -193,7 +193,7 @@ class Tree():
             f"The node IDs must be > 0, found: {parent}")
       else:
         if node_number < len(self.parents):
-          if self.coords[node_number] == Tree.UNDEF:
+          if self.treedata[self.coords[node_number]] == Tree.DELETED:
             raise error.DeletedNodeError(\
                 f'Node {node_number} was already deleted once. ' + \
                 'Cannot add the same node again')
