@@ -1,5 +1,1 @@
-sqlalchemy
-sqlalchemy_repr
-mysql
-mariadb
-loguru
+-e .

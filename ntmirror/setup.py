@@ -12,10 +12,12 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='ntmirror',
-      version='1.1.0',
+      version='1.2',
       description="Easily updatable local NCBI taxonomy database copy",
       long_description=readme(),
       long_description_content_type="text/markdown",
+      install_requires=["sqlalchemy", "sqlalchemy_repr", "mysql", "mariadb",
+        "loguru"],
       url='https://github.com/ggonnella/ntmirror',
       keywords="ncbi taxonomy database mirror",
       author='Giorgio Gonnella',
