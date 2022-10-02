@@ -1,9 +1,0 @@
-Possible enhancements:
-[ ] Make adding of an entire subtree smarter by making place for entire subtree at once
-    instead of repeat updating the tree for each node iteratively
-[ ] String attributes could be used for non-integer
-    node names; i.e. string node names would be stored as attributes
-    this allows to generalize the use of the library to cases where the nodes are not
-    "consecutive positive integer numbers"; numerical IDs could be assigned
-    automatically in such cases
-
