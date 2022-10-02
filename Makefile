@@ -1,5 +1,7 @@
 default: install
 
+.PHONY: install sdist wheel cleanup tests upload
+
 PYTHON?=python3
 PIP?=pip3
 
