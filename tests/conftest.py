@@ -1,16 +1,34 @@
 import pytest
+import os
 from array import array
 
 @pytest.fixture
-def results_query_smalltree_id_1():
+def testdata():
+  return lambda fn: os.path.join(\
+      os.path.join(os.path.dirname(__file__),"testdata/"), fn)
+
+@pytest.fixture
+def prebuilt():
+  return lambda fn: os.path.join(\
+      os.path.join(os.path.dirname(__file__),"prebuilt/"), fn)
+
+@pytest.fixture
+def testout():
+  testoutdir = os.path.join(os.path.dirname(__file__),"testout/")
+  if not os.path.exists(testoutdir):
+    os.mkdir(testoutdir)
+  return lambda fn: os.path.join(testoutdir, fn)
+
+@pytest.fixture
+def results_query_small_tree_id_1():
   return array('Q', [1, 2, 8, 3, 7, 9, 4, 5])
 
 @pytest.fixture
-def results_query_smalltree_id_8():
+def results_query_small_tree_id_8():
   return array('Q', [8, 3, 7, 9, 4, 5])
 
 @pytest.fixture
-def results_query_middletree_id_1():
+def results_query_medium_tree_id_1():
   return array('Q', [1, 2, 4, 14, 58, 66, 162, 849, 170, 426, 769, 772, 243,
                      308, 395, 564, 263, 510, 167, 444, 472, 985, 452, 659, 527,
                      812, 940, 968, 307, 374, 983, 18, 19, 38, 83, 256, 572,
@@ -97,7 +115,7 @@ def results_query_middletree_id_1():
                      951])
 
 @pytest.fixture
-def results_query_middletree_id_8():
+def results_query_medium_tree_id_8():
   return array('Q', [8, 9, 10, 11, 34, 80, 140, 425, 725, 760, 202, 298, 354,
                      461, 729, 840, 824, 857, 872, 618, 273, 293, 779, 379, 551,
                      616, 785, 432, 494, 439, 114, 122, 484, 995, 486, 142, 284,
@@ -112,22 +130,22 @@ def results_query_middletree_id_8():
                      481, 581, 614, 878, 359])
 
 @pytest.fixture
-def results_query_smalltree_id_566():
+def results_query_medium_tree_id_566():
   return array('Q', [566])
 
 @pytest.fixture
-def results_add_subtree_smalltree_id_1():
+def results_add_subtree_small_subtree_1():
   return array('Q', [1, 2, 8, 6, 3, 7, 9, 4, 5])
 
 @pytest.fixture
-def results_add_subtree_middletree_id_46():
+def results_add_subtree_medium_subtree_46():
   return array('Q', [46, 1002, 78, 110, 663, 939, 836, 955, 881, 235, 358,
                      451, 774, 755, 914, 91, 367, 549, 164, 974, 882])
 
 @pytest.fixture
-def results_delete_subtree_smalltree_id_1():
+def results_delete_subtree_small_tree_id_1():
   return array('Q', [1, 2, 8, 4, 5])
 
 @pytest.fixture
-def results_delete_subtree_middletree_id_78():
+def results_delete_subtree_medium_tree_id_78():
   return array('Q', [46, 91, 367, 549, 164, 974, 882])
