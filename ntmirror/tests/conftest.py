@@ -29,8 +29,7 @@ def script():
 def get_config():
   config_file_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
   if not os.path.exists(config_file_path):
-    raise FileNotFoundError(\
-        'Connection configuration file config.yaml not found')
+    return None
   with open(config_file_path) as f:
     config = yaml.safe_load(f)
   return config
@@ -38,6 +37,8 @@ def get_config():
 @pytest.fixture(scope="session")
 def connection_string():
   config = get_config()
+  if config is None:
+    return None
   args = {k: v for k, v in config.items() if k in ['drivername',
                                            'host', 'port', 'database',
                                            'username', 'password']}
@@ -47,22 +48,29 @@ def connection_string():
 
 @pytest.fixture(scope="session")
 def connection(connection_string):
-  engine = create_engine(connection_string, echo=VERBOSE_CONNECTION,
-                         future=True)
-  with engine.connect() as conn:
-    with conn.begin():
-      yield conn
-      conn.commit()
+  if connection_string is None:
+    yield None
+  else:
+    engine = create_engine(connection_string, echo=VERBOSE_CONNECTION,
+                           future=True)
+    with engine.connect() as conn:
+      with conn.begin():
+        yield conn
+        conn.commit()
 
 @pytest.fixture(scope="session")
 def mysql_connection_data():
   config = get_config()
+  if config is None:
+    return None
   return [config["host"], config["username"], config["password"],
           config["database"], config["socket"]]
 
 @pytest.fixture(scope="session")
 def connection_args():
   config = get_config()
+  if config is None:
+    return None
   return [config["username"],
           config["password"],
           config["database"],
