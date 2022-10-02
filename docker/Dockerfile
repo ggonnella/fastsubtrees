@@ -12,5 +12,7 @@ RUN wget https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
 RUN chmod +x mariadb_repo_setup
 RUN ./mariadb_repo_setup --mariadb-server-version=mariadb-10.6
 RUN apt-get install -y libmariadb3 libmariadb-dev
+RUN pip install mariadb pytest PyYAML sqlalchemy sh pytest-console-scripts
 RUN git clone https://github.com/ggonnella/fastsubtrees
-RUN pip install mariadb pytest PyYAML sqlalchemy
+RUN cd fastsubtrees/ntmirror && pip install -e .
+RUN cd fastsubtrees && pip install -e .
