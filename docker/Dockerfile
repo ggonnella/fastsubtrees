@@ -20,7 +20,7 @@ RUN pip install mariadb pytest PyYAML sqlalchemy sh pytest-console-scripts
 RUN pip install schema snacli ntmirror
 RUN ntmirror-download ntdumpdir
 ADD https://api.github.com/repos/ggonnella/fastsubtrees/git/refs/heads/main version.json
-RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git
+RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git /fastsubtrees
 RUN pip uninstall ntmirror -y && cd fastsubtrees/ntmirror && pip install -e .
 COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
 RUN cd fastsubtrees && pip install -e .
