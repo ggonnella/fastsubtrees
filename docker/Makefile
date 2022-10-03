@@ -3,7 +3,7 @@ default:
 	@echo "make container    create and run Docker container"
 	@echo "make shell        interactive shell in Docker container"
 
-.PHONY: image container shell
+.PHONY: image container shell start_server create_test_db test
 
 image:
 	docker build --tag fastsubtrees .
@@ -18,5 +18,13 @@ container: image
 shell: container
 	docker exec -it fastsubtreesC bash
 
-test: container
+start_server: container
+	docker exec -d fastsubtreesC bash
+	sleep 5
+
+create_test_db: start_server
+	docker exec -it fastsubtreesC bash \
+		-c "mariadb -u root -prootpass < /fastsubtrees/ntmirror/tests/create_db.sql"
+
+test: create_test_db
 	docker exec -it fastsubtreesC bash -c "cd /fastsubtrees && make tests"
