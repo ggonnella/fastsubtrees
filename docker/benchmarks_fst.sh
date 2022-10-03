@@ -11,7 +11,7 @@ for ((i=0; i<$NREPEATS; i++)); do
   rm -f nt.tree
   /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
     fastsubtrees-construct nt.tree \
-      /fastsubtrees/ids_modules/ids_from_tabular_file.py \
+      /fastsubtrees/fastsubtrees/ids_modules/ids_from_tabular_file.py \
       --keyargs separator='\t|\t' inputfile=/ntdumpdir/nodes.dmp
 done
 for ((i=0; i<$NREPEATS; i++)); do
