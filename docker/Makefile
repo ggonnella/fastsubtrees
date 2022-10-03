@@ -34,6 +34,6 @@ benchmarks_sql: create_test_db
 	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_sql.sh
 	docker cp fastsubtreesC:/benchmarks_sql.tsv .
 
-benchmarks_fst:
+benchmarks_fst: container
 	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_fst.sh
 	docker cp fastsubtreesC:/benchmarks_fst.tsv .
