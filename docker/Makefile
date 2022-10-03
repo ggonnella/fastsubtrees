@@ -28,3 +28,7 @@ create_test_db: start_server
 
 test: create_test_db
 	docker exec -it fastsubtreesC bash -c "cd /fastsubtrees && make tests"
+
+benchmarks_sql: create_test_db
+	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_sql.sh
+
