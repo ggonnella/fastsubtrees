@@ -25,6 +25,7 @@ Options:
   --dbecho         turn on SQLAlchemy engine echo
                    (default: off)
   --testmode       do not delete the dump files after loading
+  --reset          remove all tables from the database before loading
 """
 
 import os
@@ -51,6 +52,9 @@ def sqlalchemy_connection_from(args):
 def main(args):
   logger = scripts_helper.setup_logger(args["--verbose"])
   connection = sqlalchemy_connection_from(args)
+  if args["--reset"]:
+    logger.info("Resetting database")
+    dbschema.drop(connection)
   dbschema.create(connection)
   connection.commit()
   try:
