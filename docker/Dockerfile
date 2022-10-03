@@ -17,9 +17,10 @@ RUN chmod +x mariadb_repo_setup
 RUN ./mariadb_repo_setup --mariadb-server-version=mariadb-10.6
 RUN apt-get install -y libmariadb3 libmariadb-dev
 RUN pip install mariadb pytest PyYAML sqlalchemy sh pytest-console-scripts
-RUN git clone https://github.com/ggonnella/fastsubtrees
-RUN cd fastsubtrees/ntmirror && pip install -e .
-RUN cd fastsubtrees && pip install -e .
-COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
-COPY ./create_db.sql /fastsubtrees/ntmirror/tests/create_db.sql
+RUN pip install schema snacli ntmirror
 RUN ntmirror-download ntdumpdir
+ADD https://api.github.com/repos/ggonnella/fastsubtrees/git/refs/heads/main version.json
+RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git
+RUN pip uninstall ntmirror -y && cd fastsubtrees/ntmirror && pip install -e .
+COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
+RUN cd fastsubtrees && pip install -e .

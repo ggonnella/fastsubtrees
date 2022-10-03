@@ -6,6 +6,7 @@ default:
 .PHONY: image container shell start_server create_test_db test
 
 image:
+	docker image rm -f fastsubtrees || true
 	docker build --tag fastsubtrees .
 
 container: image
@@ -15,7 +16,7 @@ container: image
 		docker start fastsubtreesC; \
 	fi
 
-shell: container
+shell: #container
 	docker exec -it fastsubtreesC bash
 
 start_server: container
@@ -24,11 +25,12 @@ start_server: container
 
 create_test_db: start_server
 	docker exec -it fastsubtreesC bash \
-		-c "mariadb -u root -prootpass < /fastsubtrees/ntmirror/tests/create_db.sql"
+		-c "mariadb -u root -prootpass < /fastsubtrees/docker/create_db.sql"
 
 test: create_test_db
 	docker exec -it fastsubtreesC bash -c "cd /fastsubtrees && make tests"
 
 benchmarks_sql: create_test_db
 	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_sql.sh
+	docker cp fastsubtreesC:/benchmarks_sql.tsv .
 
