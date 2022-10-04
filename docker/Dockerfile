@@ -17,13 +17,14 @@ RUN chmod +x mariadb_repo_setup
 RUN ./mariadb_repo_setup --mariadb-server-version=mariadb-10.6
 RUN apt-get install -y libmariadb3 libmariadb-dev
 RUN pip install mariadb pytest PyYAML sqlalchemy sh pytest-console-scripts
-RUN pip install schema snacli ntmirror
+RUN pip install schema snacli
+RUN pip install 'ntmirror @ git+https://github.com/ggonnella/fastsubtrees/#subdirectory=ntmirror'
 RUN ntmirror-download ntdumpdir
+RUN pip install 'fastsubtrees @ git+https://github.com/ggonnella/fastsubtrees'
+RUN fastsubtrees-construct ncbi-taxonomy.tree --ntdump ntdumpdir
 ARG CACHEBUST=1
 RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git /fastsubtrees
-RUN pip uninstall ntmirror -y && cd fastsubtrees/ntmirror && pip install -e .
 COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
-RUN cd fastsubtrees && pip install -e .
 RUN ln -s /ntdumpdir /fastsubtrees/genomes-attributes-viewer/ntdumps
 RUN cd /fastsubtrees/genomes-attributes-viewer && pip install -r requirements.txt
 RUN cd /fastsubtrees/genomes-attributes-viewer && ./setup.py
