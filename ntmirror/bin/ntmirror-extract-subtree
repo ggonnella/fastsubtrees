@@ -48,7 +48,7 @@ def main(args):
           filter(children.parent_tax_id == parent.c.tax_id))
   result = session.query(NtNode).select_entity_from(subtree).all()
   for r in result:
-    print(r)
+    print(r.tax_id)
 
 def check_db_args(args):
   if not(args["<dbsocket>"]):
