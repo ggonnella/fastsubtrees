@@ -9,8 +9,8 @@ IMAGE_NAME = "fastsubtrees"
 CONTAINER_NAME = "fastsubtreesC"
 
 cleanup:
-	docker image rm -f ${IMAGE_NAME} || true
 	docker container rm -f ${CONTAINER_NAME} || true
+	docker image rm -f ${IMAGE_NAME} || true
 
 image:
 	docker build --tag ${IMAGE_NAME} . --build-arg CACHEBUST=$$(date +%s)
