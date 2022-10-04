@@ -7,7 +7,7 @@ default:
 
 image:
 	docker image rm -f fastsubtrees || true
-	docker build --tag fastsubtrees .
+	docker build --tag fastsubtrees . --build-arg CACHEBUST=$(date +%s)
 
 container: image
 	if [ -z "$$(docker ps -a | grep fastsubtreesC)" ]; then \
