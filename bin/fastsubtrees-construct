@@ -1,13 +1,28 @@
 #!/usr/bin/env python3
 """
-Parse a given tabular file and construct the data structure
-for fast subtrees queries
+Construct a tree data structure for fast subtrees queries.
+
+The tree information is obtained in one of two ways:
+
+- simplified mode for NCBI taxonomy:
+  by using the NCBI taxonomy dump files and the --ntdump option
+
+- generic mode:
+  by using the specified Python module "idsmod" (see below)
+  and passing the specified positional or keyword arguments
+  (if --keyargs is used)
 
 Usage:
   fastsubtrees-construct [options] <outfname> <idsmod> [<idsmod_data>...]
+  fastsubtrees-construct [options] <outfname> --ntdump <ntdumpdir>
 
-Arguments:
+Common arguments:
   outfname     desired name for the output file
+
+Arguments for NCBI taxonomy simplified mode:
+  ntdumpdir    directory containing NCBI taxonomy dump files
+
+Arguments for generic mode:
   idsmod       Python module defining a function element_parent_ids()
                which may take arguments (<idsmod_data>) and yield pairs
                of IDs for all tree nodes (element_id, parent_id).
@@ -18,6 +33,8 @@ Arguments:
                arguments, use the syntax "key=value" and the option --keyargs
 
 Options:
+  --ntdump     use the NCBI taxonomy simplified mode (see above)
+               to construct the tree from NCBI taxonomuy dump files
   --keyargs    split the arguments specified in <idsmod_data> into
                keywords and values by splitting on the first instance of '=';
                arguments which do not contain '=' are passed as positional,
@@ -34,29 +51,34 @@ from pathlib import Path
 from fastsubtrees import Tree, logger, _scripts_support
 
 def main(args):
-  logger.debug("Loading Python module '{}'".format(args['<idsmod>']))
-  modulename = Path(args["<idsmod>"]).stem
-  spec = importlib.util.spec_from_file_location(modulename,
-                                                args["<idsmod>"])
-  m = importlib.util.module_from_spec(spec)
-  spec.loader.exec_module(m)
-  if not m.__dict__.get("element_parent_ids"):
-    raise ValueError("The specified Python module {} does not define a "
-                     "function element_parent_ids()".format(args["<idsmod>"]))
-  logger.success("Ids module loaded, found generator element_parent_ids()")
-  logger.info("Constructing tree using IDs yielded by the generator...")
-  if args["--keyargs"]:
-    keyargs = {k: v for k, v in \
-        [a.split("=", 1) for a in args["<idsmod_data>"] if "=" in a]}
-    posargs = [a for a in args["<idsmod_data>"] if "=" not in a]
+  if args['--ntdump']:
+    filename = Path(args['<ntdumpdir>']) / 'nodes.dmp'
+    logger.info(f'Constructing tree from NCBI taxonomy dump file {filename}')
+    tree = Tree.construct_from_csv(str(filename), "\t|\t", 0, 1)
   else:
-    keyargs = {}
-    posargs = args["<idsmod_data>"]
-  if posargs:
-    logger.debug(f"Positional arguments passed to the generator: {posargs}")
-  if keyargs:
-    logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
-  tree = Tree.construct(m.element_parent_ids(*posargs, **keyargs))
+    logger.debug("Loading Python module '{}'".format(args['<idsmod>']))
+    modulename = Path(args["<idsmod>"]).stem
+    spec = importlib.util.spec_from_file_location(modulename,
+                                                  args["<idsmod>"])
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    if not m.__dict__.get("element_parent_ids"):
+      raise ValueError("The specified Python module {} does not define a "
+                       "function element_parent_ids()".format(args["<idsmod>"]))
+    logger.success("Ids module loaded, found generator element_parent_ids()")
+    logger.info("Constructing tree using IDs yielded by the generator...")
+    if args["--keyargs"]:
+      keyargs = {k: v for k, v in \
+          [a.split("=", 1) for a in args["<idsmod_data>"] if "=" in a]}
+      posargs = [a for a in args["<idsmod_data>"] if "=" not in a]
+    else:
+      keyargs = {}
+      posargs = args["<idsmod_data>"]
+    if posargs:
+      logger.debug(f"Positional arguments passed to the generator: {posargs}")
+    if keyargs:
+      logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
+    tree = Tree.construct(m.element_parent_ids(*posargs, **keyargs))
   logger.success("Tree constructed")
   tree.to_file(args["<outfname>"])
 
