@@ -29,6 +29,10 @@ start_server: container
 	docker exec -d ${CONTAINER_NAME} bash
 	sleep 5
 
+start_app: container
+	docker exec -i ${CONTAINER_NAME} bash \
+		-c "cd /fastsubtrees/genomes-attributes-viewer/ && ./start.py"
+
 create_test_db: start_server
 	docker exec -it ${CONTAINER_NAME} bash \
 		-c "mariadb -u root -prootpass < /fastsubtrees/docker/create_db.sql"

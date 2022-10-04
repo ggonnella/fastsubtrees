@@ -28,4 +28,3 @@ RUN ln -s /ntdumpdir /fastsubtrees/genomes-attributes-viewer/ntdumps
 RUN cd /fastsubtrees/genomes-attributes-viewer && pip install -r requirements.txt
 RUN cd /fastsubtrees/genomes-attributes-viewer && ./setup.py
 EXPOSE 8050
-RUN cd /fastsubtrees/genomes-attributes-viewer && ./start.py &
