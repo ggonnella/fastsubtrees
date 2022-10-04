@@ -75,9 +75,10 @@ scriptdir = os.path.dirname(os.path.realpath(__file__))
 
 logger.info(f"Looking for a NCBI taxonomy database dump...")
 ntdumps = os.path.join(scriptdir, OUTDIR)
-d = Downloader(ntdumps)
-has_dwn = d.run()
-if has_dwn:
+if not os.path.exists(ntdumps):
+  d = Downloader(ntdumps)
+  has_dwn = d.run()
+  assert(has_dwn)
   logger.success(f"Download complete: {ntdumps}")
   tree = fastsubtrees.Tree.construct(elements_parents_ids(ntdumps))
   tree.to_file(os.path.join(scriptdir, TREEFILE))
