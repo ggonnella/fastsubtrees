@@ -27,7 +27,8 @@ def main(args):
   logger.debug(f"Loading tree file '{args['<tree>']}'")
   tree = Tree.from_file(args["<tree>"])
   logger.debug(f"Extracting subtree under node '{args['<subtreeroot>']}'")
-  print(tree.subtree_ids(int(args["<subtreeroot>"])))
+  for node_id in tree.subtree_ids(int(args["<subtreeroot>"])):
+    print(node_id)
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")
