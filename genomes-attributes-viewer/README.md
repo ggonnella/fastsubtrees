@@ -8,15 +8,16 @@ GC content for two or more organisms.
 ## Setup
 
 The example application is present inside the source code of the 
-fastsubtrees library and can be accessed under the `examples` directory.
-Once the installation is finished the user has to run the scripts, `run.py` which first creates a
+fastsubtrees library and can be accessed under the `genome-attribute-viewer` directory.
+Once the installation is finished the user has to run the scripts, `setup.py` which first creates a
 tree file that contains the node ids and then generates a text file that
 contains the scientific names of organisms along with their taxonomy 
-ids. After that one must run the file `generate_attribute_files`
-to create attribute files for genome size and GC Content 
-and then the script `app.py` has to be run to actually run the web application.
+ids and finally it creates attribute files for genome size and GC Content.
 
 ## Usage
+
+To start the web application use the `start.py` script.
+The application is available at the URL http://127.0.0.1:8050/ .
 
 In the home page of the web application, the user can select an attribute,
 which can either be genome size or GC content from the `Select Attribute` dialog

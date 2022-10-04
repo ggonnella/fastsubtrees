@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State, MATCH, ALL
 from dash.exceptions import PreventUpdate
