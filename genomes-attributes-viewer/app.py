@@ -6,11 +6,13 @@ import dash_bootstrap_components as dbc
 import json
 import pandas as pd
 import fastsubtrees
-
+import os
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-with open('../examples/dictionary.txt') as f:
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+with open(f'{scriptdir}/dictionary.txt') as f:
   data = f.read()
 options = json.loads(data)
 
