@@ -24,3 +24,8 @@ RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git /fastsubtree
 RUN pip uninstall ntmirror -y && cd fastsubtrees/ntmirror && pip install -e .
 COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
 RUN cd fastsubtrees && pip install -e .
+RUN ln -s /ntdumpdir /fastsubtrees/genomes-attributes-viewer/ntdumps
+RUN cd fastsubtrees/genome-attributes-viewer && pip install -r requirements.txt
+RUN cd fastsubtrees/genome-attributes-viewer && ./setup.py
+EXPOSE 8050
+RUN cd fastsubtrees/genome-attributes-viewer && ./start.py &
