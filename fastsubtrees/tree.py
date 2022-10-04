@@ -103,11 +103,11 @@ class Tree():
           if not self.coords[node]:
             pos = self.coords[self.parents[node]] + 1
             while True:
-              self.treedatanode = self.treedata[pos]
-              if self.treedatanode == 0:
+              treedatanode = self.treedata[pos]
+              if treedatanode == 0:
                 break
               else:
-                pos += (self.subtree_sizes[self.treedatanode] + 1)
+                pos += (self.subtree_sizes[treedatanode] + 1)
             self.coords[node] = pos
             self.treedata[pos] = node
 
