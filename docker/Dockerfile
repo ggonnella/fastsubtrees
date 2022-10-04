@@ -26,6 +26,7 @@ ARG CACHEBUST=1
 RUN git clone -b main https://github.com/ggonnella/fastsubtrees.git /fastsubtrees
 COPY ./ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
 RUN ln -s /ntdumpdir /fastsubtrees/genomes-attributes-viewer/ntdumps
+RUN ln -s /ncbi-taxonomy.tree /fastsubtrees/genomes-attributes-viewer/nt.tree
 RUN cd /fastsubtrees/genomes-attributes-viewer && pip install -r requirements.txt
 RUN cd /fastsubtrees/genomes-attributes-viewer && ./setup.py
 EXPOSE 8050
