@@ -5,35 +5,44 @@ default:
 
 .PHONY: image container shell start_server create_test_db test
 
-image:
-	docker image rm -f fastsubtrees || true
-	docker build --tag fastsubtrees . --build-arg CACHEBUST=$(date +%s)
+IMAGE_NAME = "fastsubtrees"
+CONTAINER_NAME = "fastsubtreesC"
 
-container: image
-	if [ -z "$$(docker ps -a | grep fastsubtreesC)" ]; then \
-		docker run --detach --name fastsubtreesC fastsubtrees; \
+cleanup:
+	docker image rm -f ${IMAGE_NAME} || true
+	docker container rm -f ${CONTAINER_NAME} || true
+
+image:
+	docker build --tag ${IMAGE_NAME} . --build-arg CACHEBUST=$$(date +%s)
+
+container:
+	if [ -z "$$(docker ps -a | grep ${CONTAINER_NAME})" ]; then \
+		docker run --detach --name ${CONTAINER_NAME} ${IMAGE_NAME}; \
 	else \
-		docker start fastsubtreesC; \
+		docker start ${CONTAINER_NAME}; \
 	fi
 
-shell: #container
-	docker exec -it fastsubtreesC bash
+shell:
+	docker exec -it ${CONTAINER_NAME} bash
 
 start_server: container
-	docker exec -d fastsubtreesC bash
+	docker exec -d ${CONTAINER_NAME} bash
 	sleep 5
 
 create_test_db: start_server
-	docker exec -it fastsubtreesC bash \
+	docker exec -it ${CONTAINER_NAME} bash \
 		-c "mariadb -u root -prootpass < /fastsubtrees/docker/create_db.sql"
 
 test: create_test_db
-	docker exec -it fastsubtreesC bash -c "cd /fastsubtrees && make tests"
+	docker exec -it ${CONTAINER_NAME} bash \
+		-c "cd /fastsubtrees && make tests"
 
 benchmarks_sql: create_test_db
-	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_sql.sh
-	docker cp fastsubtreesC:/benchmarks_sql.tsv .
+	docker exec -it ${CONTAINER_NAME} bash \
+		-e /fastsubtrees/docker/benchmarks_sql.sh
+	docker cp ${CONTAINER_NAME}:/benchmarks_sql.tsv .
 
 benchmarks_fst: container
-	docker exec -it fastsubtreesC bash -e /fastsubtrees/docker/benchmarks_fst.sh
-	docker cp fastsubtreesC:/benchmarks_fst.tsv .
+	docker exec -it ${CONTAINER_NAME} bash \
+		-e /fastsubtrees/docker/benchmarks_fst.sh
+	docker cp ${CONTAINER_NAME}:/benchmarks_fst.tsv .
