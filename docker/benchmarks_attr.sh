@@ -18,7 +18,7 @@ for attr in genome_size GC_content; do
     STEP="construct-$attr"
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees-attributes-construct $attr.attr /ncbi-taxonomy.tree \
-        /fastsubtrees/data/attribute_values.py --datatype {$attr_dt[$attr]} \
+        /fastsubtrees/data/attribute_values.py --datatype ${attr_dt[$attr]} \
           --keyargs \
             filename=/fastsubtrees/data/accession_taxid_attribute.tsv.gz \
             taxid_col=1 attr_col=${attr_col[$attr]}
