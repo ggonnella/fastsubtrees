@@ -35,15 +35,18 @@ app.layout = html.Div(style={'marginLeft': '2%', 'marginRight': '2%'}, children=
     dbc.Row([
       dbc.Col(dcc.Dropdown(
         id='attributes-dropdown',
-        options=[{'label': 'genome size', 'value': 'genome size'},{'label': 'GC content', 'value': 'GC content'}],
+        options=[{'label': 'genome size', 'value': 'genome size'},
+                 {'label': 'GC content', 'value': 'GC content'}],
         value='genome size'
       ), align='center', width=3)
     ]),
     html.Br(),
     html.Div(style={'display': 'block'}, children=[
-      dbc.Button('Add Taxon', color='primary', n_clicks=0, outline=True, id='add-comparison',
+      dbc.Button('Add Taxon', color='primary', n_clicks=0,
+                 outline=True, id='add-comparison',
                  style={'marginRight': '2%'}),
-      dbc.Button('Compare', color='success', n_clicks=0, outline=True, id='compare')
+      dbc.Button('Compare', color='success', n_clicks=0, outline=True,
+                 id='compare')
     ])
   ]),
   html.Br(),
@@ -119,7 +122,8 @@ def enable_compare_button(clicks):
   Output('add-comparison', 'disabled'),
   Input('compare', 'n_clicks'),
   Input('attributes-dropdown', 'value'),
-  Input(component_id={'type': 'dynamic-dropdown', 'index': ALL}, component_property='value'),
+  Input(component_id={'type': 'dynamic-dropdown', 'index': ALL},
+        component_property='value'),
 )
 def update_figure(clicks, attribute, taxid):
   attribute = attribute.replace(' ', '_')
@@ -132,7 +136,8 @@ def update_figure(clicks, attribute, taxid):
       my_str = id.partition('(')[-1]
       tree = fastsubtrees.Tree.from_file('./nt.tree')
       subtree_root = int(my_str)
-      attribute_list = fastsubtrees.get_attribute_list(tree, subtree_root, f'./{attribute}.attr')
+      attribute_list = fastsubtrees.get_attribute_list(tree, subtree_root,
+                                            f'{scriptdir}/{attribute}.attr')
       sublist = list()
       for att in attribute_list:
         if att is not None:
@@ -158,4 +163,4 @@ def update_figure(clicks, attribute, taxid):
     return {}, {'display': 'none'}, {}, {'display': 'none'}, False
 
 if __name__ == '__main__':
-  app.run_server(debug=True)
+  app.run_server(debug=True, host='0.0.0.0')

@@ -17,7 +17,7 @@ ids and finally it creates attribute files for genome size and GC Content.
 ## Usage
 
 To start the web application use the `start.py` script.
-The application is available at the URL http://127.0.0.1:8050/ .
+The application is available at the URL http://0.0.0.0:8050/ .
 
 In the home page of the web application, the user can select an attribute,
 which can either be genome size or GC content from the `Select Attribute` dialog
