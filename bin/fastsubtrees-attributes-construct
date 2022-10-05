@@ -41,7 +41,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-def get_datatype_cast_function(args):
+def get_datatype_cast_function(args, m):
   if not args["--datatype"]:
     logger.debug("No --datatype option specified, using str")
     cast = str
@@ -107,7 +107,7 @@ def write_attribute_file(args, attrvalues):
 def main(args):
   m = get_module(args)
   posargs, keyargs = get_function_arguments(args)
-  cast = get_datatype_cast_function(args)
+  cast = get_datatype_cast_function(args, m)
   attrvalues = read_attribute_values(m, posargs, keyargs, cast)
   write_attribute_file(args, attrvalues)
 
