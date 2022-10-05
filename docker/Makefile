@@ -50,3 +50,8 @@ benchmarks_fst: container
 	docker exec -it ${CONTAINER_NAME} bash \
 		-e /fastsubtrees/docker/benchmarks_fst.sh
 	docker cp ${CONTAINER_NAME}:/benchmarks_fst.tsv .
+
+benchmarks_attr: container
+	docker exec -it ${CONTAINER_NAME} bash \
+		-e /fastsubtrees/docker/benchmarks_attr.sh
+	docker cp ${CONTAINER_NAME}:/benchmarks_attr.tsv .
