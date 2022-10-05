@@ -1,3 +1,10 @@
+=== 1.2 ===
+- docker image providing tests, benchmarks and example app
+- tests divided into multiple files and using fixtures
+- benchmarks: scripts provided to replicate
+- genome-attributes-viewer: simplified app setup
+- multiple code small fixes and improvements
+
 === 1.1 ===
 - fix package requirements specification
 - fix detection of already deleted node
