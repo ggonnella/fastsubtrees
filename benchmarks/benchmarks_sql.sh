@@ -1,8 +1,7 @@
 #!/bin/bash
 
 #
-# Benchmark the construction and query of the attribute files
-# associated with a tree.
+# Benchmarks recursive SQL based subtree extraction
 #
 
 NREPEATS=3

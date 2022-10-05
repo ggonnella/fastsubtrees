@@ -47,12 +47,21 @@ benchmarks_sql.tsv: create_test_db
 	  	myuser mypass ntmirror_test /run/mysqld/mysqld.sock
 	docker cp ${CONTAINER_NAME}:/benchmarks_sql.tsv .
 
+benchmarks_contruct.tsv: container
+	docker exec -it ${CONTAINER_NAME} bash \
+		-e /fastsubtrees/docker/benchmarks_construct.sh /ntdumpdir
+	docker cp ${CONTAINER_NAME}:/benchmarks_construct.tsv .
+
 benchmarks_fst.tsv: container
 	docker exec -it ${CONTAINER_NAME} bash \
-		-e /fastsubtrees/docker/benchmarks_fst.sh /ntdumpdir
+		-e /fastsubtrees/docker/benchmarks_fst.sh /ncbi-taxonomy.tree
 	docker cp ${CONTAINER_NAME}:/benchmarks_fst.tsv .
 
 benchmarks_attr.tsv: container
 	docker exec -it ${CONTAINER_NAME} bash \
 		-e /fastsubtrees/benchmarks/benchmarks_attr.sh /ncbi-taxonomy.tree
 	docker cp ${CONTAINER_NAME}:/benchmarks_attr.tsv .
+
+benchmarks: benchmarks_sql.tsv benchmarks_fst.tsv benchmarks_attr.tsv
+
+benchmarks_all: benchmarks benchmarks_construct.tsv
