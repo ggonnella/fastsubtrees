@@ -9,14 +9,19 @@ declare -A attr_col
 attr_col[genome_size]=2
 attr_col[GC_content]=3
 
+declare -A attr_dt
+attr_dt[genome_size]=int
+attr_dt[GC_content]=float
+
 for attr in genome_size GC_content; do
   for ((i=0; i<$NREPEATS; i++)); do
     STEP="construct-$attr"
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees-attributes-construct $attr.attr /ncbi-taxonomy.tree \
-        /fastsubtrees/data/attribute_values.py --keyargs \
-          filename=/fastsubtrees/data/accession_taxid_attribute.tsv.gz \
-          taxid_col=1 attr_col=${attr_col[$attr]}
+        /fastsubtrees/data/attribute_values.py --datatype {$attr_dt[$attr]} \
+          --keyargs \
+            filename=/fastsubtrees/data/accession_taxid_attribute.tsv.gz \
+            taxid_col=1 attr_col=${attr_col[$attr]}
   done
 
   rm -f $OUTFILE
