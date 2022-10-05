@@ -22,6 +22,17 @@ cleanup:
 image:
 	docker build --tag ${IMAGE_NAME} . --build-arg CACHEBUST=$$(date +%s)
 
+image-no-cache:
+	docker build --tag ${IMAGE_NAME} . --no-cache
+
+USER=ggonnella
+VERSION=1.2rc1
+
+push:
+	docker login
+	docker tag ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}
+	docker push ${USER}/${IMAGE_NAME}:${VERSION}
+
 container:
 	if [ -z "$$(docker ps -a | grep ${CONTAINER_NAME})" ]; then \
 		docker run -p 8050:8050 --detach --name ${CONTAINER_NAME} ${IMAGE_NAME}; \
