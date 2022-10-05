@@ -3,7 +3,7 @@
 Creates files for a given attribute present in the database
 
 Usage:
-  fastsubtrees-attributes-construct [options] <outfile> <tree> <attribute>
+  fastsubtrees-attributes-construct [options] <outfile> <tree>
                                               <attrmod> [<attrmod_data>...]
 
 Arguments:
@@ -59,14 +59,16 @@ def main(args):
     logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
-  elementid_attributes_dictionary = m.attribute_values(args["<attribute>"], *posargs, **keyargs)
+  elementid_attributes_dictionary = m.attribute_values(*posargs, **keyargs)
   filename = args["<outfile>"]
-  logger.debug("Writing attribute values to file '{}'".format(args['<outfile>']))
+  logger.debug("Writing attribute values to file '{}'".\
+      format(args['<outfile>']))
   with open(filename, "w") as outfile:
     for element_id in tree.subtree_ids(tree.root_id):
       attribute = elementid_attributes_dictionary.get(element_id, None)
       outfile.write(json.dumps(attribute) + "\n")
-  logger.success("Attribute values successfully written to file '{}'".format(args['<outfile>']))
+  logger.success("Attribute values successfully written to file '{}'".\
+      format(args['<outfile>']))
 
 if __name__ == "__main__":
   args = docopt(__doc__, version="0.1")

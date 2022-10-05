@@ -75,7 +75,6 @@ In order to generate attribute files, the user has to provide four input
 parameters along with an optional input parameter to run this script:
 - `outfile`: Name of the file to store the generated attributes in
 - `tree`: File containing the tree that has to be updated.
-- `attribute`: Name of the attribute
 - `attrmod`: A python module that defines a function ``attribute_values()``
    which may take arguments (``<attrmod_data>``) and returns pairs
    ``(element_id, attribute_value)`` for each node to which an attribute value
