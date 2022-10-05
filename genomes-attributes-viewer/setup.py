@@ -47,7 +47,7 @@ def scientific_names(ntdumps):
 
 def read_attr_input_file():
   result = dict()
-  with gzip.open(f'{scriptdir}/{ATTR_INPUTFILE}', 'rt') as file:
+  with gzip.open(f'{scriptdir}/../data/{ATTR_INPUTFILE}', 'rt') as file:
     for line in file:
       elems = line.rstrip().split('\t')
       taxid = int(elems[TAXID_COLUMN])
