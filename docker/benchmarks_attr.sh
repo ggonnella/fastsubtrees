@@ -26,7 +26,7 @@ for attr in genome_size GC_content; do
     echo "Step $STEP from node $ROOT, iteration $i..."
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees-attributes-query \
-        /nbci-taxonomy.tree $ROOT $attr.attr > \
+        /ncbi-taxonomy.tree $ROOT $attr.attr > \
       attr_values.$attr.$ROOT
     done
   done
