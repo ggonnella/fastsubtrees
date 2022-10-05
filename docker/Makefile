@@ -41,17 +41,18 @@ test: create_test_db
 	docker exec -it ${CONTAINER_NAME} bash \
 		-c "cd /fastsubtrees && make tests"
 
-benchmarks_sql: create_test_db
+benchmarks_sql.tsv: create_test_db
 	docker exec -it ${CONTAINER_NAME} bash \
-		-e /fastsubtrees/docker/benchmarks_sql.sh
+		-e /fastsubtrees/docker/benchmarks_sql.sh \
+	  	myuser mypass ntmirror_test /run/mysqld/mysqld.sock
 	docker cp ${CONTAINER_NAME}:/benchmarks_sql.tsv .
 
-benchmarks_fst: container
+benchmarks_fst.tsv: container
 	docker exec -it ${CONTAINER_NAME} bash \
-		-e /fastsubtrees/docker/benchmarks_fst.sh
+		-e /fastsubtrees/docker/benchmarks_fst.sh /ntdumpdir
 	docker cp ${CONTAINER_NAME}:/benchmarks_fst.tsv .
 
-benchmarks_attr: container
+benchmarks_attr.tsv: container
 	docker exec -it ${CONTAINER_NAME} bash \
-		-e /fastsubtrees/docker/benchmarks_attr.sh
+		-e /fastsubtrees/benchmarks/benchmarks_attr.sh /ncbi-taxonomy.tree
 	docker cp ${CONTAINER_NAME}:/benchmarks_attr.tsv .
