@@ -15,7 +15,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_IDS_MODULES_DIR=$FST_DIR/fastsubtrees/ids_modules
 
-source $SCRIPT_DIR/benchmark_params.sh
+source $SCRIPT_DIR/benchmarks_params.sh
 OUTFILE=${OUTFILE_PFX}_construct.tsv
 rm -f $OUTFILE
 

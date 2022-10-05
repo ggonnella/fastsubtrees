@@ -20,7 +20,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_DATA_DIR=$FST_DIR/data
 
-source $SCRIPT_DIR/benchmark_params.sh
+source $SCRIPT_DIR/benchmarks_params.sh
 OUTFILE=${OUTFILE_PFX}_sql.tsv
 rm -f $OUTFILE
 mkdir -p $OUTDIR

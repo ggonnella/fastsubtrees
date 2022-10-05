@@ -13,7 +13,7 @@ TREE=$1
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-source $SCRIPT_DIR/benchmark_params.sh
+source $SCRIPT_DIR/benchmarks_params.sh
 OUTFILE=${OUTFILE_PFX}_fst.tsv
 rm -f $OUTFILE
 mkdir -p $OUTDIR
