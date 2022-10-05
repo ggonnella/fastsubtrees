@@ -86,7 +86,7 @@ def get_module(args):
   logger.success("Attributes module loaded, found generator attribute_values()")
   return m
 
-def read_attribute_values(args):
+def read_attribute_values(m, posargs, keyargs, cast):
   result = defaultdict(list)
   for k, v in m.attribute_values(*posargs, **keyargs):
     result[int(k)].append(cast(v))
