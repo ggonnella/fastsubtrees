@@ -3,9 +3,6 @@
 # Benchmarks the subtree query using fastsubtrees
 #
 
-NREPEATS=3
-OUTFILE=benchmarks_fst.tsv
-
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <tree>"
     echo "where <tree> is the name of a fastsubtrees tree file constructed"
@@ -14,11 +11,12 @@ if [ $# -ne 1 ]; then
 fi
 TREE=$1
 
-rm -f $OUTFILE
-mkdir -p results
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-FST_DIR=$SCRIPT_DIR/..
+
+source $SCRIPT_DIR/benchmark_params.sh
+OUTFILE=${OUTFILE_PFX}_fst.tsv
+rm -f $OUTFILE
+mkdir -p $OUTDIR
 
 for ((i=0; i<$NREPEATS; i++)); do
   STEP="extract"
@@ -26,7 +24,7 @@ for ((i=0; i<$NREPEATS; i++)); do
     echo "Step $STEP from node $ROOT, iteration $i..."
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees-query $TREE $ROOT > \
-        results/fastsubtrees.subtree.$ROOT
+        $OUTDIR/fastsubtrees.subtree.$ROOT
   done
 done
 

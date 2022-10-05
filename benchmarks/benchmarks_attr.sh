@@ -5,9 +5,6 @@
 # associated with a tree.
 #
 
-NREPEATS=3
-OUTFILE=benchmarks_attr.tsv
-
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <tree>"
     echo "where <tree> is the name of a fastsubtrees tree file constructed"
@@ -16,12 +13,14 @@ if [ $# -ne 1 ]; then
 fi
 TREE=$1
 
-rm -f $OUTFILE
-mkdir -p results
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_DATA_DIR=$FST_DIR/data
+
+source $SCRIPT_DIR/benchmark_params.sh
+OUTFILE=${OUTFILE_PFX}_attr.tsv
+rm -f $OUTFILE
+mkdir -p $OUTDIR
 
 declare -A attr_col
 attr_col[genome_size]=2
@@ -44,12 +43,12 @@ for attr in genome_size GC_content; do
 
   for ((i=0; i<$NREPEATS; i++)); do
     STEP="query-$attr"
-    for ROOT in 511145 83333 562 561 543 91347 1236 1224 2; do
-    echo "Step $STEP from node $ROOT, iteration $i..."
-    /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-      fastsubtrees-attributes-query --filter --countN --countV \
-        $TREE $ROOT $attr.attr > \
-      results/attr_values.$attr.$ROOT
+    for ROOT in $NODES; do
+      echo "Step $STEP from node $ROOT, iteration $i..."
+      /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
+        fastsubtrees-attributes-query --filter --countN --countV \
+          $TREE $ROOT $attr.attr > \
+        $OUTDIR/attr_values.$attr.$ROOT
     done
   done
 done

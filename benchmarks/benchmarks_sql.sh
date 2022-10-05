@@ -4,9 +4,6 @@
 # Benchmarks recursive SQL based subtree extraction
 #
 
-NREPEATS=3
-OUTFILE=benchmarks_sql.tsv
-
 if [ $# -ne 4 ]; then
     echo "Usage: $0 <dbuser> <dbpass> <dbname> <dbsock>"
     echo "where <dbuser> is the database user name, <dbpass> is the"
@@ -19,12 +16,14 @@ DBPASS=$2
 DBNAME=$3
 DBSOCK=$4
 
-rm -f $OUTFILE
-mkdir -p results
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_DATA_DIR=$FST_DIR/data
+
+source $SCRIPT_DIR/benchmark_params.sh
+OUTFILE=${OUTFILE_PFX}_sql.tsv
+rm -f $OUTFILE
+mkdir -p $OUTDIR
 
 for ((i=0; i<$NREPEATS; i++)); do
   STEP="dbload"
@@ -36,11 +35,11 @@ for ((i=0; i<$NREPEATS; i++)); do
 done
 for ((i=0; i<$NREPEATS; i++)); do
   STEP="extract"
-  for ROOT in 511145 83333 562 561 543 91347 1236 1224 2; do
+  for ROOT in $NODES; do
     echo "Step $STEP from node $ROOT, iteration $i..."
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       ntmirror-extract-subtree \
         $DBUSER $DBPASS $DBNAME $DBSOCK $ROOT > \
-        results/ntmirror.subtree.$ROOT
+        $OUTDIR/ntmirror.subtree.$ROOT
   done
 done

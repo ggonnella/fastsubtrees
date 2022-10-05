@@ -3,9 +3,6 @@
 # Benchmarks the construction of the tree data files for fastsubtrees
 #
 
-NREPEATS=3
-OUTFILE=benchmarks_construct.tsv
-
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <ntdumpdir>"
     echo "where <ntdumpdir> is the directory containing the NCBI taxonomy"
@@ -14,12 +11,13 @@ if [ $# -ne 1 ]; then
 fi
 NTDUMPDIR=$1
 
-rm -f $OUTFILE
-mkdir -p results
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_IDS_MODULES_DIR=$FST_DIR/fastsubtrees/ids_modules
+
+source $SCRIPT_DIR/benchmark_params.sh
+OUTFILE=${OUTFILE_PFX}_construct.tsv
+rm -f $OUTFILE
 
 for ((i=0; i<$NREPEATS; i++)); do
   STEP="construct"
