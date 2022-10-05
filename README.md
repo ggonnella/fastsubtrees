@@ -61,7 +61,49 @@ The same interface is used when adding a new subtree
 (with the difference, in the current implementation, that in this case
 child nodes must be provided after their parent node).
 
-# CLI and API
+# Working with the library
+
+## Installation
+
+The package can be installed using ``pip`` if ``mariadb`` has been previously
+installed and configured on the system, including its Python connector package.
+
+## Docker image
+
+To try or test the package, it is possible to use ``fastsubtrees``
+by employing the Docker image defined in ``docker/Dockerfile`.
+This does not require any external database installation and configuration.
+
+The image can be generated using ``make image``.
+A container can be started from the image using ``make container``.
+
+## Tests
+
+To run the test suite, you can use ``pytest`` (or ``make tests``).
+The tests include tests of ``fastsubtrees`` and of the sub-package ``ntmirror``.
+The latter are partly dependent on a database installation and configuration
+which must be given in ``ntmirror/tests/config.yaml``;
+database-dependent tests are skipped if this configuration file is not provided.
+
+The entire test suite can be also run from the Docker container,
+by using ``make test`` from the subdirectory ``docker``.
+
+## Benchmarks
+
+Benchmarks can be run using the shell scripts provided under ``benchmarks``.
+These require data, which is downloaded from NCBI taxonomy and
+some pre-computed example data which is provided in the ``data`` subdirectory
+(genome sizes and GC content).
+
+The benchmarks can be convienently run from the Docker container,
+by using ```make benchmarks``` or ```make benchmarks_all```
+from the subdirectory ``docker``.
+
+The ```_all``` version also benchmarks the construction of the representation
+of the NCBI taxonomy tree and requires about 40-70 minutes to complete,
+depending on the system.
+
+## CLI and API
 
 Command line scripts are provided, which allow to perform all implemented
 operations: construct a tree, add and delete leaf nodes
@@ -95,10 +137,10 @@ for more information.
 
 ## Genomes Attributes Viewer
 
-An interactive web application based on ``fastsubtrees`` was developed using _dash_.
-It allows to graphically display the distribution of values of attributes in subtrees
-of the NCBI taxonomic tree.
+An interactive web application based on ``fastsubtrees`` was developed using
+_dash_. It allows to graphically display the distribution of values of
+attributes in subtrees of the NCBI taxonomic tree.
 
-This example application is located under ``genomes-attributes-viewer``. For more
-information see the ``genomes-attributes-viewer/README.md`` file.
+This example application is located under ``genomes-attributes-viewer``. For
+more information see the ``genomes-attributes-viewer/README.md`` file.
 

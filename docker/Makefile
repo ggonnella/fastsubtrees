@@ -1,9 +1,16 @@
 default:
-	@echo "make image        build Docker image"
-	@echo "make container    create and run Docker container"
-	@echo "make shell        interactive shell in Docker container"
+	@echo "make image           build Docker image from the Dockerfile"
+	@echo "make container       create and run Docker container from the image"
+	@echo "make cleanup         remove Docker image and container"
+	@echo "make shell           interactive shell in Docker container"
+	@echo "make test            run the test suite of fastsubtrees and ntmirror"
+	@echo "make benchmarks      run the benchmarks (except very slow ones)"
+	@echo "make benchmarks_all  run all benchmarks"
+	@echo "make start_app			  start the web server for the example application"
 
-.PHONY: image container shell start_server create_test_db test
+.PHONY: image container shell \
+	      start_server create_test_db test \
+				start_app benchmarks benchmarks_all
 
 IMAGE_NAME = "fastsubtrees"
 CONTAINER_NAME = "fastsubtreesC"
