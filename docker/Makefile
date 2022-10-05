@@ -17,7 +17,7 @@ image:
 
 container:
 	if [ -z "$$(docker ps -a | grep ${CONTAINER_NAME})" ]; then \
-		docker run --detach --name ${CONTAINER_NAME} ${IMAGE_NAME}; \
+		docker run -p 8050:8050 --detach --name ${CONTAINER_NAME} ${IMAGE_NAME}; \
 	else \
 		docker start ${CONTAINER_NAME}; \
 	fi
@@ -30,7 +30,7 @@ start_server: container
 	sleep 5
 
 start_app: container
-	docker exec -i ${CONTAINER_NAME} bash \
+	docker exec -it ${CONTAINER_NAME} bash \
 		-c "cd /fastsubtrees/genomes-attributes-viewer/ && ./start.py"
 
 create_test_db: start_server
