@@ -25,7 +25,7 @@ for attr in genome_size GC_content; do
     for ROOT in 511145 83333 562 561 543 91347 1236 1224 2; do
     echo "Step $STEP from node $ROOT, iteration $i..."
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-      fastsubtrees-attribute-query \
+      fastsubtrees-attributes-query \
         /nbci-taxonomy.tree $ROOT $attr.attr > \
       attr_values.$attr.$ROOT
     done
