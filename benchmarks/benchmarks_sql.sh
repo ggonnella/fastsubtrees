@@ -5,7 +5,7 @@
 #
 
 NREPEATS=3
-OUTFILE=benchmarks_attr.tsv
+OUTFILE=benchmarks_sql.tsv
 
 if [ $# -ne 4 ]; then
     echo "Usage: $0 <dbuser> <dbpass> <dbname> <dbsock>"
