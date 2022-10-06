@@ -12,23 +12,21 @@ the nodes of the tree and their parent node is required.
 
 `Tree.construct_from_csv(filename, separator, elem_field_num, parent_field_num)`
 allows the construction of a `Tree()` object from a tabular file.
-Header or comment lines starting with a `#` are ignored
-The `elem_field_num`
-and `parent_field_num` parameters are 0-based field numbers of the fields
-(columns) in the tabular file containing, respectively,
-element IDs and the IDs of the element parents. Parents can be defined
-before or after their children.
+Header or comment lines starting with a `#` are ignored.
+The `elem_field_num` and `parent_field_num` parameters are 0-based field
+numbers of the fields (columns) in the tabular file containing, respectively,
+element IDs and the IDs of the element parents. Parents can be defined before
+or after their children.
 
 ### Constructing from a different data source
 
 For constructing the tree from a different data source (e.g. a database)
 the `Tree.construct(generator)` class method can be used.
-The
-paremeter shall be a generator, which yields pairs of values, that
+The paremeter shall be a generator, which yields pairs of values, that
 are the ID of each node and the corresponding parent node ID.
 Parents can be defined before or after their children.
 
-## Saving and loading from file
+## Saving to and loading from file
 
 The tree representations can be stored to file using the instance method
 `tree.to_file(filename)` and re-loaded from such a file using
@@ -41,7 +39,7 @@ a file) can be modified, by adding or deleting leaf nodes or entire subtrees.
 
 ### Adding nodes
 
-For adding a leaf node, the `tree.add_node(parent, node_number)`
+For adding a single (leaf) node, the `tree.add_node(parent, node_number)`
 method can be used.
 Thereby `parent` is the identifier of the node to which to add a new leaf
 and `node_number` is the identifier of the leaf.
@@ -51,6 +49,10 @@ The paremeter shall be a generator, which yields pairs of values, that
 are the ID of each node and the corresponding parent node ID. In the current
 implementation, the first yielded pair must be the root of the new subtree
 and parent nodes in the subtree must be defined before their children.
+
+The ``add_subtree`` method also allows to modify trees for which attributes
+have been defined. For this, the optional argument ``attributefilenames``
+must be set to a list of filenames of attribute files.
 
 ### Removing nodes
 
@@ -64,12 +66,22 @@ stored in the representation, but are flagged as removed and not output
 by subtree queries. Removed node IDs shall therefore not be used anymore
 in subsequent node or subtree adding operations.
 
+The ``delete_node`` method also allows to modify trees for which attributes
+have been defined. For this, the optional argument ``attributefilenames``
+must be set to a list of filenames of attribute files.
+
 ## Defining an attribute
 
-At first from `Tree.from_file(tree)` the tree is loaded and then a dictionary
-is created using `module_name.attribute_values(attribute_name, database_connection_data)`. This
-dictionary contains the taxonomy id of the organisms along with their
-attribute values. These are finally saved into an output file with the extension `.attr`.
+For defining an attribute, a dictionary must be provided, with the IDs
+of the nodes as keys and the associated values of the attribute as values.
+An attribute file is writte using
+``fastsubtrees.attribute.write_attributes_values(tree, attrvalues, outfile)``.
+
+If the attribute files shall be compatible with the CLI tools,
+the filename must be the one returned by
+``fastsubtrees.attribute.attrfilename(treefilename, attribute)``.
+To get the list of all attributes and filenames using this convention,
+the function ``fastsubtrees.attribute.attrfiles(treefilename)`` can be used.
 
 ## Subtree queries
 
