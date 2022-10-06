@@ -63,7 +63,7 @@ def generate_attribute_file():
     outfilename = fastsubtrees.attribute.attrfilename(f'{scriptdir}/{TREEFILE}',
                                                       attribute)
     with open(outfilename, 'w') as outfile:
-      fastsubtrees.attribute.write_attributes_values(tree,
+      fastsubtrees.attribute.write_attribute_values(tree,
                               attrvalues[attribute], outfile)
   logger.success(f"Attribute file generated: {outfilename}")
 

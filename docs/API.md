@@ -75,7 +75,7 @@ must be set to a list of filenames of attribute files.
 For defining an attribute, a dictionary must be provided, with the IDs
 of the nodes as keys and the associated values of the attribute as values.
 An attribute file is writte using
-``fastsubtrees.attribute.write_attributes_values(tree, attrvalues, outfile)``.
+``fastsubtrees.attribute.write_attribute_values(tree, attrvalues, outfile)``.
 
 If the attribute files shall be compatible with the CLI tools,
 the filename must be the one returned by

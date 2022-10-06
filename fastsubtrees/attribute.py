@@ -29,7 +29,7 @@ def get_attribute_list(tree, subtree_root, attributefile):
       get_attribute_value(attributefile, subtree_size+1, position-1)
   return attribute_list
 
-def write_attributes_values(tree, attrvalues, outfile):
+def write_attribute_values(tree, attrvalues, outfile):
   for element_id in tree.subtree_ids(tree.root_id):
     attribute = attrvalues.get(element_id, None)
     outfile.write(json.dumps(attribute) + "\n")
