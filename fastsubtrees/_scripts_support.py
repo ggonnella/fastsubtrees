@@ -1,6 +1,7 @@
 import os
 import sys
 import fastsubtrees
+from pathlib import Path
 
 def setup_verbosity(args):
   if args["--quiet"]:
