@@ -12,6 +12,7 @@ import os
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 scriptdir = os.path.dirname(os.path.realpath(__file__))
+TREEFILE = "nt.tree"
 
 with open(f'{scriptdir}/dictionary.txt') as f:
   data = f.read()
@@ -89,7 +90,8 @@ def create_container(n_clicks, div_children):
 
 @app.callback(
   Output({'type': 'dynamic-dropdown', 'index': MATCH}, 'options'),
-  Input(component_id={'type': 'dynamic-dropdown', 'index': MATCH}, component_property='search_value')
+  Input(component_id={'type': 'dynamic-dropdown', 'index': MATCH}, \
+        component_property='search_value')
 )
 def update_dropdown_values(search_value):
   if not search_value:
@@ -125,19 +127,22 @@ def enable_compare_button(clicks):
   Input(component_id={'type': 'dynamic-dropdown', 'index': ALL},
         component_property='value'),
 )
+
 def update_figure(clicks, attribute, taxid):
   attribute = attribute.replace(' ', '_')
   attribute = attribute
   boxplot_dict = {}
   final_values = []
+  treefname = f'{scriptdir}/{TREEFILE}'
+  tree = fastsubtrees.Tree.from_file(treefname)
   if clicks >= 1:
     for id in taxid:
       boxplot_dict[id + ')'] = []
       my_str = id.partition('(')[-1]
-      tree = fastsubtrees.Tree.from_file('./nt.tree')
       subtree_root = int(my_str)
+      attrfname = fastsubtrees.attribute.attrfilename(treefname, attribute)
       attribute_list = fastsubtrees.get_attribute_list(tree, subtree_root,
-                                            f'{scriptdir}/{attribute}.attr')
+                                                       attrfname)
       sublist = list()
       for att in attribute_list:
         if att is not None:

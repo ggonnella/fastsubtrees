@@ -6,6 +6,7 @@ from ntmirror import Downloader
 import fastsubtrees
 import json
 import gzip
+from collections import defaultdict
 
 OUTDIR = "ntdumps"
 NODESFILE = "nodes.dmp"
@@ -46,27 +47,25 @@ def scientific_names(ntdumps):
   return names
 
 def read_attr_input_file():
-  result = dict()
+  result = {"genome_size": defaultdict(list), "GC_content": defaultdict(list)}
   with gzip.open(f'{scriptdir}/../data/{ATTR_INPUTFILE}', 'rt') as file:
     for line in file:
       elems = line.rstrip().split('\t')
       taxid = int(elems[TAXID_COLUMN])
-      if taxid not in result:
-        result[taxid] = (list(), list())
-      result[taxid][GENOME_SIZE_COLUMN-2].append(int(elems[GENOME_SIZE_COLUMN]))
-      result[taxid][GC_CONTENT_COLUMN-2].append(float(elems[GC_CONTENT_COLUMN]))
+      result["genome_size"][taxid].append(int(elems[GENOME_SIZE_COLUMN]))
+      result["GC_content"][taxid].append(float(elems[GC_CONTENT_COLUMN]))
   return result
 
 def generate_attribute_file():
   attrvalues = read_attr_input_file()
+  tree = fastsubtrees.Tree.from_file(f'{scriptdir}/{TREEFILE}')
   for attribute in ATTRIBUTES:
-    with open(f'{scriptdir}/{attribute}.attr', 'w') as outfile:
-      tree = fastsubtrees.Tree.from_file(f'{scriptdir}/{TREEFILE}')
-      aidx = ATTRIBUTES.index(attribute)-2
-      for element_id in tree.subtree_ids(1):
-        v = attrvalues.get(element_id, (None, None))[aidx]
-        outfile.write(json.dumps(v) + "\n")
-    logger.success(f"Attribute file generated: {attribute}.attr")
+    outfilename = fastsubtrees.attribute.attrfilename(f'{scriptdir}/{TREEFILE}',
+                                                      attribute)
+    with open(outfilename, 'w') as outfile:
+      fastsubtrees.attribute.write_attributes_values(tree,
+                              attrvalues[attribute], outfile)
+  logger.success(f"Attribute file generated: {outfilename}")
 
 fastsubtrees.PROGRESS_ENABLED = True
 fastsubtrees.enable_logger("INFO")
