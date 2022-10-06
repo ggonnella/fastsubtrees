@@ -1,5 +1,7 @@
 # Fastsubtrees library
 
+VERSION="1.2.2"
+
 # setup loguru by disabling it, as expected for libraries
 from loguru import logger
 logger.disable(__name__)

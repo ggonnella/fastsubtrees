@@ -4,15 +4,13 @@ Parse a given tabular file and delete a given node
 from the the tree
 
 Usage:
-  fastsubtrees-delete-subtree [options] <nodeid> <tree>
+  fastsubtrees-delete-subtree [options] <tree> <nodeid>
 
 Arguments:
-  nodeid      ID of the node that has to be deleted
   tree        File containing the tree data
+  nodeid      ID of the node that has to be deleted
 
 Options:
-  --attrs FN   file containing a list of filenames of attribute files that
-               exist for the tree (so that they are updated too)
   --quiet      disable log messages
   --debug      print debug information
   --help       show this help message and exit
@@ -20,21 +18,19 @@ Options:
 """
 
 from docopt import docopt
-from fastsubtrees import Tree, logger, _scripts_support
+from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
 
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   logger.debug("Successfully loaded tree from file '{}'".format(args['<tree>']))
-  attrfiles = []
-  if args['--attrs']:
-    with open(args['--attrs'], 'r') as file:
-      attrfiles = file.read().splitlines()
+  attrfiles = attribute.attrfiles(args["<tree>"]).values()
+  logger.debug("Modifying attribute files: '{}'".format("', '".join(attrfiles)))
   tree.delete_node(int(args["<nodeid>"]), attrfiles)
   logger.success("Node deleted successfully")
   tree.to_file(args["<tree>"])
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version="0.1")
+  args = docopt(__doc__, version=VERSION)
   _scripts_support.setup_verbosity(args)
   main(args)

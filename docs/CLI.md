@@ -6,75 +6,102 @@ and query a subtree.
 
 ## Tree construction
 
-The script `bin/fastsubtrees-construct` constructs the tree representation
+The script ``fastsubtrees-construct`` constructs the tree representation
 from a tabular file.
 
-This script requires two parameters along with an optional parameter:
-- `outfname`: Name of the file to store the tree in
-- `idsmod`: A python module that defines the function ``element_parent_ids()``,
-optionally taking arguments (``<idsmod_data>``) and yielding pairs
-of IDs for all tree nodes ``(element_id, parent_id)``. For the root node,
-the ``parent_id`` must be the same as the ``element_id``.
-- `idsmod_data`: This is an optional parameter. It consists of a list
-of arguments that have to be passed to the ``element_parent_ids()``
-function of **idsmod**. By default they are passed as positional arguments.
-To pass keyword arguments, the syntax **key=value** and the option **--keyargs**
-has to be used.
+The script has two modes of use, one generic and one specific for the
+NCBI taxonomy tree dumps (for which the library was originally designed).
+Common to both modes is the first parameter, which is the output file name,
+containing the tree data, used for the subsequent queries.
+
+### NCBI taxonomy construction mode
+
+For constructing the NCBI taxonomy tree, the directory containing ``nodes.dmp``
+is specified, after using the ``--ntdump`` option.
+Example:
+```
+fastsubtrees-construct my.tree --ntdump ntdumpsdir
+```
+
+### Generic tree construction mode
+
+In the generic mode, the next parameter of the ``fastsubtrees-construct``
+script is the name of a Python module. This must define a function called
+``element_parent_ids()``, which yields pairs of IDs ``(element_id, parent_id)``.
+Examples of this functions, obtaining the ID data from a database table or
+from a tabular file are given in the modules in the
+``fastsubtrees.ids_modules`` namespace modules.
+
+The ``element_parent_ids()`` function usually needs parameters. These
+can be passed either as positional or as keyword parameters. To pass them
+as positional parameters, they are just used as further arguments of the
+script, after the module name. To define them as keyword parameters, the
+``--keyargs`` option is used, and all further arguments in the form
+``key=value`` (i.e. where at least one = is present), are parsed and
+passed as keywords parameters.
+
+Examples:
+```
+fastsubtrees-construct my.tree my_module.py a b c
+fastsubtrees-construct my.tree my_module.py --keyargs k1=v1 k2=v=2 x
+```
+
+In the first example, the function in ``my_module.py`` is called as
+``element_parent_ids("a", "b", "c")``, in the second as
+``element_parent_ids("x", k1="v1", k2="v=2")``.
 
 ## Modifying an existing tree representation
 
 ### Adding a subtree
 
-The script `bin/fastsubtrees-add-subtree` adds a node or multiple nodes
-to the already existing tree. Either a single node in the form of
-a leaf node or multiple nodes as an internal node can be added in this case.
-
-It must be noted that once a user has generated attribute files as mentioned in the following section,
-it is important to pass a file containing the path of the attribute files with `--attrs` option,
-so that the attribute files could also be updated with the new subtree values.
-
-The user needs to provide two parameters as input along
-with an optional parameter to run this script:
+The script `fastsubtrees-add-subtree` adds one or multiple nodes to an already
+existing tree. The interface is identical to the generic tree construction
+interface of ``fastsubtrees-construct`` (see above), i.e. the following
+arguments are passed to the script:
 - `tree`: File containing the tree that has to be updated.
-- `idsmod`: A python module that defines the function ``element_parent_ids()``,
+- `idsmod`: A Python module that defines the function ``element_parent_ids()``,
    which optionally takes arguments (``<idsmod_data>``) and which yields pairs
    of IDs for all nodes ``(element_id, parent_id)`` of the subtree to be added.
-- `idsmod_data`: This is an optional parameter. It consists of a list
-   Of arguments that have to be passed to the ``element_parent_ids()``
-   Function of **idsmod**. By default they are passed as positional arguments.
-   To pass keyword arguments, the syntax **key=value** and the option
-   **--keyargs** has to be used.
+- `idsmod_data` (optional): list of arguments to be passed to
+  ``element_parent_ids()``. By default they are passed as positional arguments.
+  To pass keyword arguments, using the syntax ``key=value``, use the option
+  ``--keyargs``.
+
+If attribute have been defined, as described in the following section,
+the attribute files are automatically detected and modified too.
 
 ### Deleting a subtree
 
-The script `bin/fastsubtrees-delete-subtree` will delete a node from the
-exiting tree representation. If the specified node is a leaf node, then only
-that node it is deleted. If it is an internal node, then the entire subtree is
-also deleted, i.e. the set of all the descendants of the specified node.
-
-When a node is deleted from a subtree, the attribute values corresponding to that node must
-also be deleted. In order to do that, the user must pass a file containing the path of the attribute files with `--attrs` option,
-so that the attribute files could also be updated such that the existing attribute values for the deleted
-node could also be deleted.
+The script `fastsubtrees-delete-subtree` is used to delete one or multiple
+nodes from an exiting tree representation. If the specified node is a leaf
+node, then only that node it is deleted. If it is an internal node, then the
+entire subtree is also deleted, i.e. the set of all the descendants of the
+specified node.
 
 The following parameters are used for the script:
 - `nodeid`: ID of a leaf node to be deleted, or of an internal node, i.e.
    the subtree root of the subtree to be deleted
 - `tree`: File containing the tree
 
-## Defining an attribute
+If attribute have been defined, as described in the following section,
+the attribute files are automatically detected and modified too.
 
-### Generating attribute files
+## Tree attributes
 
-The script`bin/fastsubtrees-attributes-construct` constructs a file containing
-the values of a specified attribute for the nodes of the tree. Not all nodes
-will necessarily have an attribute value associated with them. Attribute values
-can be integers, floats or strings.
+The tree can contain further information, except the IDs, in the form of
+attributes. Attribute values can be integers, floats or strings.
+Not all nodes will necessarily have an attribute value associated
+with them. Some nodes can contain multiple values for an attribute.
+
+### Adding an attribute
+
+The script `fastsubtrees-attr-construct` constructs a file containing
+the values of a specified attribute for the nodes of the tree.
 
 In order to generate attribute files, the user has to provide four input
 parameters along with an optional input parameter to run this script:
-- `outfile`: Name of the file to store the generated attributes in
 - `tree`: File containing the tree that has to be updated.
+- `attribute`: Name of the attribute
 - `attrmod`: A python module that defines a function ``attribute_values()``
    which may take arguments (``<attrmod_data>``) and returns pairs
    ``(element_id, attribute_value)`` for each node to which an attribute value
@@ -85,11 +112,16 @@ parameters along with an optional input parameter to run this script:
   To pass keyword arguments, the syntax **key=value** and the option
   **--keyargs** has to be used.
 
+### Removing an attribute
+
+To remove an attribute, just delete the file generated by
+`fastsubtrees-attr-construct`.
+
 ## Subtree queries
 
 ### Querying node identifiers
 
-The script `bin/fastsubtrees-query` loads a tree representation from file
+The script `fastsubtrees-query` loads a tree representation from file
 and performs a subtree IDs query to return a list of IDs of the subtree under a
 given node.
 
@@ -101,13 +133,12 @@ To run this script, two parameters are required:
 
 ## Querying attribute values
 
-The script `bin/fastsubtrees-attributes-query` outputs the values of a given
+The script `fastsubtrees-attr-query` outputs the values of a given
 attribute in a subtree under a given node.
 
 Three parameters are mandatory to run this script:
 - `tree`: File containing the tree. It is the output of
   **fastsubtrees-construct** (eventually modified by other scripts).
+- `attribute`: Name of the attribute to query
 - `subtreeroot`: ID of the root of the subtree for which the values
                  have to be queried
-- `attributefile`: File containing the attribute data for an attribute
-                   as output by **fastsubtrees-attributes-construct**.

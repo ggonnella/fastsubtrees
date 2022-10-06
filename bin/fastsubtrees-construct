@@ -39,50 +39,42 @@ Options:
                keywords and values by splitting on the first instance of '=';
                arguments which do not contain '=' are passed as positional,
                before any keyword argument
+  --keepattr   keep existing attribute files (if any) for the output file
   --quiet      disable log messages
   --debug      print debug information
   --help       show this help message and exit
   --version    show program's version number and exit
 """
 
+NCBI_DUMP_SEP = "\t|\t"
+NCBI_DUMP_TAXID_COL = 0
+NCBI_DUMP_PARENT_COL = 1
+
 import importlib
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, logger, _scripts_support
+from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
 
 def main(args):
   if args['--ntdump']:
     filename = Path(args['<ntdumpdir>']) / 'nodes.dmp'
     logger.info(f'Constructing tree from NCBI taxonomy dump file {filename}')
-    tree = Tree.construct_from_csv(str(filename), "\t|\t", 0, 1)
+    tree = Tree.construct_from_csv(str(filename), NCBI_DUMP_SEP,
+                      NCBI_DUMP_TAXID_COL, NCBI_DUMP_PARENT_COL)
   else:
-    logger.debug("Loading Python module '{}'".format(args['<idsmod>']))
-    modulename = Path(args["<idsmod>"]).stem
-    spec = importlib.util.spec_from_file_location(modulename,
-                                                  args["<idsmod>"])
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    if not m.__dict__.get("element_parent_ids"):
-      raise ValueError("The specified Python module {} does not define a "
-                       "function element_parent_ids()".format(args["<idsmod>"]))
-    logger.success("Ids module loaded, found generator element_parent_ids()")
+    m = _scripts_support.get_module(args['<idsmod>'], 'element_parent_ids')
     logger.info("Constructing tree using IDs yielded by the generator...")
-    if args["--keyargs"]:
-      keyargs = {k: v for k, v in \
-          [a.split("=", 1) for a in args["<idsmod_data>"] if "=" in a]}
-      posargs = [a for a in args["<idsmod_data>"] if "=" not in a]
-    else:
-      keyargs = {}
-      posargs = args["<idsmod_data>"]
-    if posargs:
-      logger.debug(f"Positional arguments passed to the generator: {posargs}")
-    if keyargs:
-      logger.debug(f"Keyword arguments passed to the generator: {keyargs}")
+    posargs, keyargs = _scripts_support.get_fn_args(\
+                          args["--keyargs"], args["<idsmod_data>"])
     tree = Tree.construct(m.element_parent_ids(*posargs, **keyargs))
   logger.success("Tree constructed")
   tree.to_file(args["<outfname>"])
+  if not args["--keepattr"]:
+    for fname in attribute.attrfiles(args["<outfname>"]).values():
+      logger.info("Removing obsolete attribute file %s", fname)
+      fname.unlink()
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version="0.1")
+  args = docopt(__doc__, version=VERSION)
   _scripts_support.setup_verbosity(args)
   main(args)

@@ -3,13 +3,12 @@
 List the values of a specified attribute in a specified subtree
 
 Usage:
-  fastsubtrees-attributes-query [options] <tree> <subtreeroot> <attributefile>
+  fastsubtrees-attr-query [options] <tree> <attribute> <subtreeroot>
 
 Arguments:
   tree           fastsubtrees-construct output
+  attribute      name of the attribute
   subtreeroot    ID of the subtree root
-  attributefile  file containing the attribute data for an attribute
-                 as output by fastsubtrees-attributes-construct
 
 Options:
   --quiet      disable log messages
@@ -21,14 +20,17 @@ Options:
   --version    show program's version number and exit
 """
 from docopt import docopt
-from fastsubtrees import Tree, logger, _scripts_support, attribute
+from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
 
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   subtree_root = int(args["<subtreeroot>"])
+  attributefile = attribute.attrfilename(args["<tree>"], args["<attribute>"])
+  logger.debug("Loading attribute '{}' values from file '{}'".\
+      format(args["<attribute>"], attributefile))
   attribute_list = attribute.get_attribute_list(tree, subtree_root,
-                     args["<attributefile>"])
+                                                attributefile)
   filtered = None
   if args["--filter"] or args["--countN"] or args["--countV"]:
     filtered = [a for a in attribute_list if a is not None]
@@ -45,6 +47,6 @@ def main(args):
     print(attribute_list)
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version="0.1")
+  args = docopt(__doc__, version=VERSION)
   _scripts_support.setup_verbosity(args)
   main(args)
