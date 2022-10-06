@@ -34,7 +34,7 @@ for attr in genome_size GC_content; do
   for ((i=0; i<$NREPEATS; i++)); do
     STEP="construct-$attr"
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-      fastsubtrees-attributes-construct $attr.attr $TREE \
+      fastsubtrees-attr-construct $TREE $attr \
         $FST_DATA_DIR/attribute_values.py --datatype ${attr_dt[$attr]} \
           --keyargs \
             filename=$FST_DATA_DIR/accession_taxid_attribute.tsv.gz \
@@ -46,8 +46,8 @@ for attr in genome_size GC_content; do
     for ROOT in $NODES; do
       echo "Step $STEP from node $ROOT, iteration $i..."
       /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-        fastsubtrees-attributes-query --filter --countN --countV \
-          $TREE $ROOT $attr.attr > \
+        fastsubtrees-attr-query --filter --countN --countV \
+          $TREE $attr $ROOT > \
         $OUTDIR/attr_values.$attr.$ROOT
     done
   done
