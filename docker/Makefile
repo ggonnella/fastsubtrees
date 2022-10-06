@@ -1,5 +1,6 @@
 default:
 	@echo "make image           build Docker image from the Dockerfile"
+	@echo "make download        download Docker image from the Dockerhub"
 	@echo "make container       create and run Docker container from the image"
 	@echo "make cleanup         remove Docker image and container"
 	@echo "make shell           interactive shell in Docker container"
@@ -8,7 +9,7 @@ default:
 	@echo "make benchmarks_all  run all benchmarks"
 	@echo "make start_app			  start the web server for the example application"
 
-.PHONY: image container shell \
+.PHONY: image download container shell \
 	      start_server create_test_db test \
 				start_app benchmarks benchmarks_all
 
@@ -26,12 +27,16 @@ image-no-cache:
 	docker build --tag ${IMAGE_NAME} . --no-cache
 
 USER=ggonnella
-VERSION=1.2rc1
+VERSION=1.2
 
 push:
 	docker login
 	docker tag ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}
 	docker push ${USER}/${IMAGE_NAME}:${VERSION}
+
+download:
+	docker pull ${USER}/${IMAGE_NAME}:${VERSION}
+	docker tag ${USER}/${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}
 
 container:
 	if [ -z "$$(docker ps -a | grep ${CONTAINER_NAME})" ]; then \
