@@ -27,7 +27,7 @@ image-no-cache:
 	docker build --tag ${IMAGE_NAME} . --no-cache
 
 USER=ggonnella
-VERSION=1.2
+VERSION=1.3
 
 push:
 	docker login
