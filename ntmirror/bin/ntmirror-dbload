@@ -35,7 +35,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
 from schema import And, Or
 from ntmirror import scripts_helper, Downloader, dbloader_mysql,\
-                     dbloader_sqlalchemy, dbschema
+                     dbloader_sqlalchemy, dbschema, VERSION
 
 def sqlalchemy_connection_from(args):
   connection_string = URL.create(drivername="mysql+mysqldb",
@@ -107,6 +107,6 @@ with snacli.args(output=["<output>"],
                  config=["<dbuser>", "<dbpass>", "<dbname>"],
                  input=["<dbsocket>"],
                  docvars={"common": scripts_helper.ARGS_DOC},
-                 version="1.0") as args:
+                 version=VERSION) as args:
   if args: main(validated(args))
 

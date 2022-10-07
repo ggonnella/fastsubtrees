@@ -12,7 +12,7 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='ntmirror',
-      version='1.3.0',
+      version='1.3.1',
       description="Easily updatable local NCBI taxonomy database copy",
       long_description=readme(),
       long_description_content_type="text/markdown",

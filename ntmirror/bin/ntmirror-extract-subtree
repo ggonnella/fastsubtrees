@@ -25,7 +25,7 @@ from schema import Use, And
 from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy.engine.url import URL
 import snacli
-from ntmirror import scripts_helper
+from ntmirror import scripts_helper, VERSION
 
 def main(args):
   connection_string = URL.create(drivername="mysql+mysqldb",
@@ -77,5 +77,5 @@ with snacli.args(params = ["<root>"],
                  config=["<dbuser>", "<dbpass>", "<dbname>"],
                  input=["<dbsocket>"],
                  docvars={"common": scripts_helper.ARGS_DOC},
-                 version="1.0") as args:
+                 version=VERSION) as args:
   if args: main(validated(args))

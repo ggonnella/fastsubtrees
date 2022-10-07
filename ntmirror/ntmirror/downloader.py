@@ -10,7 +10,9 @@ import sh
 import os
 
 class Downloader():
-  REMOTE = "ftp://ftp.ncbi.nih.gov/pub/taxonomy"
+  PROTOCOL1 = "ftp://"
+  PROTOCOL2 = "https://"
+  REMOTE = "ftp.ncbi.nih.gov/pub/taxonomy"
   DUMPFILENAME = "taxdump.tar.gz"
   TESTFILENAME = "taxdump_readme.txt"
   TIMESTAMP = "timestamp"
@@ -28,10 +30,13 @@ class Downloader():
     remotefile = self.REMOTE + "/" + self.DUMPFILENAME
     localfile = self.outdir + "/" + self.DUMPFILENAME
     timestampfile = self.outdir + "/" + self.TIMESTAMP
-    args = [remotefile, "-o", localfile, "-w", "%{size_download}", "-R"]
+    args = ["-o", localfile, "-w", "%{size_download}", "-R"]
     if os.path.exists(timestampfile):
       args += ["-z", timestampfile]
-    ret = sh.curl(*args)
+    try:
+      ret = sh.curl(self.PROTOCOL1 + remotefile, *args)
+    except sh.ErrorReturnCode:
+      ret = sh.curl(self.PROTOCOL2 + remotefile, *args)
     downloaded = int(ret.rstrip())
     if downloaded > 0:
       if decompress and not self.testmode:

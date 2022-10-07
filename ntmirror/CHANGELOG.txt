@@ -1,3 +1,6 @@
+== 1.3.1 ==
+- download using https if ftp is not working
+
 == 1.3.0 ==
 - version number changed to avoid a version name clash
 
