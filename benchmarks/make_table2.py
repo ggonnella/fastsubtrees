@@ -68,12 +68,12 @@ def main(args):
       results[subtree_id]['subtree_size'] = fields[1]
       results[subtree_id]['n_nodes_with_values'] = fields[2]
       results[subtree_id]['n_values'] = fields[3]
-  print('|' + ' | '.join([headers["subtree_id"]] + \
-                         [headers[x] for x in order]) + '|')
+  print('| ' + ' | '.join([headers["subtree_id"]] + \
+                         [headers[x] for x in order]) + ' |')
   print('|-'*(len(order)+1) + '|')
   for subtree_id in lines_order:
-    print('|' + ' | '.join([subtree_id] + \
-                           [str(results[subtree_id][x]) for x in order]) + '|')
+    print('| ' + ' | '.join([subtree_id] + \
+                           [str(results[subtree_id][x]) for x in order]) + ' |')
 
 if __name__ == "__main__":
   args = docopt(__doc__)
