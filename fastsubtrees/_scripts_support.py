@@ -20,6 +20,9 @@ def get_module(fname, function):
   fastsubtrees.logger.debug("Loading Python module '{}'".format(fname))
   modulename = Path(fname).stem
   spec = importlib.util.spec_from_file_location(modulename, fname)
+  if spec is None:
+    raise ValueError("The specified Python module {} cannot be loaded".\
+        format(fname))
   m = importlib.util.module_from_spec(spec)
   spec.loader.exec_module(m)
   if not m.__dict__.get(function):
