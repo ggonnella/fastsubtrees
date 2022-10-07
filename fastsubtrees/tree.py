@@ -248,7 +248,7 @@ class Tree():
         self.subtree_sizes.insert(len_coords + i, 0)
         self.parents.insert(len_coords + i, Tree.UNDEF)
       self.coords.insert(node_number, inspos)
-      self.subtree_sizes.insert(node_number, 1)
+      self.subtree_sizes.insert(node_number, 0)
       self.parents.insert(node_number, parent)
       for i in range(len_coords):
         if self.coords[i] >= inspos:
@@ -261,15 +261,11 @@ class Tree():
       p = self.parents[p]
 
   def delete_node(self, node_number, attributefilenames=[]):
-    elements = self.subtree_ids(node_number)
     coord = self.coords[node_number]
     subtree_size = self.subtree_sizes[node_number]
     for i in range(subtree_size + 1):
       self.treedata[coord + i] = Tree.DELETED
       self.__delete_node_in_attribute_list(coord + i, attributefilenames)
-    # for element in elements:
-    #   self.coords[element] = Tree.UNDEF
-    #   self.parents[element] = Tree.UNDEF
 
   def __insert_none_in_attribute_list(self, inspos, attributefilenames):
     for filename in attributefilenames:
