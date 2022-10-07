@@ -72,7 +72,7 @@ def main(args):
   if not args["--keepattr"]:
     for fname in attribute.attrfiles(args["<outfname>"]).values():
       logger.info("Removing obsolete attribute file %s", fname)
-      fname.unlink()
+      Path(fname).unlink()
 
 if __name__ == "__main__":
   args = docopt(__doc__, version=VERSION)
