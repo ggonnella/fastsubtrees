@@ -1,6 +1,16 @@
 import pytest
 import os
 from array import array
+from pathlib import Path
+
+@pytest.fixture
+def script():
+  return lambda fn: Path(__file__).parent.parent / 'bin' / fn
+
+@pytest.fixture
+def ids_modules():
+  return lambda fn: Path(__file__).parent.parent \
+      / 'fastsubtrees' / 'ids_modules' / fn
 
 @pytest.fixture
 def testdata():
@@ -26,6 +36,28 @@ def results_query_small_tree_id_1():
 @pytest.fixture
 def results_query_small_tree_id_8():
   return array('Q', [8, 3, 7, 9, 4, 5])
+
+@pytest.fixture
+def results_query_small_tree_id_8_attrX():
+  return [['H'], ['C'], ['G'], ['I'], ['D'], ['E']]
+
+@pytest.fixture
+def results_query_small_tree_id_8_attrX_after_add():
+  return [['H'], None, ['C'], ['G'], None, None, None, \
+          None, None, None, ['I'], ['D'], ['E']]
+
+@pytest.fixture
+def results_query_small_tree_id_8_attrX_after_add2():
+   return [['H'], ['F', 'X'], ['C'], ['G'], ['TEN'], ['TWELVE'], None, \
+           ['ELEVEN'], None, ['13', '10+3'], ['I'], ['D'], ['E']]
+
+@pytest.fixture
+def results_query_small_tree_id_8_add_subtree1():
+  return array('Q', [8, 6, 3, 7, 9, 4, 5])
+
+@pytest.fixture
+def results_query_small_tree_id_8_add_subtree2():
+  return array('Q', [8, 6, 3, 7, 10, 12, 15, 11, 14, 13, 9, 4, 5])
 
 @pytest.fixture
 def results_query_medium_tree_id_1():
