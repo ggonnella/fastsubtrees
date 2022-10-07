@@ -21,6 +21,8 @@ Arguments:
 Options:
   --replace      remove existing values of the attribute for the nodes
                  (default: values are added to the existing ones)
+  --strict       error if a node does not exist
+                 (default: ignore values for nodes which do not exist)
   --keyargs      split the arguments specified in <idsmod_data> into
                  keywords and values by splitting on the first instance of '=';
                  arguments which do not contain '=' are passed as positional,
@@ -54,7 +56,12 @@ def write_attribute_file(args, attrvalues):
       format(outfname))
   existing = attribute.read_attribute_values(tree, outfname)
   for k in attrvalues:
-    if args["--replace"] or existing[k] is None:
+    if k not in existing:
+      if args["--strict"]:
+        raise ValueError("Node {} does not exist".format(k))
+      else:
+        continue
+    elif args["--replace"] or existing[k] is None:
       existing[k] = attrvalues[k]
     else:
       existing[k].extend(attrvalues[k])
