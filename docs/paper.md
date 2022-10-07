@@ -73,11 +73,14 @@ This package can be applied to any tree in which the nodes
 are labeled by positive integers. I.e., although it was designed and
 tested mainly for the NCBI taxonomy tree, it is not limited to it.
 
-It can be installed using ``pip install fastsubtrees``. Its
-functionality can be used through either executable scripts or an API, which
-can be employed from other Python programs.
-Manuals are provided for both
-kind of interfaces. A complete test suite based on _pytest_ is provided.
+It can be installed using ``pip install fastsubtrees`` (provided that the
+``mariadb`` database and the ``mariadb`` pip package is installed in the system).
+A preinstalled
+version of the package, with all dependencies, is provided as a Docker image.
+The package functionality can be used
+through either executable scripts or an API, which can be employed from other
+Python programs. Manuals are provided for both kind of interfaces. A complete
+test suite based on _pytest_ is provided.
 
 The first step when using _fastsubtrees_ is constructing its tree
 representation and storing it to file. Any source can be used as input (e.g. tabular files, or
@@ -101,26 +104,28 @@ dynamic, i.e. it is possible to add and remove subtrees.
 
 # Subtree extraction benchmarks
 
-Benchmarks were performed on a Linux server with Intel Xeon E7-4850 2.0 Ghz
-CPU and 1 Tb RAM. Running times were measured as an average of 3 runs using
+Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU
+and 32 Gb RAM. Running times were measured as an average of 3 runs using
 GNU time version 1.9 [@GNUtime].
 For the tests Python version 3.10.2 was used.
+The tested version of fastsubtrees was 1.3.
 
-The NCBI taxonomy tree used for the tests was downloaded on May 28, 2022
+The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
 we developed the _ntmirror_ package (located in the directory ``ntmirror`` of
-the source code repository, version 1.1.0)
-[@NTMIRROR] installable using ``pip install ntmirror``.
-The tree contained 2949637 nodes as of May 28, 2022. The generation of the tree
+the source code repository, version 1.3.0)
+[@NTMIRROR] installable using ``pip install ntmirror`` (if the ``mariadb``
+package was previously installed).
+The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees-construct_ script required
-23 minutes and 35 seconds (average of 3 runs).
+9 minutes and 23 seconds (average of 3 runs).
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
 this solution in _ntmirror_: the dump data is loaded into a MariaDB
-database (version 10.6.8) and the script _ntmirror-extract-subtree_, based on
+database (version 10.6.10) and the script _ntmirror-extract-subtree_, based on
 SQLAlchemy allows to extract a subtree using SQL.
 
 To select subtrees of different sizes for the benchmarks, we started from the
@@ -132,37 +137,37 @@ node (TaxID 2), i.e. nodes 83333 (_Escherichia coli_ K12),
 The running time and memory usage of _fastsubtree_ are compared with those for
 hierarchical SQL queries in Table 1.
 
-| Subtree Id | Subtree Size | Avg. CPU Time SQL (s) | Avg. CPU Time Fastsubtrees (s) | Avg. Real Time SQL (s) | Average Real Time Fastsubtrees (s) | Memory Peak SQL (kb) | Memory Peak Fastsubtrees (kb) |
-|------------|--------------|-----------------------------------|--------------------------------------------|--------------------|--------------------------------|-----------------|--------------------------|
-| 511145     | 1            | 0,34                              | 0,37                                       | 0,68               | 0,74                           | 33184           | 159340                   |
-| 83333      | 36           | 0,33                              | 0,35                                       | 0,67               | 0,7                            | 33236           | 159920                   |
-| 562        | 3379         | 0,65                              | 0,36                                       | 1,75               | 0,72                           | 41772           | 156916                   |
-| 561        | 4434         | 0,79                              | 0,37                                       | 2,74               | 0,74                           | 44052           | 158940                   |
-| 543        | 22580        | 2,22                              | 0,36                                       | 7,61               | 0,72                           | 90012           | 157884                   |
-| 91347      | 31394        | 2,97                              | 0,37                                       | 9,85               | 0,74                           | 111576          | 159396                   |
-| 1236       | 122607       | 10,35                             | 0,4                                        | 37,5               | 0,81                           | 341864          | 163800                   |
-| 1224       | 226821       | 18,87                             | 0,43                                       | 78,4               | 0,95                           | 605384          | 165136                   |
-| 2          | 532460       | 43,27                             | 1,06                                       | 186,35             | 1,51                           | 1372496         | 174780                   |
+| Subtree root ID | Subtree size | SQL CPU time (s) | fastsubtrees CPU time (s) | SQL real time (s) | fastsubtrees real time (s) | SQL memory peak (MB) | fastsubtrees memory peak (MB) |
+|-----------------|--------------|------------------|---------------------------|-------------------|----------------------------|----------------------|-------------------------------|
+| 511145 | 1 | 0.15 | 0.13 | 1.39 | 0.13 | 33.8 | 146.3 |
+| 83333 | 36 | 0.15 | 0.12 | 2.62 | 0.12 | 33.9 | 146.3 |
+| 562 | 3380 | 0.17 | 0.12 | 4.84 | 0.12 | 40.8 | 146.2 |
+| 561 | 4435 | 0.17 | 0.12 | 6.15 | 0.12 | 42.6 | 146.3 |
+| 543 | 22747 | 0.37 | 0.12 | 36.80 | 0.13 | 81.0 | 146.2 |
+| 91347 | 31606 | 0.44 | 0.13 | 36.89 | 0.13 | 98.8 | 146.2 |
+| 1236 | 123293 | 1.50 | 0.15 | 60.85 | 0.15 | 289.0 | 146.3 |
+| 1224 | 228115 | 2.57 | 0.18 | 90.96 | 0.18 | 507.2 | 146.3 |
+| 2 | 535205 | 5.87 | 0.24 | 131.03 | 0.24 | 1140.4 | 146.3 |
 
 As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
-The attribute files generation using the
-_fastsubtrees-attributes-construct_ script required 29 seconds.
+The genome size attribute file generation using the
+_fastsubtrees-attr-construct_ script required 2.9 seconds.
 Table 2 reports the running time and memory usage for the extraction
-of the attribute values for different subtrees.
+of the genome size attribute values for different subtrees.
 
-| Subtree Id | Subtree Size | Avg. CPU Time (s) | Avg. Real Time (s) | Memory Peak (kb) | No. of Nodes with Values | No. of Values |
-|------------|--------------|-------------------------------|----------------|-------------|--------------------------|---------------|
-| 511145     | 1            | 0,55                          | 1,11           | 321952      | 1                        | 9             |
-| 83333      | 36           | 0,55                          | 1,1            | 319604      | 8                        | 38            |
-| 562        | 3379         | 0,56                          | 1,16           | 318804      | 165                      | 2160          |
-| 561        | 4434         | 0,56                          | 1,12           | 321520      | 174                      | 2246          |
-| 543        | 22580        | 0,66                          | 1,33           | 321116      | 839                      | 5774          |
-| 91347      | 31394        | 0,68                          | 1,38           | 320444      | 1150                     | 6709          |
-| 1236       | 122607       | 1                             | 2,01           | 323028      | 2819                     | 11167         |
-| 1224       | 226821       | 1,22                          | 2,73           | 322664      | 5090                     | 16063         |
-| 2          | 532460       | 2                             | 4,35           | 324052      | 10043                    | 27515         |
+| Subtree root ID | Subtree size | CPU time (s) | Real time (s) | Memory peak (MB) | N. nodes with values | N. values |
+|-----------------|--------------|--------------|---------------|------------------|----------------------|-----------|
+| 511145 | 1 | 0.21 | 0.22 | 305.7 | 1 | 9 |
+| 83333 | 36 | 0.21 | 0.22 | 305.7 | 8 | 38 |
+| 562 | 3380 | 0.22 | 0.22 | 306.0 | 165 | 2160 |
+| 561 | 4435 | 0.22 | 0.22 | 305.9 | 174 | 2246 |
+| 543 | 22747 | 0.24 | 0.25 | 306.0 | 839 | 5774 |
+| 91347 | 31606 | 0.25 | 0.25 | 306.0 | 1150 | 6709 |
+| 1236 | 123293 | 0.34 | 0.34 | 306.5 | 2830 | 11178 |
+| 1224 | 228115 | 0.41 | 0.42 | 306.9 | 5099 | 16072 |
+| 2 | 535205 | 0.66 | 0.66 | 307.5 | 10043 | 27515 |
 
 Finally, to provide an example of usage of fastsubtrees we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
