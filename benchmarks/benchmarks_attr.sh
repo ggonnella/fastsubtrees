@@ -16,6 +16,7 @@ TREE=$1
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
 FST_DATA_DIR=$FST_DIR/data
+FST_MOD_DIR=$FST_DIR/fastsubtrees/ids_modules
 
 source $SCRIPT_DIR/benchmarks_params.sh
 OUTFILE=${OUTFILE_PFX}_attr.tsv
@@ -35,7 +36,7 @@ for attr in genome_size GC_content; do
     STEP="construct-$attr"
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees-attr-construct $TREE $attr \
-        $FST_DATA_DIR/attribute_values.py --datatype ${attr_dt[$attr]} \
+        $FST_MOD_DIR/attr_from_tabular_file.py --datatype ${attr_dt[$attr]} \
           --keyargs \
             filename=$FST_DATA_DIR/accession_taxid_attribute.tsv.gz \
             taxid_col=1 attr_col=${attr_col[$attr]}

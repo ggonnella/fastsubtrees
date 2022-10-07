@@ -273,7 +273,7 @@ class Tree():
 
   def __insert_none_in_attribute_list(self, inspos, attributefilenames):
     for filename in attributefilenames:
-      with open(f'{filename}.attr', 'r+') as file:
+      with open(filename, 'r+') as file:
         contents = file.readlines()
         contents.insert(inspos-1, 'null' + "\n")
         file.seek(0)
@@ -281,7 +281,7 @@ class Tree():
 
   def __delete_node_in_attribute_list(self, pos, attributefilenames):
     for filename in attributefilenames:
-      with open(f'{filename}.attr', 'r+') as file:
+      with open(filename, 'r+') as file:
         contents = file.readlines()
         contents[pos-1] = str(Tree.DELETED) + "\n"
         file.seek(0)

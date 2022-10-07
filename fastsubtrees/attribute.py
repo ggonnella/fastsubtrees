@@ -34,3 +34,13 @@ def write_attribute_values(tree, attrvalues, outfile):
     attribute = attrvalues.get(element_id, None)
     outfile.write(json.dumps(attribute) + "\n")
 
+def read_attribute_values(tree, fname):
+  i = 0
+  all_ids = tree.subtree_ids(tree.root_id)
+  existing = {}
+  with open(fname, "r") as f:
+    for line in f:
+      data = json.loads(line.rstrip())
+      existing[all_ids[i]] = data
+      i += 1
+  return existing
