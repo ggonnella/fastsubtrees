@@ -261,7 +261,11 @@ class Tree():
       p = self.parents[p]
 
   def delete_node(self, node_number, attributefilenames=[]):
-    coord = self.coords[node_number]
+    try:
+      coord = self.coords[node_number]
+    except IndexError:
+      raise error.NodeNotFoundError(\
+          f"The node ID does not exist: {node_number}")
     subtree_size = self.subtree_sizes[node_number]
     for i in range(subtree_size + 1):
       self.treedata[coord + i] = Tree.DELETED
