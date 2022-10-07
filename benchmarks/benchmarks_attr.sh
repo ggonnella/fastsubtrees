@@ -39,7 +39,7 @@ for attr in genome_size GC_content; do
         $FST_MOD_DIR/attr_from_tabular_file.py --datatype ${attr_dt[$attr]} \
           --keyargs \
             filename=$FST_DATA_DIR/accession_taxid_attribute.tsv.gz \
-            taxid_col=1 attr_col=${attr_col[$attr]}
+            id_col=1 attr_col=${attr_col[$attr]}
   done
 
   for ((i=0; i<$NREPEATS; i++)); do
