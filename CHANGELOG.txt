@@ -1,3 +1,10 @@
+=== 1.3.1 ===
+- add scripts to modify attribute values and adding values after add-subtree
+- improved the documentation
+- distribute with package also module for attribute construction from tab files
+- fix a bug in subtree sizes after subtree insertions
+- test CLI tools
+
 === 1.3 ===
 - simplify scripts CLI interface
 

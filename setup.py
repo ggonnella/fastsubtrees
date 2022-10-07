@@ -9,7 +9,7 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='fastsubtrees',
-      version='1.3',
+      version='1.4',
       description='Tree representation for fast queries of '+\
                   'the list of IDs of any subtree',
       long_description=readme(),
@@ -38,12 +38,14 @@ setup(name='fastsubtrees',
                'bin/fastsubtrees-query',
                'bin/fastsubtrees-attr-construct',
                'bin/fastsubtrees-attr-query',
+               'bin/fastsubtrees-attr-add',
+               'bin/fastsubtrees-attr-delete',
                'bin/fastsubtrees-add-subtree',
                'bin/fastsubtrees-delete-subtree'],
       zip_safe=False,
-      test_suite="nose.collector",
       include_package_data=True,
       install_requires=['tqdm>=4.57.0', 'loguru>=0.5.1', 'docopt>=0.6.2',
         "schema>=0.7.4", "sh>=1.14.2", "PyYAML>=6.0", "ntmirror>=1.2"],
-      tests_require=['nose'],
+      test_suite="pytest",
+      tests_require=['pytest', 'pytest-console-scripts', 'sh'],
     )
