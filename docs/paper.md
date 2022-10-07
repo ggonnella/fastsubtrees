@@ -108,7 +108,7 @@ Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU
 and 32 Gb RAM. Running times were measured as an average of 3 runs using
 GNU time version 1.9 [@GNUtime].
 For the tests Python version 3.10.2 was used.
-The tested version of fastsubtrees was 1.3.
+The tested version of fastsubtrees was 1.4.
 
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
