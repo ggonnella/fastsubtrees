@@ -1,0 +1,8 @@
+if [ ! -e ncbi-taxonomy.tree ]; then
+  if [ ! -e ntdumpdir ]; then
+    echo "# Downloading the NCBI taxonomy dump..."
+    ntmirror-download ntdumpdir
+  fi
+  echo "# Building the fastsubtrees NCBI taxonomy tree..."
+  fastsubtrees-construct ncbi-taxonomy.tree --ntdump ntdumpdir
+fi

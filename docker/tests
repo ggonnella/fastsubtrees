@@ -1,0 +1,3 @@
+#!/bin/bash
+start-and-init-db
+cd /fastsubtrees && pytest

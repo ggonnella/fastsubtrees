@@ -4,10 +4,7 @@ dist
 __pycache__
 *.tree
 *.json
-lib
-dbschema
 .DS_Store
 */.DS_store
-.idea
 *.swp
-misc
+benchmarks_*.tsv

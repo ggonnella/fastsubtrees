@@ -1,0 +1,27 @@
+#!/bin/bash
+create-tree-file
+CONTAINER=$(hostname)
+function benchmark_done {
+  echo "# Done. The results are in $FILENAME"
+  echo "# To copy out of the container use:"
+  echo "# docker cp $CONTAINER:$FILENAME $FILENAME"
+  echo
+}
+if [ "$1" == "--all" ]; then
+  echo "# Running the fastsubtrees construction benchmarks..."
+  /fastsubtrees/benchmarks/benchmarks_construct.sh /fastsubtrees/ntdumpdir
+  FILENAME="/fastsubtrees/benchmarks_construct.tsv"
+  benchmark_done
+fi
+echo "# Running the fastsubtrees query benchmarks..."
+/fastsubtrees/benchmarks/benchmarks_fst.sh /fastsubtrees/ncbi-taxonomy.tree
+FILENAME="/fastsubtrees/benchmarks_fst.tsv"
+benchmark_done
+/fastsubtrees/benchmarks/benchmarks_attr.sh /fastsubtrees/ncbi-taxonomy.tree
+FILENAME="/fastsubtrees/benchmarks_attr.tsv"
+benchmark_done
+start-and-init-db
+/fastsubtrees/benchmarks/benchmarks_sql.sh myuser mypass ntmirror_test \
+  /run/mysqld/mysqld.sock
+FILENAME="/fastsubtrees/benchmarks_sql.tsv"
+benchmark_done

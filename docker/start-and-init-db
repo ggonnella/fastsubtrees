@@ -1,0 +1,12 @@
+#!/bin/bash
+if ! ( echo "quit" | mariadb ); then
+  mariadbd-safe &
+  while ! ( echo "quit" | mariadb ); do
+    echo "Waiting for MariaDB to start..."
+    sleep 1
+  done
+fi
+if [ ! -e /fastsubtrees/docker/db_created ]; then
+  mariadb -u root -prootpass < /fastsubtrees/docker/create_db.sql && \
+  touch /fastsubtrees/docker/db_created
+fi
