@@ -65,17 +65,36 @@ child nodes must be provided after their parent node).
 
 ## Installation
 
-The package can be installed using ``pip`` if ``mariadb`` has been previously
-installed and configured on the system, including its Python connector package.
+The package can be installed using ``pip install fastsubtrees``.
 
-## Docker image
+## Docker
 
 To try or test the package, it is possible to use ``fastsubtrees``
-by employing the Docker image defined in ``docker/Dockerfile`.
+by employing the Docker image defined in ``Dockerfile``.
 This does not require any external database installation and configuration.
 
-The image can be generated using ``make image``.
-A container can be started from the image using ``make container``.
+```
+# create a Docker image
+docker build --tag "fastsubtrees" .
+
+# create a container and run it
+docker run -p 8050:8050 --detach --name fastsubtreesC fastsubtrees
+# or, if it was already created and stopped, restart it using:
+# docker start fastsubtreesC
+
+# run the tests
+docker exec fastsubtreesC tests
+
+# run the benchmarks, skipping repeating tree creation
+docker exec fastsubtreesC benchmarks
+
+# run all benchmarks, including tree creation
+docker exec fastsubtreesC benchmarks --all
+
+# run the example application
+docker exec fastsubtreesC start-example-app
+# now open it in the browser at https://0.0.0.0:8050
+```
 
 ## Tests
 
@@ -86,7 +105,7 @@ which must be given in ``ntmirror/tests/config.yaml``;
 database-dependent tests are skipped if this configuration file is not provided.
 
 The entire test suite can be also run from the Docker container,
-by using ``make test`` from the subdirectory ``docker``.
+without further configuration, see above the _Docker_ section.
 
 ## Benchmarks
 
@@ -95,9 +114,8 @@ These require data, which is downloaded from NCBI taxonomy and
 some pre-computed example data which is provided in the ``data`` subdirectory
 (genome sizes and GC content).
 
-The benchmarks can be convienently run from the Docker container,
-by using ```make benchmarks``` or ```make benchmarks_all```
-from the subdirectory ``docker``.
+The benchmarks can be convienently run from the Docker container, without
+requiring a database installation and setup, see above the _Docker_ section.
 
 The ```_all``` version also benchmarks the construction of the representation
 of the NCBI taxonomy tree and requires about 40-70 minutes to complete,
@@ -144,3 +162,5 @@ attributes in subtrees of the NCBI taxonomic tree.
 This example application is located under ``genomes-attributes-viewer``. For
 more information see the ``genomes-attributes-viewer/README.md`` file.
 
+The application can be conveniently setup and started using the Docker
+image, see above in the _Docker_ section.
