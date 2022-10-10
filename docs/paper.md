@@ -73,14 +73,14 @@ This package can be applied to any tree in which the nodes
 are labeled by positive integers. I.e., although it was designed and
 tested mainly for the NCBI taxonomy tree, it is not limited to it.
 
-It can be installed using ``pip install fastsubtrees`` (provided that the
-``mariadb`` database and the ``mariadb`` pip package is installed in the system).
-A preinstalled
-version of the package, with all dependencies, is provided as a Docker image.
+It can be installed using ``pip install fastsubtrees``.
 The package functionality can be used
 through either executable scripts or an API, which can be employed from other
 Python programs. Manuals are provided for both kind of interfaces. A complete
-test suite based on _pytest_ is provided.
+test suite based on _pytest_ is provided. Running the complete tests, comparative
+benchmarks and the example application (see below) requires a database
+installation and setup; however, a Docker image is provided, which allows
+to simply run benchmarks, tests and the example application without this hassle.
 
 The first step when using _fastsubtrees_ is constructing its tree
 representation and storing it to file. Any source can be used as input (e.g. tabular files, or
@@ -184,7 +184,8 @@ Aman Modi: software development, test suite, example application,
 documentation and benchmarks.
 
 Giorgio Gonnella: funding acquisition, conceptualization,
-software development, project supervision and manuscript redaction.
+software development, test suite, documentation, Docker image,
+project supervision and manuscript redaction.
 
 # Funding
 

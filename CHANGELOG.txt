@@ -1,3 +1,10 @@
+=== 1.5 ===
+- do not automatically install ntmirror, which is only required for benchmarks
+and the example application; this avoids to create a dependency to mariadb
+and thus allows simpler installation using pip
+- rewrite the Docker image
+- tests, benchmarks and example app can be started using a simpler syntax
+
 === 1.4 ===
 - add scripts to modify attribute values and adding values after add-subtree
 - improved the documentation
