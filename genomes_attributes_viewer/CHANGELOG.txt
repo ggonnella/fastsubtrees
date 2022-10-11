@@ -1,0 +1,6 @@
+== 1.1 ==
+- options to specify port and host
+- update documentation
+
+== 1.0 ==
+- package created
