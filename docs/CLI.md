@@ -135,14 +135,14 @@ with them. Some nodes can contain multiple values for an attribute.
 The script `fastsubtrees attr construct` constructs a file containing
 the values of a specified attribute for the nodes of the tree.
 
-In order to generate attribute files, the user has to provide four input
-parameters along with an optional input parameter to run this script:
+In order to generate attribute files, the user has to always
+provide the following parameters:
 - `tree`: File containing the tree that has to be updated.
 - `attribute`: Name of the attribute
-- `attrmod`: A python module that defines a function ``attribute_values()``
-   which may take arguments (``<attrmod_data>``) and returns pairs
-   ``(element_id, attribute_value)`` for each node to which an attribute value
-   exists.
+- `attrmod`: Path to a python module that defines a function
+  ``attribute_values()`` which may take arguments (``<attrmod_data>``) and
+  returns pairs ``(element_id, attribute_value)`` for each node to which an
+  attribute value exists.
 - `attrmod_data`: This is an optional parameter. It consists of a list of
   arguments to be passed to the ``attribute_values()`` function of the module
   specified as **attrmod**. By default they are passed as positional arguments.
@@ -151,17 +151,15 @@ parameters along with an optional input parameter to run this script:
 
 A module using the described ``attrmod`` interface for adding attributes
 from tabular files is provided under ``fastsubtrees/ids_modules`` and
-can be used as follows:
+can be selected by the shorthand option ``--tab``:
 ```
-fastsubtrees attr construct my.tree myattribute \
-   fastsubtrees/ids_modules/attr_from_tabular_file.py tabularfile.tsv
+fastsubtrees attr construct my.tree myattribute --tab tabularfile.tsv
 ```
 By default, the IDs are supposed to be in column 0, the attribute values in
 column 1 and the columns to be tab-separated; different values can be
 provided as keyword arguments, e.g.:
 ```
-fastsubtrees attr construct my.tree myattribute \
-   fastsubtrees/ids_modules/attr_from_tabular_file.py tabularfile.tsv
+fastsubtrees attr construct my.tree myattribute --tab tabularfile.tsv \
    --keyargs id_col=2 attr_col=10 separator=';'
 ```
 
@@ -179,9 +177,8 @@ interface as ``fastsubtrees attr construct`` (see above).
 
 ### Editing attribute values
 
-To add new values for an attribute, ``fastsubtrees attr add`` is used.
-It offers the same
-interface as ``fastsubtrees attr construct`` (see above).
+To add new values for an attribute, ``fastsubtrees attr add`` is used. It
+offers the same interface as ``fastsubtrees attr construct`` (see above).
 
 By default, the new values of the attributes for a node are added to the
 existing ones. If the existing ones shall be replaced by the new ones,

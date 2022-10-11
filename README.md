@@ -155,16 +155,15 @@ from the example data (GC content and genome size of Bacterial genomes)
 stored in the repository:
 
 ```
-# add a GC content attribute from a tabular file
-# the IDs are in column 1, the values in column 3 of the table
-fastsubtrees attr construct nt.tree GC_content \
-  fastsubtrees/ids_modules/attr_from_tabular_file.py \
-  data/accession_taxid_attribute.tsv.gz 1 3
 # add a genome size attribute from a tabular file
 # the IDs are in column 1, the values in column 2 of the table
-fastsubtrees attr construct nt.tree genome_size \
-  fastsubtrees/ids_modules/attr_from_tabular_file.py \
+fastsubtrees attr construct nt.tree genome_size --tab \
   data/accession_taxid_attribute.tsv.gz 1 2
+
+# add a GC content attribute from a tabular file
+# the IDs are in column 1, the values in column 3 of the table
+fastsubtrees attr construct nt.tree GC_content --tab \
+  data/accession_taxid_attribute.tsv.gz 1 3
 ```
 
 Once the attributes are created, their values in any subtree can be

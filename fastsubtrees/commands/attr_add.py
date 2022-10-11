@@ -3,8 +3,8 @@
 Add new values to files for a given attribute present in the database
 
 Usage:
-  fastsubtrees attr add [options] <tree> <attribute>
-                                  <attrmod> [<attrmod_data>...]
+  fastsubtrees attr add [options] <tree> <attribute> <attrmod> [<attrmod_data>...]
+  fastsubtrees attr add [options] <tree> <attribute> --tab <tabfile> [<attrmod_data>...]
 
 Arguments:
   tree          fastsubtrees tree representation file,
@@ -14,11 +14,18 @@ Arguments:
                 which may take arguments (<attrmod_data>) and returns pairs
                 (element_id, attribute_value) for each node to which an
                 attribute value shall be added.
+  tabfile       If the --tab option is used, the module
+                fastsubtrees/ids_modules/attr_from_tabular_file.py is used;
+                the tabfile argument in this case is the path to the tabular
+                file containing the attribute values.
   attrmod_data  [optional] arguments to be passed to the attribute_values()
                 function of the module specified as <attrmod>; to pass keyword
                 arguments, use the syntax "key=value" and the option --keyargs
 
 Options:
+  --tab          use a tabular file as source of input data;
+                 shorthand for using the module
+                 fastsubtrees/ids_modules/attr_from_tabular_file.py
   --replace      remove existing values of the attribute for the nodes
                  (default: values are added to the existing ones)
   --strict       error if a node does not exist
@@ -72,7 +79,11 @@ def write_attribute_file(args, attrvalues):
       format(outfname))
 
 def main(args):
-  m = _scripts_support.get_module(args["<attrmod>"], "attribute_values")
+  if args["--tab"]:
+    import fastsubtrees.ids_modules.attr_from_tabular_file as m
+    args["<attrmod_data>"] = [args["<tabfile>"]] + args["<attrmod_data>"]
+  else:
+    m = _scripts_support.get_module(args["<attrmod>"], "attribute_values")
   posargs, keyargs = _scripts_support.get_fn_args(\
                           args["--keyargs"], args["<attrmod_data>"])
   cast = _scripts_support.get_datatype_casting_fn(args["--datatype"], m, \
