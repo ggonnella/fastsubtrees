@@ -197,7 +197,7 @@ verification of association rules’’. The funders had no role in study design
 data collection and analysis, decision to publish, or preparation of the
 manuscript.
 
-# Aknownledgements
+# Acknowledgements
 
 The authors would like to thank Serena Lam (Department of Bioinformatics,
 University of Göttingen) for language style suggestions and grammar corrections
