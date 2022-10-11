@@ -1,1 +1,8 @@
--e .
+sqlalchemy
+sqlalchemy_repr
+mysql
+mariadb
+loguru
+snacli
+schema
+ntdownload
