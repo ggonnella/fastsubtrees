@@ -13,6 +13,7 @@ default:
 	@echo ""
 	@echo "Test suite:"
 	@echo "  make tests           run tests using pytest, locally"
+	@echo "  make testcov         pytest-cov coverage report"
 	@echo ""
 	@echo "Create Docker image/container:"
 	@echo "  make image           build Docker image from the Dockerfile"
@@ -35,7 +36,7 @@ default:
 .PHONY: install sdist wheel clean upload \
 	      image image-no-cache download-image container docker-push \
 				docker-clean docker-shell docker-benchmarks docker-benchmarks-all \
-				docker-start-example-app tests docker-tests
+				docker-start-example-app tests docker-tests testcov
 
 PYTHON?=python3
 PIP?=pip3
@@ -58,6 +59,10 @@ clean:
 
 tests:
 	pytest
+
+testcov:
+	pip install pytest-cov and running
+	pytest --cov=fastsubtrees -v tests/
 
 upload: tests clean sdist wheel
 	cd dist; \
