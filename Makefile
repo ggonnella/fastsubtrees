@@ -59,7 +59,7 @@ clean:
 tests:
 	pytest
 
-upload: tests cleanup sdist wheel
+upload: tests clean sdist wheel
 	cd dist; \
   for file in *; do \
     twine check $$file && \
