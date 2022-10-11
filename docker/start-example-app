@@ -3,13 +3,12 @@ if [ ! -e /fastsubtrees/example-app-initialized ]; then
   # doing this allows to avoid re-creating the tree data
   # if it was already done before, e.g. for the benchmarks
   create-tree-file
-  rm -rf /fastsubtrees/genomes-attributes-viewer/ntdumps
-  ln -s /fastsubtrees/ntdumpdir /fastsubtrees/genomes-attributes-viewer/ntdumps
-  rm -f /fastsubtrees/genomes-attributes-viewer/nt.tree
+  rm -rf /fastsubtrees/genomes_attributes_viewer/ntdumps
+  ln -s /fastsubtrees/ntdumpdir /fastsubtrees/genomes_attributes_viewer/ntdumps
+  rm -f /fastsubtrees/genomes_attributes_viewer/nt.tree
   ln -s /fastsubtrees/ncbi-taxonomy.tree \
-        /fastsubtrees/genomes-attributes-viewer/nt.tree
-  pip install -r /fastsubtrees/genomes-attributes-viewer/requirements.txt
-  cd /fastsubtrees/genomes-attributes-viewer/ && ./setup.py
+        /fastsubtrees/genomes_attributes_viewer/nt.tree
+  cd /fastsubtrees/genomes_attributes_viewer/ && pip install -e .
   touch /fastsubtrees/example-app-initialized
 fi
-cd /fastsubtrees/genomes-attributes-viewer/ && ./start.py
+genomes-attributes-viewer
