@@ -1,3 +1,9 @@
+=== 1.6 ===
+- single CLI tool with subcommands
+- added --tab option to simplify operation with tabular file as input source
+- improved the CLI documentation, added examples
+- improved the output of the attr query tool
+
 === 1.5 ===
 - do not automatically install ntmirror, which is only required for benchmarks
 and the example application; this avoids to create a dependency to mariadb
