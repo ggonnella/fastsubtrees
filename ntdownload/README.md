@@ -39,6 +39,12 @@ is used.
 The return value of ``run()`` is ``True`` if a dump file was downloaded,
 ``False`` if no newer version was available.
 
+## ntnames
+
+The script ``ntnames`` is provided, which, after download using ``ntdownload``
+can be used for creating a list of taxonomy IDs and scientific names,
+which can be used as attribute source file for fastsubtrees.
+
 ## Test suite
 
 The test suite is run using ``pytest``.

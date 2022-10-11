@@ -173,6 +173,21 @@ easily queried:
 fastsubtrees attr query --ids nt.tree genome_size,GC_content 562
 ```
 
+#### Adding the taxa names
+
+Taxa names can be displayed alongside the taxa ID, by storing them
+as an attribute. To extract the names from the NCBI taxonomy database
+dumps, the _ntdownload_ package provides a ``ntnames`` command:
+
+```
+# extract the names from the dump files
+ntnames ntdumps > names.tsv
+# create the attribute file
+fastsubtrees attr construct nt.tree taxname --tab names.tsv
+# query ID, taxa names and genome sizes in a subtree
+fastsubtrees attr query --ids nt.tree taxname,genome_size 562
+```
+
 #### CLI example with generic data
 
 Fastsubtrees is not only usable with the NCBI taxonomy tree. The following

@@ -11,3 +11,5 @@ benchmarks_*.tsv
 ntdumps
 *.attr
 .coverage*
+names.tsv
+scientific_names.tsv
