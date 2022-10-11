@@ -23,7 +23,7 @@ for ((i=0; i<$NREPEATS; i++)); do
   for ROOT in 511145 83333 562 561 543 91347 1236 1224 2; do
     echo "Step $STEP from node $ROOT, iteration $i..."
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-      fastsubtrees-query $TREE $ROOT > \
+      fastsubtrees query $TREE $ROOT > \
         $OUTDIR/fastsubtrees.subtree.$ROOT
   done
 done
