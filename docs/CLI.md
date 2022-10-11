@@ -217,3 +217,9 @@ Three parameters are mandatory to run the query:
 - `attribute`: Name of the attribute to query
 - `subtreeroot`: ID of the root of the subtree for which the values
                  have to be queried
+
+By default, only the attribute values are displayed, one node per line,
+only for nodes for which at least one value exists.
+To display the node ID alongside the values, use the option ``--ids``.
+To display also the results (``None``) also for nodes for which no
+value exists, use the option ``--nones``.
