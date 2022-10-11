@@ -22,6 +22,14 @@ def test_construct(testout, testdata, ids_modules, script, script_runner):
   assert os.path.exists(testout("small_tree.tree.attrX.attr"))
 
 @pytest.mark.script_launch_mode('subprocess')
+def test_construct_tab(testout, testdata, ids_modules, script, script_runner):
+  args = ["construct", testout("small_tree.tree"), "--tab",
+          testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(testout("small_tree.tree"))
+
+@pytest.mark.script_launch_mode('subprocess')
 def test_query(testout, testdata, ids_modules, script, script_runner,
                results_query_small_tree_id_8,
                results_query_small_tree_id_8_attrX):

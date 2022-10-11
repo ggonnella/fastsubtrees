@@ -2,10 +2,15 @@
 """
 Construct a tree data structure for fast subtrees queries.
 
-The tree information is obtained in one of two ways:
+The tree information is obtained in one of these ways:
 
 - simplified mode for NCBI taxonomy:
   by using the NCBI taxonomy dump files and the --ntdump option
+
+- tabular file mode:
+  by using the --tab option and a TAB-separated tabular file as input,
+  with two columns: the first one contains
+  the element ID, the second one contains the parent ID.
 
 - generic mode:
   by using the specified Python module "idsmod" (see below)
@@ -15,12 +20,17 @@ The tree information is obtained in one of two ways:
 Usage:
   fastsubtrees construct [options] <outfname> <idsmod> [<idsmod_data>...]
   fastsubtrees construct [options] <outfname> --ntdump <ntdumpdir>
+  fastsubtrees construct [options] <outfname> --tab <tabfile>
 
 Common arguments:
   outfname     desired name for the output file
 
 Arguments for NCBI taxonomy simplified mode:
   ntdumpdir    directory containing NCBI taxonomy dump files
+
+Arguments for tabular file mode:
+  tabfile      tabular file containing the tree information in two columns
+               (element ID <TAB> parent ID)
 
 Arguments for generic mode:
   idsmod       Python module defining a function element_parent_ids()
@@ -35,6 +45,8 @@ Arguments for generic mode:
 Options:
   --ntdump     use the NCBI taxonomy simplified mode (see above)
                to construct the tree from NCBI taxonomuy dump files
+  --tab        use the tabular file mode (see above) to construct the tree
+               from a TAB-separated tabular file
   --keyargs    split the arguments specified in <idsmod_data> into
                keywords and values by splitting on the first instance of '=';
                arguments which do not contain '=' are passed as positional,
@@ -61,6 +73,10 @@ def main(args):
     logger.info(f'Constructing tree from NCBI taxonomy dump file {filename}')
     tree = Tree.construct_from_csv(str(filename), NCBI_DUMP_SEP,
                       NCBI_DUMP_TAXID_COL, NCBI_DUMP_PARENT_COL)
+  elif args['--tab']:
+    filename = Path(args['<tabfile>'])
+    logger.info(f'Constructing tree from tabular file {filename}')
+    tree = Tree.construct_from_csv(str(filename), "\t", 0, 1)
   else:
     m = _scripts_support.get_module(args['<idsmod>'], 'element_parent_ids')
     logger.info("Constructing tree using IDs yielded by the generator...")

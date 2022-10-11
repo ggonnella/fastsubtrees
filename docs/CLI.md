@@ -31,12 +31,13 @@ The following subcommands are available:
 The subcommand ``fastsubtrees construct`` constructs the tree representation
 from a tabular file.
 
-The script has two modes of use, one generic and one specific for the
-NCBI taxonomy tree dumps (for which the library was originally designed).
-Common to both modes is the first parameter, which is the output file name,
-containing the tree data, used for the subsequent queries.
+The script has different modes of use, depending on the input format,
+as described in the following subsections.
 
-### NCBI taxonomy construction mode
+Common to all modes of use is the first parameter, which is the output file
+name, containing the tree data, used for the subsequent queries.
+
+### NCBI taxonomy tree construction
 
 For constructing the NCBI taxonomy tree, the directory containing ``nodes.dmp``
 is specified, after using the ``--ntdump`` option.
@@ -44,6 +45,21 @@ Example:
 ```
 fastsubtrees-construct my.tree --ntdump ntdumpsdir
 ```
+
+### Using a tabular file
+
+If the input data is contained in a TAB-separated input file, with two
+columns, the elements IDs in the first column, and the parent IDs in the second
+column, then the ``--tab`` option can be used:
+
+Example:
+```
+fastsubtrees-construct my.tree --tab elems_and_parents.tsv
+```
+
+If the separator is not TAB, or the column order is different, use the generic
+tree construction mode described below,
+passing the ``ids_from_tabular_file.py`` module.
 
 ### Generic tree construction mode
 
