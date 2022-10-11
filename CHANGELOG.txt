@@ -1,3 +1,6 @@
+=== 1.6.1 ===
+- fix packaging: added missing __init__.py to commands subdir
+
 === 1.6 ===
 - single CLI tool with subcommands
 - added --tab option to simplify operation with tabular file as input source
