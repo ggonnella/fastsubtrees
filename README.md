@@ -1,3 +1,5 @@
+# Fastsubtrees
+
 Fastsubtrees is a Python library and a set of scripts, for handling fairly
 large trees (in the order of magnitude of millions nodes), in particular
 allowing the fast extraction of any subtree.
@@ -21,7 +23,7 @@ Along with numerical node identifiers, additional
 information can be stored for each node, by defining any number of optional
 node attributes.
 
-# Node identifiers
+## Node identifiers
 
 Each node must be represented by a unique positive ID. The IDs must not
 necessarily be all consecutive (i.e. some "holes" may be present), but the
@@ -34,7 +36,7 @@ However, the library can be used on any other tree. For this, if the IDs are
 non-numerical, contain zero or negative numbers, or the ID space is not compact,
 they must be first mapped to different IDs.
 
-# Attributes
+## Attributes
 
 Besides a numerical node identifier, for each node of the tree additional
 information can be stored in form of _attributes_.  Any number of attributes
@@ -47,7 +49,7 @@ values are stored. The attributes are also stored in deep-first traversal
 order, so that the list of attribute values for an entire subtree can be
 queried efficiently.
 
-# Tree construction
+## Tree construction
 
 For the construction of the tree a data source for the tree node identifiers
 must be provided. For each node, the data source must provide the ID of the node
@@ -61,13 +63,13 @@ The same interface is used when adding a new subtree
 (with the difference, in the current implementation, that in this case
 child nodes must be provided after their parent node).
 
-# Working with the library
+## Working with the library
 
-## Installation
+### Installation
 
 The package can be installed using ``pip install fastsubtrees``.
 
-## Docker
+### Docker
 
 To try or test the package, it is possible to use ``fastsubtrees``
 by employing the Docker image defined in ``Dockerfile``.
@@ -96,7 +98,7 @@ docker exec fastsubtreesC start-example-app
 # now open it in the browser at https://0.0.0.0:8050
 ```
 
-## Tests
+### Tests
 
 To run the test suite, you can use ``pytest`` (or ``make tests``).
 The tests include tests of ``fastsubtrees`` and of the sub-package ``ntmirror``.
@@ -107,7 +109,7 @@ database-dependent tests are skipped if this configuration file is not provided.
 The entire test suite can be also run from the Docker container,
 without further configuration, see above the _Docker_ section.
 
-## Benchmarks
+### Benchmarks
 
 Benchmarks can be run using the shell scripts provided under ``benchmarks``.
 These require data, which is downloaded from NCBI taxonomy and
@@ -121,7 +123,7 @@ The ```_all``` version also benchmarks the construction of the representation
 of the NCBI taxonomy tree and requires about 40-70 minutes to complete,
 depending on the system.
 
-## CLI and API
+### CLI and API
 
 Command line scripts are provided, which allow to perform all implemented
 operations: construct a tree, add and delete leaf nodes
@@ -137,9 +139,9 @@ The scripts are described in the document ``docs/cli.md``.
 Alternatively, the library functionality can be also directly accessed using
 the API, which are documented in ``docs/api.md``.
 
-# Subpackages
+## Subpackages
 
-## ntmirror
+### ntmirror
 
 When working with the NCBI taxonomy database, a local copy of the NCBI taxonomy
 dump can be obtained and kept up-to-date using the _ntmirror_ package, which
@@ -153,7 +155,7 @@ from it using hierarchical SQL queries.
 Please refer to the user manual of _ntmirror_ located under ``ntmirror/docs``
 for more information.
 
-## Genomes Attributes Viewer
+### Genomes Attributes Viewer
 
 An interactive web application based on ``fastsubtrees`` was developed using
 _dash_. It allows to graphically display the distribution of values of
