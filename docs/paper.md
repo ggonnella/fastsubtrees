@@ -108,25 +108,27 @@ Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU
 and 32 Gb RAM. Running times were measured as an average of 3 runs using
 GNU time version 1.9 [@GNUtime].
 For the tests Python version 3.10.2 was used.
-The tested version of fastsubtrees was 1.4.
+The tested version of fastsubtrees was 1.6.1.
 
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
-we developed the _ntmirror_ package (located in the directory ``ntmirror`` of
-the source code repository, version 1.3.0)
-[@NTMIRROR] installable using ``pip install ntmirror`` (if the ``mariadb``
-package was previously installed).
+we developed the _ntdownload_ package (located in the directory ``ntdownload``
+of the source code repository, version 1.4)
+[@NTDOWNLOAD] installable using ``pip install ntdownload``.
 The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
-using the _fastsubtrees-construct_ script required
+using the _fastsubtrees construct_ command required
 9 minutes and 23 seconds (average of 3 runs).
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
-this solution in _ntmirror_: the dump data is loaded into a MariaDB
-database (version 10.6.10) and the script _ntmirror-extract-subtree_, based on
+this solution in a package _ntmirror_: the dump data downloaded by _ntdownload_
+is loaded into a MariaDB database (version 10.6.10)
+and the script _ntmirror-extract-subtree_, based on
 SQLAlchemy allows to extract a subtree using SQL.
+The installation of _ntmirror_ using ``pip`` requires the installation
+of MariaDB and its Python connector (_mariadb_ package).
 
 To select subtrees of different sizes for the benchmarks, we started from the
 taxonomy ID of _Escherichia coli_ K12 MG1655 (511145) and climbed up the
@@ -153,7 +155,7 @@ As an example of attributes associated to tree nodes, we computed GC content and
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
 The genome size attribute file generation using the
-_fastsubtrees-attr-construct_ script required 2.9 seconds.
+_fastsubtrees attr construct_ command required 2.9 seconds.
 Table 2 reports the running time and memory usage for the extraction
 of the genome size attribute values for different subtrees.
 
