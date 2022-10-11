@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Add new values to files for a given attribute present in the database
+Creates files for a given attribute present in the database
 
 Usage:
-  fastsubtrees-attr-add [options] <tree> <attribute>
-                                  <attrmod> [<attrmod_data>...]
+  fastsubtrees attr construct [options] <tree> <attribute>
+                                        <attrmod> [<attrmod_data>...]
 
 Arguments:
   tree          fastsubtrees tree representation file,
@@ -13,16 +13,12 @@ Arguments:
   attrmod       Python module defining a function attribute_values()
                 which may take arguments (<attrmod_data>) and returns pairs
                 (element_id, attribute_value) for each node to which an
-                attribute value shall be added.
+                attribute value exists.
   attrmod_data  [optional] arguments to be passed to the attribute_values()
                 function of the module specified as <attrmod>; to pass keyword
                 arguments, use the syntax "key=value" and the option --keyargs
 
 Options:
-  --replace      remove existing values of the attribute for the nodes
-                 (default: values are added to the existing ones)
-  --strict       error if a node does not exist
-                 (default: ignore values for nodes which do not exist)
   --keyargs      split the arguments specified in <idsmod_data> into
                  keywords and values by splitting on the first instance of '=';
                  arguments which do not contain '=' are passed as positional,
@@ -52,22 +48,9 @@ def write_attribute_file(args, attrvalues):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
   outfname = attribute.attrfilename(args["<tree>"], args["<attribute>"])
-  logger.debug("Reading existing attribute values from file '{}'".\
-      format(outfname))
-  existing = attribute.read_attribute_values(tree, outfname)
-  for k in attrvalues:
-    if k not in existing:
-      if args["--strict"]:
-        raise ValueError("Node {} does not exist".format(k))
-      else:
-        continue
-    elif args["--replace"] or existing[k] is None:
-      existing[k] = attrvalues[k]
-    else:
-      existing[k].extend(attrvalues[k])
   logger.debug("Writing attribute values to file '{}'...".format(outfname))
   with open(outfname, "w") as outfile:
-    attribute.write_attribute_values(tree, existing, outfile)
+    attribute.write_attribute_values(tree, attrvalues, outfile)
   logger.success("Attribute values successfully written to file '{}'".\
       format(outfname))
 

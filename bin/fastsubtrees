@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""
+Construct, modify or query a tree data structure for fast subtree queries.
+
+Usage:
+  fastsubtrees [attr] <command> [<args>...]
+
+Available commands:
+  construct         Construct the tree data structure and save it to file
+  query             List the IDs of the subtree under a given node
+  add               Add new nodes to an existing tree data structure
+  delete            Remove nodes from an existing tree data structure
+  attr construct    Save values of an attribute to (some of the) nodes of a tree
+  attr query        List the values of an attribute in a given subtree
+  attr add          Add additional attribute values for more nodes of a tree
+  attr delete       Delete some or all values of an attribute
+
+See 'fastsubtrees <command> --help' for more information on a specific command.
+
+"""
+from docopt import docopt
+from fastsubtrees import VERSION, _scripts_support
+
+if __name__ == '__main__':
+  args = docopt(__doc__, version=VERSION, options_first=True)
+  command = args['<command>']
+  if command == 'construct':
+    if args['attr']:
+      import fastsubtrees.commands.attr_construct as cmd
+    else:
+      import fastsubtrees.commands.construct as cmd
+  elif command == 'query':
+    if args['attr']:
+      import fastsubtrees.commands.attr_query as cmd
+    else:
+      import fastsubtrees.commands.query as cmd
+  elif command == 'add':
+    if args['attr']:
+      import fastsubtrees.commands.attr_add as cmd
+    else:
+      import fastsubtrees.commands.add as cmd
+  elif command == 'delete':
+    if args['attr']:
+      import fastsubtrees.commands.attr_delete as cmd
+    else:
+      import fastsubtrees.commands.delete as cmd
+  else:
+    exit(f"'{command}' is not a fastsubtrees command.\n"+\
+        "See fastsubtrees --help.")
+  argv = ['attr'] if args['attr'] else []
+  argv.append(command)
+  argv.extend(args['<args>'])
+  cmd_args = docopt(cmd.__doc__, version=VERSION, argv=argv)
+  _scripts_support.setup_verbosity(cmd_args)
+  cmd.main(cmd_args)

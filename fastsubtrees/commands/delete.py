@@ -4,7 +4,7 @@ Parse a given tabular file and delete a given node
 from the the tree
 
 Usage:
-  fastsubtrees-delete-subtree [options] <tree> <nodeid>
+  fastsubtrees delete [options] <tree> <nodeid>
 
 Arguments:
   tree        File containing the tree data

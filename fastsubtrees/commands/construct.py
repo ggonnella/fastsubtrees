@@ -13,8 +13,8 @@ The tree information is obtained in one of two ways:
   (if --keyargs is used)
 
 Usage:
-  fastsubtrees-construct [options] <outfname> <idsmod> [<idsmod_data>...]
-  fastsubtrees-construct [options] <outfname> --ntdump <ntdumpdir>
+  fastsubtrees construct [options] <outfname> <idsmod> [<idsmod_data>...]
+  fastsubtrees construct [options] <outfname> --ntdump <ntdumpdir>
 
 Common arguments:
   outfname     desired name for the output file

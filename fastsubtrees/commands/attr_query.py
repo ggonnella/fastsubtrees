@@ -3,7 +3,7 @@
 List the values of a specified attribute in a specified subtree
 
 Usage:
-  fastsubtrees-attr-query [options] <tree> <attribute> <subtreeroot>
+  fastsubtrees attr query [options] <tree> <attribute> <subtreeroot>
 
 Arguments:
   tree           fastsubtrees-construct output

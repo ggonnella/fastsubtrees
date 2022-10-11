@@ -9,7 +9,7 @@ To add multiple leaves or subtrees under different nodes of an existing tree,
 call this script separately for each subtree.
 
 Usage:
-  fastsubtrees-add-subtree [options] <tree> <idsmod> [<idsmod_data>...]
+  fastsubtrees add [options] <tree> <idsmod> [<idsmod_data>...]
 
 Arguments:
   tree         File containing the tree data

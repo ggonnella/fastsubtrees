@@ -6,7 +6,7 @@ It uses as input a tree representation constructed
 by this library and stored to file (<tree>).
 
 Usage:
-  fastsubtrees-query [options] <tree> <subtreeroot>
+  fastsubtrees query [options] <tree> <subtreeroot>
 
 Arguments:
   tree         tree representation file

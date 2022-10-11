@@ -3,7 +3,7 @@
 Delete values of an attribute for specific nodes
 
 Usage:
-  fastsubtrees-attr-delete [options] <tree> <attribute> <node>...
+  fastsubtrees attr delete [options] <tree> <attribute> <node>...
 
 Arguments:
   tree          fastsubtrees tree representation file,
