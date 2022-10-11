@@ -14,7 +14,6 @@ RUN ln -s /usr/bin/python3.8 /usr/bin/python
 #
 # install MariaDB and Python connector
 #
-#
 ENV MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
 ENV MARIADB_PASSWORD=$MARIADB_PASSWORD
 ENV MARIADB_USER=$MARIADB_USER
@@ -28,6 +27,7 @@ RUN pip install mariadb
 #
 ADD . /fastsubtrees/
 RUN cd /fastsubtrees && pip install -e .
+RUN cd /fastsubtrees/ntdownload && pip install -e .
 RUN cd /fastsubtrees/ntmirror && pip install -e .
 EXPOSE 8050
 #WORKDIR /fastsubtrees
