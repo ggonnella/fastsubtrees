@@ -28,7 +28,7 @@ node attributes.
 Each node must be represented by a unique positive ID. The IDs must not
 necessarily be all consecutive (i.e. some "holes" may be present), but the
 largest node ID (_idmax_) should not be much larger than the total number of
-nodes, because the memory consumption is in O(idmax).
+nodes, because the memory consumption is in _O(idmax)_.
 
 The NCBI taxonomy tree, for example, fullfills the conditions stated above.
 
@@ -135,31 +135,66 @@ defined by the user and passed to the scripts as Python code
 and configuration data. Modules for the most common cases (database,
 tabular file) are provided.
 
-The command line interface is further described in the document ``docs/cli.md``.
+The command line interface is further described in the
+[CLI manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/cli.md).
 
 #### CLI example: NCBI taxonomy tree
 
+This is an example of the basic operations using the NCBI taxonomy tree:
 ```
-ntmirror-download
+# download the NCBI taxonomy database dumps
+ntmirror-download ntdumps
+# construct the fastsubtrees tree data structure
+fastsubtrees construct nt.tree --ntdump ntdumps
+# query the IDs under node 562
+faststubrees query nt.tree 562
+```
+
+The following adds attributes
+from the example data (GC content and genome size of Bacterial genomes)
+stored in the repository:
+
+```
+# add a GC content attribute from a tabular file
+# the IDs are in column 1, the values in column 3 of the table
+fastsubtrees attr construct nt.tree GC_content \
+  fastsubtrees/ids_modules/attr_from_tabular_file.py \
+  data/accession_taxid_attribute.tsv.gz 1 3
+# add a genome size attribute from a tabular file
+# the IDs are in column 1, the values in column 2 of the table
+fastsubtrees attr construct nt.tree genome_size \
+  fastsubtrees/ids_modules/attr_from_tabular_file.py \
+  data/accession_taxid_attribute.tsv.gz 1 2
+```
+
+Once the attributes are created, their values in any subtree can be
+easily queried:
+```
+# query the genome size values under node 562
+fastsubtrees attr query nt.tree genome_size 562
 ```
 
 #### CLI example with generic data
 
-The tree must not necessarily the NCBI taxonomy tree. The following
+Fastsubtrees is not only usable with the NCBI taxonomy tree. The following
 example constructs a tree with example data included with the repository
 loading it from a tabular file.
 
 ```
 # construct the tree, using a tabular file as data source
-fastsubtrees construct small.tree \
-  fastsubtrees/ids_modules/ids_from_tabular_file.py \
-  tests/testdata/small_tree.tsv
+fastsubtrees construct small.tree --tab tests/testdata/small_tree.tsv
 ```
+
+The data source can be differet: for example also a differently
+formatted tabular file or a database table. For these cases, a Python
+module is passed, which yields the tree data, as described in the
+CLI manual.
 
 ### API
 
 The library functionality can be also directly accessed in Python code using
-the API, which is documented in ``docs/api.md``.
+the API, which is documented in the
+[API manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/api.md).
 
 ## Subpackages
 
