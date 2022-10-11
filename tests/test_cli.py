@@ -92,7 +92,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.stdout == "".join(f"{x}\n" for x in
       results_query_small_tree_id_8_add_subtree2)
   # attribute query before changing it
-  args = ["attr", "query", testout("small_tree.tree"), "attrX", "8"]
+  args = ["attr", "query", "--nones", testout("small_tree.tree"), "attrX", "8"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == \
@@ -104,7 +104,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   # attribute query after changing it
-  args = ["attr", "query", testout("small_tree.tree"), "attrX", "8"]
+  args = ["attr", "query", "--nones", testout("small_tree.tree"), "attrX", "8"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == \
