@@ -11,15 +11,10 @@ The dump files are then decompressed and loaded into a local database.
 
 ### Database dump download
 
-To download the dump files, use the ``ntmirror-download`` script. Thereby the
+To download the dump files, use the ``ntdownload`` command of
+the _ntdownload_ package. Thereby the
 output directory is passed as CLI argument. If it does not exist, it is
 created.
-
-The dump files archive is decompressed after download and deleted.
-
-If the option ``--exitcode`` is used, then the exit code of the script is 100
-if no newer version of the dump files was found, and thus nothing was
-downloaded. Otherwise the exit code is always 0 (or 1 on error).
 
 ### Loading into the database
 
@@ -40,19 +35,12 @@ script is 100 (instead of 0).
 
 ### Database dump download
 
-To download the dump files, use the Downloader class:
+To download the dump files, use the ``Donwloader`` of the _ntdownload_ package:
 ```
-from ntmirror import Downloader
+from ntdownload import Downloader
 d = Downloader(output_directory_name)
 has_downloaded = d.run()
 ```
-
-The output directory is created if it does not exist. The dump files archive is
-decompressed and the archive deleted, except if the option ``decompress=False``
-is used.
-
-The return value of ``run()`` is ``True`` if a dump file was downloaded,
-``False`` if no newer version was available.
 
 ### Loading into the database
 

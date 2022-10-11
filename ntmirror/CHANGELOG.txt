@@ -1,3 +1,7 @@
+== 1.4.1 ==
+- fix import in bin/ntmirror-dbload
+- update documentation
+
 == 1.4 ==
 - the download module was extracted as a separate package
 

@@ -34,7 +34,7 @@ import snacli
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
 from schema import And, Or
-from ntmirror import scripts_helper, Downloader, dbloader_mysql,\
+from ntmirror import scripts_helper, dbloader_mysql,\
                      dbloader_sqlalchemy, dbschema, VERSION
 
 def sqlalchemy_connection_from(args):
