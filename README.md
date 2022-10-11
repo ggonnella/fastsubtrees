@@ -1,6 +1,6 @@
 # Fastsubtrees
 
-Fastsubtrees is a Python library and a set of scripts, for handling fairly
+Fastsubtrees is a Python library and a command line script, for handling fairly
 large trees (in the order of magnitude of millions nodes), in particular
 allowing the fast extraction of any subtree.
 
@@ -123,11 +123,11 @@ The ```_all``` version also benchmarks the construction of the representation
 of the NCBI taxonomy tree and requires about 40-70 minutes to complete,
 depending on the system.
 
-### CLI and API
+### Command line interface
 
-Command line scripts are provided, which allow to perform all implemented
-operations: construct a tree, add and delete leaf nodes
-and subtrees, perform a subtree query, add attribute information.
+The command line tool ``fastsubtrees`` allows constructing a tree, modifying it
+(by adding and deleting leaf nodes or subtrees), adding attributes,
+and performing a subtree query (listing IDs or attribute values in a subtree).
 
 The scripts are designed to be very flexible: e.g. the data source for
 tree construction, or for obtaining attribute values, can be freely
@@ -135,9 +135,31 @@ defined by the user and passed to the scripts as Python code
 and configuration data. Modules for the most common cases (database,
 tabular file) are provided.
 
-The scripts are described in the document ``docs/cli.md``.
-Alternatively, the library functionality can be also directly accessed using
-the API, which are documented in ``docs/api.md``.
+The command line interface is further described in the document ``docs/cli.md``.
+
+#### CLI example: NCBI taxonomy tree
+
+```
+ntmirror-download
+```
+
+#### CLI example with generic data
+
+The tree must not necessarily the NCBI taxonomy tree. The following
+example constructs a tree with example data included with the repository
+loading it from a tabular file.
+
+```
+# construct the tree, using a tabular file as data source
+fastsubtrees construct small.tree \
+  fastsubtrees/ids_modules/ids_from_tabular_file.py \
+  tests/testdata/small_tree.tsv
+```
+
+### API
+
+The library functionality can be also directly accessed in Python code using
+the API, which is documented in ``docs/api.md``.
 
 ## Subpackages
 
