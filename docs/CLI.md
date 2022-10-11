@@ -138,7 +138,8 @@ the values of a specified attribute for the nodes of the tree.
 In order to generate attribute files, the user has to always
 provide the following parameters:
 - `tree`: File containing the tree that has to be updated.
-- `attribute`: Name of the attribute
+- `attribute`: Name of the attribute; attribute names are not allowed
+               to contain spaces or commas
 - `attrmod`: Path to a python module that defines a function
   ``attribute_values()`` which may take arguments (``<attrmod_data>``) and
   returns pairs ``(element_id, attribute_value)`` for each node to which an
@@ -214,7 +215,8 @@ For query the values of an attribute in a subtree,
 Three parameters are mandatory to run the query:
 - `tree`: File containing the tree. It is the output of
   **fastsubtrees construct** (eventually modified by other subcommands).
-- `attribute`: Name of the attribute to query
+- `attribute`: Name of the attribute to query; it can be also a comma-separated
+               list of multiple attributes
 - `subtreeroot`: ID of the root of the subtree for which the values
                  have to be queried
 
@@ -223,3 +225,6 @@ only for nodes for which at least one value exists.
 To display the node ID alongside the values, use the option ``--ids``.
 To display also the results (``None``) also for nodes for which no
 value exists, use the option ``--nones``.
+If ``--ids`` is used or multiple attributes are specified, the output
+is tabular and a header line is output, which summarizes the content of
+each column.
