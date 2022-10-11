@@ -1,3 +1,9 @@
+=== 1.7 ===
+- genomes_attributes_viewer is now a Python package, installable by pip
+- separated ntdownload from ntmirror, to ease installation when MariaDB is not available
+- updated the documentation
+- updated the Docker image/scripts to recent changes
+
 === 1.6.1 ===
 - fix packaging: added missing __init__.py to commands subdir
 

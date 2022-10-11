@@ -1,6 +1,6 @@
 # Fastsubtrees library
 
-VERSION="1.6.1"
+VERSION="1.7"
 
 # setup loguru by disabling it, as expected for libraries
 from loguru import logger
