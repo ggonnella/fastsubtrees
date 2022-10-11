@@ -12,15 +12,21 @@ Arguments:
 
 Options:
   --quiet      disable log messages
-  --filter     filter out None values in the output
-  --countN     count the number of nodes with attributes
-  --countV     count the number of attribute values
+  --nones      do not filter out None values in the output
+  --counts     count the number of nodes with attributes and of attribute values
   --debug      print debug information
   --help       show this help message and exit
   --version    show program's version number and exit
 """
 from docopt import docopt
 from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
+
+def print_results(results):
+  for result in results:
+    if isinstance(result, list):
+      print(", ".join(str(r) for r in result))
+    else:
+      print(result)
 
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
@@ -29,22 +35,21 @@ def main(args):
   attributefile = attribute.attrfilename(args["<tree>"], args["<attribute>"])
   logger.debug("Loading attribute '{}' values from file '{}'".\
       format(args["<attribute>"], attributefile))
-  attribute_list = attribute.get_attribute_list(tree, subtree_root,
-                                                attributefile)
+  attribute_list = attribute.get_attribute_list(tree, subtree_root, \
+      attributefile)
   filtered = None
-  if args["--filter"] or args["--countN"] or args["--countV"]:
+  if (not args["--nones"]) or args["--counts"]:
     filtered = [a for a in attribute_list if a is not None]
-    if args["--countN"]:
+    if args["--counts"]:
       count = len(filtered)
       logger.info("Number of nodes with attributes: {}".format(count))
-    if args["--countV"]:
       flattened = [e for sl in filtered for e in sl]
       count = len(flattened)
       logger.info("Number of attribute values: {}".format(count))
-  if args["--filter"]:
-    print(filtered)
+  if args["--nones"]:
+    print_results(attribute_list)
   else:
-    print(attribute_list)
+    print_results(filtered)
 
 if __name__ == "__main__":
   args = docopt(__doc__, version=VERSION)

@@ -47,8 +47,7 @@ for attr in genome_size GC_content; do
     for ROOT in $NODES; do
       echo "Step $STEP from node $ROOT, iteration $i..."
       /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-        fastsubtrees attr query --countN --countV \
-          $TREE $attr $ROOT > \
+        fastsubtrees attr query --counts $TREE $attr $ROOT > \
         $OUTDIR/attr_values.$attr.$ROOT
     done
   done
