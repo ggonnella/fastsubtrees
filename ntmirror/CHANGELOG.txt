@@ -1,3 +1,6 @@
+== 1.4 ==
+- the download module was extracted as a separate package
+
 == 1.3.1 ==
 - download using https if ftp is not working
 

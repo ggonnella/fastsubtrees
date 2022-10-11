@@ -5,7 +5,7 @@ import pytest
 import sh
 import time
 import os
-from ntmirror import Downloader
+from ntdownload import Downloader
 
 #
 # By default, the test will be done downloading a smaller file
@@ -24,7 +24,7 @@ def test_first_download(testout, script, script_runner):
   args = [outdir, "--exitcode"]
   if not USE_REAL_FILE:
     args.append("--testmode")
-  ret = script_runner.run(script("ntmirror-download"), *args)
+  ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
   if not USE_REAL_FILE:
     assert os.path.exists(outdir/Downloader.TESTFILENAME)
@@ -39,7 +39,7 @@ def test_no_newer_version(testout, script, script_runner):
   future = time.time() + 3600
   os.utime(outdir/Downloader.TIMESTAMP, (future, future))
   args = [outdir, "--exitcode", "--testmode"]
-  ret = script_runner.run(script("ntmirror-download"), *args)
+  ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 100
   assert not os.path.exists(outdir/Downloader.TESTFILENAME)
 
@@ -48,7 +48,7 @@ def test_newer_version(testout, script, script_runner):
   outdir=testout("newer_version")
   sh.rm(outdir, "-rf")
   args = [outdir, "--exitcode", "--testmode"]
-  ret = script_runner.run(script("ntmirror-download"), *args)
+  ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
   mtime = os.stat(outdir/Downloader.TESTFILENAME).st_mtime
   before_last_version = mtime - 18000
@@ -56,7 +56,7 @@ def test_newer_version(testout, script, script_runner):
            (before_last_version, before_last_version))
   os.unlink(outdir/Downloader.TESTFILENAME)
   assert not os.path.exists(outdir/Downloader.TESTFILENAME)
-  ret = script_runner.run(script("ntmirror-download"), *args)
+  ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
   assert os.path.exists(outdir/Downloader.TESTFILENAME)
 

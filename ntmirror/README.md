@@ -1,22 +1,25 @@
 # NtMirror
 
 NtMirror is a tool for creating and keeping up-to-date a local
-mirror of the NCBI Taxonomy database
+mirror of the NCBI Taxonomy database.
 
 ## Requirements
 
 The software is distributed as a Python 3 package.
-The file ``requirements.txt`` lists the required pip modules
-(installable using ``pip -r requirements.txt``).
 
-A relational database management system (RDBMS) is required.
-NtMirror has been developed and tested using MariaDB as RDBMS.
-However, it can be probably used with any RDBMS supported by SqlAlchemy.
+An installation by pip is only possible, if the ``mariadb``
+module is installed (which requires installation of MariaDB
+and its C and Python connectors).
 
-Optionally, on MariaDB, the database data loading is performed using the
+In MariaDB, the database data loading is performed using the
 ``mysql`` library and not using SqlAlchemy, since the loading is faster.
+
+## Adapting to other RDBMS
+
+NtMirror has been developed and tested using MariaDB as RDBMS.
+However, database data loading using SqlAlchemy was also implemented,
+so that the software can be used or easily adapted to
+other RDBMS supported by SqlAlchemy.
 
 ## Usage manual
 
-For more information on the use of the software, see the
-[user manual](https://github.com/ggonnella/ntmirror/blob/main/docs/user_manual.md).

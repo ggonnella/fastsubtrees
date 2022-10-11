@@ -4,7 +4,7 @@ authors:
 - family-names: "Gonnella"
   given-names: "Giorgio"
   orcid: "https://orcid.org/0000-0003-3900-5397"
-title: "NtMirror: easily updatable local NCBI taxonomy database copy"
+title: "NtDownload: easily updatable local NCBI taxonomy dump files copy"
 version: 1.0.0
 date-released: 2022-04-22
-url: "htts://github.com/ggonnella/fastsubtrees/tree/main/ntmirror"
+url: "htts://github.com/ggonnella/fastsubtrees/tree/main/ntdownload"

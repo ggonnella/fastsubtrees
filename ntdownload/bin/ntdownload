@@ -4,7 +4,7 @@
 Download the NCBI taxonomy database dump if a newer version is available
 
 Usage:
-  ntmirror-download [options] <outdir>
+  ntdownload [options] <outdir>
 
 Arguments:
   outdir  path to the download directory
@@ -25,7 +25,7 @@ Options:
 
 import snacli
 import sys
-from ntmirror import scripts_helper, Downloader, VERSION
+from ntdownload import scripts_helper, Downloader, VERSION
 
 def main(args):
   d = Downloader(args["<outdir>"])

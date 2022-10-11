@@ -5,7 +5,7 @@ import pytest
 import sh
 import time
 import os
-from ntmirror import Downloader
+from ntdownload import Downloader
 
 #
 # By default, the test will be done downloading a smaller file
