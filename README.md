@@ -222,3 +222,12 @@ more information see the ``genomes-attributes-viewer/README.md`` file.
 
 The application can be conveniently setup and started using the Docker
 image, see above in the _Docker_ section.
+
+## Community guidelines
+
+Contributions to the software are welcome. Please clone this repository
+and send a pull request on Github, to let the changes be integrated in
+the original repository.
+
+In case of bugs and issues, please report them through the Github Issues page
+of the repository.
