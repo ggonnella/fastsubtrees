@@ -217,11 +217,21 @@ An interactive web application based on ``fastsubtrees`` was developed using
 _dash_. It allows to graphically display the distribution of values of
 attributes in subtrees of the NCBI taxonomic tree.
 
-This example application is located under ``genomes-attributes-viewer``. For
-more information see the ``genomes-attributes-viewer/README.md`` file.
+It can be installed and started locally (see below) or using the Docker image of
+_fastsubtrees_ (see above in the _Docker_ section).
 
-The application can be conveniently setup and started using the Docker
-image, see above in the _Docker_ section.
+For more information see also the ``genomes-attributes-viewer/README.md`` file.
+
+#### Local installation and startup
+
+To application can be installed using ``pip install genomes_attributes_viewer``
+or from the ``genomes_attributes_viewer`` directory of the _fastsubtrees_
+repository.
+
+To start the application, use the ``genomes-attributes-viewer``.
+The first time this command is run, the application data are downloaded and
+prepared, taking about 20 minutes to complete. Startup on subsequent
+starts does not require these operations and is thus very fast.
 
 ## Community guidelines
 
