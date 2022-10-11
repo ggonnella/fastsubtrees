@@ -8,13 +8,14 @@ import json
 import pandas as pd
 import fastsubtrees
 import os
+import genomes_attributes_viewer as gav
+
+fastsubtrees.PROGRESS_ENABLED = True
+fastsubtrees.enable_logger("INFO")
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-scriptdir = os.path.dirname(os.path.realpath(__file__))
-TREEFILE = "nt.tree"
-
-with open(f'{scriptdir}/dictionary.txt') as f:
+with open(f'{gav.workdir}/{gav.SCIENTIFIC_NAMES}') as f:
   data = f.read()
 options = json.loads(data)
 
@@ -133,10 +134,12 @@ def update_figure(clicks, attribute, taxid):
   attribute = attribute
   boxplot_dict = {}
   final_values = []
-  treefname = f'{scriptdir}/{TREEFILE}'
+  treefname = f'{gav.workdir}/{gav.TREEFILE}'
   tree = fastsubtrees.Tree.from_file(treefname)
   if clicks >= 1:
     for id in taxid:
+      if id is None:
+        continue
       boxplot_dict[id + ')'] = []
       my_str = id.partition('(')[-1]
       subtree_root = int(my_str)
@@ -166,6 +169,3 @@ def update_figure(clicks, attribute, taxid):
     return boxplot, {'display': 'block'}, histogram, {'display': 'block'}, True
   else:
     return {}, {'display': 'none'}, {}, {'display': 'none'}, False
-
-if __name__ == '__main__':
-  app.run_server(debug=True, host='0.0.0.0')
