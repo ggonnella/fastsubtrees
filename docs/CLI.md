@@ -8,21 +8,12 @@ The list of subcommands is displayed using ``fastsubtrees --help``.
 Using ``--help`` after a subcommand (e.g. ``fastsubtrees construct --help``
 displays the syntax and details of the subcommand.
 
-There are two sets of subcommands. For working with the tree itself,
-the corresponding verb (construct, query, add, delete) is used as subcommand
-directly. For working with attributes (see below), the subcommand is
-``attr`` and the verb (construct, add, delete) is used as sub-subcommand,
-after attr (e.g. ``fastsubtrees attr construct``).
-
 The following subcommands are available:
 ```
   construct         Construct the tree data structure and save it to file
-  query             List IDs/attribute values of the subtree under a given node
-  add               Add new nodes to an existing tree data structure
-  delete            Remove nodes from an existing tree data structure
-  attr construct    Save values of an attribute to (some of the) nodes of a tree
-  attr add          Add additional attribute values for more nodes of a tree
-  attr delete       Delete some or all values of an attribute
+  update            Update an existing tree data structure
+  attribute         Create, update or delete node attributes
+  query             List node IDs and/or attributes in the subtree under a node
 ```
 
 ## Tree construction
@@ -72,15 +63,14 @@ from a tabular file are given in the modules in the
 The ``element_parent_ids()`` function usually needs parameters. These
 can be passed either as positional or as keyword parameters. To pass them
 as positional parameters, they are just used as further arguments,
-after the module name. To define them as keyword parameters, the
-``--keyargs`` option is used, and all further arguments in the form
-``key=value`` (i.e. where at least one = is present), are parsed and
-passed as keywords parameters.
+after the module name.
+To define them as keyword parameters, the
+use the form ``key=value``.
 
 Examples:
 ```
 fastsubtrees construct my.tree my_module.py a b c
-fastsubtrees construct my.tree my_module.py --keyargs k1=v1 k2=v=2 x
+fastsubtrees construct my.tree my_module.py k1=v1 k2=v=2 x
 ```
 
 In the first example, the function in ``my_module.py`` is called as
@@ -94,33 +84,35 @@ and ``ids_from_tabular_file.py`` from a tabular input file.
 
 ## Modifying an existing tree representation
 
-### Adding a subtree
+### Updating a tree
 
-The script `fastsubtrees add` adds one or multiple nodes to an already
-existing tree. The interface is identical to the generic tree construction
-interface of ``fastsubtrees construct`` (see above), i.e. the following
-arguments are passed to the script:
-- `tree`: File containing the tree that has to be updated.
-- `idsmod`: A Python module that defines the function ``element_parent_ids()``,
-   which optionally takes arguments (``<idsmod_data>``) and which yields pairs
-   of IDs for all nodes ``(element_id, parent_id)`` of the subtree to be added.
-- `idsmod_data` (optional): list of arguments to be passed to
-  ``element_parent_ids()``. By default they are passed as positional arguments.
-  To pass keyword arguments, using the syntax ``key=value``, use the option
-  ``--keyargs``.
+It is possible to modify a tree, by updating the representation, given
+a source of node and parent IDs, similar to the one for the tree creation.
+For this the command ``fastsubtrees update`` is used.
+Any node not yielded in the source will be deleted, and new nodes
+will be added.
 
-### Deleting a subtree
+### Adding nodes
 
-The script `fastsubtrees delete` is used to delete one or multiple
-nodes from an exiting tree representation. If the specified node is a leaf
-node, then only that node it is deleted. If it is an internal node, then the
-entire subtree is also deleted, i.e. the set of all the descendants of the
-specified node.
+It is also possible to add nodes using a source which only specifies
+the new nodes to add, but not the existing ones. This is done by using
+``fastsubtrees update`` with the option ``--add``.
 
-The following parameters are used for the script:
-- `nodeid`: ID of a leaf node to be deleted, or of an internal node, i.e.
-   the subtree root of the subtree to be deleted
-- `tree`: File containing the tree
+### Delete nodes
+
+To delete leaf nodes or an internal nodes and entire subtree under them,
+the ``fastsubtrees update`` command is used with the option ``--delete``
+by listing the leaf nodes to delete and/or the roots of subtrees
+to delete.
+
+### Attributes when editing a tree
+
+If attribute have been defined, as described in the following section,
+the attribute files are automatically detected and modified too,
+when adding or deleting nodes.
+
+If nodes have been added, new attribute values for those nodes
+can be added using ``fastsubtrees attribute --add``, as explained below.
 
 ## Tree attributes
 
@@ -131,10 +123,10 @@ with them. Some nodes can contain multiple values for an attribute.
 
 ### Adding an attribute
 
-The script `fastsubtrees attr construct` constructs a file containing
+The command `fastsubtrees attribute` constructs a file containing
 the values of a specified attribute for the nodes of the tree.
 
-In order to generate attribute files, the user has to always
+In order to generate attribute files, the user has to
 provide the following parameters:
 - `tree`: File containing the tree that has to be updated.
 - `attribute`: Name of the attribute; attribute names are not allowed
@@ -145,52 +137,34 @@ provide the following parameters:
   attribute value exists.
 - `attrmod_data`: This is an optional parameter. It consists of a list of
   arguments to be passed to the ``attribute_values()`` function of the module
-  specified as **attrmod**. By default they are passed as positional arguments.
-  To pass keyword arguments, the syntax **key=value** and the option
-  **--keyargs** has to be used.
+  specified as **attrmod**.
+  To pass keyword arguments, the syntax **key=value** is used.
 
 A module using the described ``attrmod`` interface for adding attributes
 from tabular files is provided under ``fastsubtrees/ids_modules`` and
 can be selected by the shorthand option ``--tab``:
 ```
-fastsubtrees attr construct my.tree myattribute --tab tabularfile.tsv
+fastsubtrees attribute my.tree myattribute --tab tabularfile.tsv
 ```
 By default, the IDs are supposed to be in column 0, the attribute values in
 column 1 and the columns to be tab-separated; different values can be
 provided as keyword arguments, e.g.:
 ```
-fastsubtrees attr construct my.tree myattribute --tab tabularfile.tsv \
-   --keyargs id_col=2 attr_col=10 separator=';'
+fastsubtrees attribute my.tree myattribute --tab tabularfile.tsv \
+   id_col=2 attr_col=10 separator=';'
 ```
-
-### Attributes when editing a tree
-
-If attribute have been defined, as described in the following section,
-the attribute files are automatically detected and modified too,
-when adding or deleting a subtree.
-
-When adding a subtree, the attribute will initially have an empty value (None)
-for each of the additional nodes. In order to add attribute values for the new
-nodes, ``fastsubtrees attr add`` is employed. This must be called
-for each of the attributes for which values shall be added, and uses the same
-interface as ``fastsubtrees attr construct`` (see above).
 
 ### Editing attribute values
 
-To add new values for an attribute, ``fastsubtrees attr add`` is used. It
-offers the same interface as ``fastsubtrees attr construct`` (see above).
-
-By default, the new values of the attributes for a node are added to the
-existing ones. If the existing ones shall be replaced by the new ones,
-use the option ``--replace``.
+To add new values for an attribute, ``fastsubtrees attribute`` with the option
+``--add`` is used. New values of the attributes for a node are appended to the
+existing ones. If the existing ones shall be replaced by the new ones, use the
+option ``--replace`` instead of ``--add``.
 
 To remove the values of an attribute for a list of given nodes,
-use ``fastsubtrees attr delete``.
-
-### Removing an attribute
-
-To remove an attribute, use ``fastsubtrees attr delete``.
-with the option ``--all``.
+use ``fastsubtrees attribute --delete`` specifying the nodes.
+To remove an attribute completely, use ``fastsubtrees attribute --delete``
+without specifying any node.
 
 ## Subtree queries
 
