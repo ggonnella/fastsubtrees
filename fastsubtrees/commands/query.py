@@ -9,6 +9,7 @@ Arguments:
   tree         tree representation file
                (output of fastsubtrees construct)
   subtreeroot  ID of the subtree root
+               (use 'root' for the root of the tree)
   attribute    Attributes to be printed for each node
 
 Options:
@@ -94,7 +95,10 @@ def show_results(args, node_ids, attr_values, attrnames):
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
-  subtree_root = int(args["<subtreeroot>"])
+  if args["<subtreeroot>"] == "root":
+    subtree_root = tree.root_id
+  else:
+    subtree_root = int(args["<subtreeroot>"])
   logger.debug(f"Extracting subtree under node '{subtree_root}'")
   attrnames = check_attribute_args(args)
   node_ids = tree.subtree_ids(subtree_root)
