@@ -156,6 +156,9 @@ class Tree():
     logger.debug(f"Tree loaded from file \"{filename}\"")
     return self
 
+  def get_parent(self, node):
+    return self.parents[node]
+
   def query_subtree(self, subtree_root):
     if subtree_root <= 0 or subtree_root > len(self.coords) - 1:
       logger.info(f"Node {subtree_root} not in tree => subtree is empty")

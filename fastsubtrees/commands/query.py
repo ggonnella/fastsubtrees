@@ -20,6 +20,7 @@ Options:
   -n, --show-none        print None for missing attributes in -a mode
   -N, --no-header        do not print header line
   -s, --separator SEP    use SEP as separator [default: \t]
+  -p, --parents          show parents of nodes
   -h, --help             show this help message and exit
   -V, --version          show program's version number and exit
 """
@@ -92,6 +93,15 @@ def show_results(args, node_ids, attr_values, attrnames):
         line_data.append(str(value))
     print(args["--separator"].join(line_data))
 
+def get_parents(tree, node_ids, subtree_root):
+  parents = []
+  for node_id in node_ids:
+    if node_id == subtree_root:
+      parents.append(node_id)
+    else:
+      parents.append(tree.get_parent(node_id))
+  return parents
+
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
@@ -105,6 +115,9 @@ def main(args):
   if args["--stats"]:
     logger.info("Number of nodes in subtree: {}".format(len(node_ids)))
   attr_values = get_attribute_values(attrnames, tree, subtree_root, args)
+  if args["--parents"]:
+    attrnames.insert(0, "parent")
+    attr_values["parent"] = get_parents(tree, node_ids, subtree_root)
   if not args["--no-header"]:
     show_header(attrnames, args["--attributes-only"])
   show_results(args, node_ids, attr_values, attrnames)
