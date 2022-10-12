@@ -87,7 +87,7 @@ def main(args):
   tree.to_file(args["<outfname>"])
   if not args["--keepattr"]:
     for fname in attribute.attrfiles(args["<outfname>"]).values():
-      logger.info("Removing obsolete attribute file %s", fname)
+      logger.info(f"Removing obsolete attribute file {fname}")
       Path(fname).unlink()
 
 if __name__ == "__main__":
