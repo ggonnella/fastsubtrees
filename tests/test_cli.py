@@ -70,7 +70,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
           testdata("small_tree_attrX.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
   # add a leaf
-  args = ["add", testout("small_tree.tree"),
+  args = ["update", "--add", testout("small_tree.tree"),
           ids_modules("ids_from_tabular_file.py"),
           testdata("small_tree_add_subtree.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -81,7 +81,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.stdout == "".join(f"{x}\n" for x in
       results_query_small_tree_id_8_add_subtree1)
   # add a more complicated subtree
-  args = ["add", testout("small_tree.tree"),
+  args = ["update", "--add", testout("small_tree.tree"),
           ids_modules("ids_from_tabular_file.py"),
           testdata("small_tree_add_subtree2.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -110,7 +110,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.stdout.strip() == \
     str(results_query_small_tree_id_8_attrX_after_add2)
   # delete added values from the tree
-  args = ["delete", testout("small_tree.tree"), "10"]
+  args = ["update", "--delete", testout("small_tree.tree"), "10"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   args = ["query", testout("small_tree.tree"), "8", "-N"]
@@ -118,7 +118,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.returncode == 0
   assert ret.stdout == "".join(f"{x}\n" for x in
       results_query_small_tree_id_8_add_subtree1)
-  args = ["delete", testout("small_tree.tree"), "6"]
+  args = ["update", "--delete", testout("small_tree.tree"), "6"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   args = ["query", testout("small_tree.tree"), "8", "-N"]
   ret = script_runner.run(script("fastsubtrees"), *args)

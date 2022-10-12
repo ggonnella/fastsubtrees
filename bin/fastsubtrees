@@ -7,9 +7,8 @@ Usage:
 
 Available commands:
   construct         Construct the tree data structure and save it to file
+  update            Update an existing tree data structure
   query             List node IDs and/or attributes in the subtree under a given node
-  add               Add new nodes to an existing tree data structure
-  delete            Remove nodes from an existing tree data structure
   attr construct    Save values of an attribute to (some of the) nodes of a tree
   attr add          Add additional attribute values for more nodes of a tree
   attr delete       Delete some or all values of an attribute
@@ -30,16 +29,12 @@ if __name__ == '__main__':
       import fastsubtrees.commands.construct as cmd
   elif command == 'query' and not args['attr']:
     import fastsubtrees.commands.query as cmd
-  elif command == 'add':
-    if args['attr']:
-      import fastsubtrees.commands.attr_add as cmd
-    else:
-      import fastsubtrees.commands.add as cmd
-  elif command == 'delete':
-    if args['attr']:
-      import fastsubtrees.commands.attr_delete as cmd
-    else:
-      import fastsubtrees.commands.delete as cmd
+  elif command == 'update' and not args['attr']:
+    import fastsubtrees.commands.update as cmd
+  elif command == 'add' and args['attr']:
+    import fastsubtrees.commands.attr_add as cmd
+  elif command == 'delete' and args['attr']:
+    import fastsubtrees.commands.attr_delete as cmd
   else:
     attrstr = 'attr ' if args['attr'] else ''
     exit(f"'{attrstr}{command}' is not a fastsubtrees command.\n"+\

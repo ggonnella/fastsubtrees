@@ -276,6 +276,18 @@ class Tree():
       self.subtree_sizes[p] += 1
       p = self.parents[p]
 
+  def update(self, generator, attrfiles, list_added=None, list_deleted=None):
+    not_existing = set(tree.subtree_ids(tree.root_id))
+    n_added = tree.add_subtree(generator, attrfiles, skip_existing=True,
+        rm_existing_set=not_existing, list_added=list_added)
+    not_existing_parents = {n: tree.get_parent(n) for n in not_existing}
+    n_deleted = 0
+    for n in not_existing:
+      if not_existing_parents[n] not in not_existing:
+        n_deleted += tree.delete_node(n, attrfiles,
+            list_deleted=list_deleted)
+    return n_added, n_deleted
+
   def delete_node(self, node_number, attributefilenames=[],
                   list_deleted = None):
     try:
@@ -283,13 +295,16 @@ class Tree():
     except IndexError:
       raise error.NodeNotFoundError(\
           f"The node ID does not exist: {node_number}")
+    n_deleted = 0
     subtree_size = self.subtree_sizes[node_number]
-    if list_deleted is not None:
-      list_deleted.extend(self.subtree_ids(node_number))
     for i in range(subtree_size + 1):
-      self.treedata[coord + i] = Tree.DELETED
-      self.__delete_node_in_attribute_list(coord + i, attributefilenames)
-    return subtree_size + 1
+      if self.treedata[coord + i] != Tree.DELETED:
+        n_deleted += 1
+        if list_deleted is not None:
+          list_deleted.append(self.treedata[coord + i])
+        self.treedata[coord + i] = Tree.DELETED
+        self.__delete_node_in_attribute_list(coord + i, attributefilenames)
+    return n_deleted
 
   def __insert_none_in_attribute_list(self, inspos, attributefilenames):
     for filename in attributefilenames:
