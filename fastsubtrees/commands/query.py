@@ -19,8 +19,10 @@ Options:
   -a, --attributes-only  do not print node IDs (only attributes)
   -n, --show-none        print None for missing attributes in -a mode
   -N, --no-header        do not print header line
-  -s, --separator SEP    use SEP as separator [default: \t]
+  -S, --separator SEP    use SEP as separator [default: \t]
   -p, --parents          show parents of nodes
+  -z, --subtree-sizes    show size of subtree under each nodes
+                         (including nodes marked as deleted!)
   -h, --help             show this help message and exit
   -V, --version          show program's version number and exit
 """
@@ -102,6 +104,12 @@ def get_parents(tree, node_ids, subtree_root):
       parents.append(tree.get_parent(node_id))
   return parents
 
+def get_subtree_sizes(tree, node_ids):
+  subtree_sizes = []
+  for node_id in node_ids:
+    subtree_sizes.append(tree.get_subtree_size(node_id))
+  return subtree_sizes
+
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
   tree = Tree.from_file(args["<tree>"])
@@ -115,6 +123,9 @@ def main(args):
   if args["--stats"]:
     logger.info("Number of nodes in subtree: {}".format(len(node_ids)))
   attr_values = get_attribute_values(attrnames, tree, subtree_root, args)
+  if args["--subtree-sizes"]:
+    attrnames.insert(0, "subtree_size")
+    attr_values["subtree_size"] = get_subtree_sizes(tree, node_ids)
   if args["--parents"]:
     attrnames.insert(0, "parent")
     attr_values["parent"] = get_parents(tree, node_ids, subtree_root)

@@ -157,7 +157,13 @@ class Tree():
     return self
 
   def get_parent(self, node):
-    return self.parents[node]
+    if node == self.root_id:
+      return node
+    else:
+      return self.parents[node]
+
+  def get_subtree_size(self, node):
+    return self.subtree_sizes[node] + 1
 
   def query_subtree(self, subtree_root):
     if subtree_root <= 0 or subtree_root > len(self.coords) - 1:
