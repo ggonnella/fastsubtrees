@@ -27,7 +27,7 @@ downloaded. Otherwise the exit code is always 0 (or 1 on error).
 
 To download the dump files, use the Downloader class:
 ```
-from ntmirror import Downloader
+from ntdownload import Downloader
 d = Downloader(output_directory_name)
 has_downloaded = d.run()
 ```
