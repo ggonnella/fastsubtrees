@@ -131,7 +131,7 @@ class Tree():
     return cls.construct(generator)
 
   def to_file(self, outfname):
-    logger.debug(f"Writing to file \"{outfname}\" ...")
+    logger.debug(f"Writing tree to file \"{outfname}\" ...")
     with open(outfname, "wb") as f:
       f.write(struct.pack("QQQ", len(self.subtree_sizes), len(self.treedata),
                                  len(self.parents)))
@@ -139,13 +139,13 @@ class Tree():
       self.coords.tofile(f)
       self.treedata.tofile(f)
       self.parents.tofile(f)
-    logger.success(f"Tree written to file \"{outfname}\"")
+    logger.info(f"Tree written to file \"{outfname}\"")
     return self.treedata
 
   @classmethod
   def from_file(cls, filename):
     self = cls()
-    logger.debug(f"Reading from file \"{filename}\" ...")
+    logger.debug(f"Loading tree from file \"{filename}\" ...")
     with open(filename, "rb") as f:
       idxsize, nelems, nparents = struct.unpack("QQQ", f.read(24))
       self.subtree_sizes.fromfile(f, idxsize)
@@ -153,7 +153,7 @@ class Tree():
       self.treedata.fromfile(f, nelems)
       self.parents.fromfile(f, nparents)
       self.root_id = self.treedata[1]
-    logger.success(f"Tree loaded from file \"{filename}\"")
+    logger.debug(f"Tree loaded from file \"{filename}\"")
     return self
 
   def query_subtree(self, subtree_root):
@@ -166,7 +166,8 @@ class Tree():
       return []
     subtree_size = self.subtree_sizes[subtree_root]
     subtree_parents = self.parents[subtree_root]
-    logger.info(f"Subtree of node {subtree_root} has size {subtree_size + 1}")
+    logger.debug(\
+        f"Subtree under node {subtree_root} has size {subtree_size + 1}")
     return self.treedata[pos:pos + subtree_size + 1], pos, \
          subtree_size, subtree_parents
 
