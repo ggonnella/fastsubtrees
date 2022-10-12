@@ -157,12 +157,12 @@ stored in the repository:
 ```
 # add a genome size attribute from a tabular file
 # the IDs are in column 1, the values in column 2 of the table
-fastsubtrees attr construct nt.tree genome_size --tab \
+fastsubtrees attribute nt.tree genome_size --tab \
   data/accession_taxid_attribute.tsv.gz 1 2
 
 # add a GC content attribute from a tabular file
 # the IDs are in column 1, the values in column 3 of the table
-fastsubtrees attr construct nt.tree GC_content --tab \
+fastsubtrees attribute nt.tree GC_content --tab \
   data/accession_taxid_attribute.tsv.gz 1 3
 ```
 
@@ -183,7 +183,7 @@ dumps, the _ntdownload_ package provides a ``ntnames`` command:
 # extract the names from the dump files
 ntnames ntdumps > names.tsv
 # create the attribute file
-fastsubtrees attr construct nt.tree taxname --tab names.tsv
+fastsubtrees attribute nt.tree taxname --tab names.tsv
 # query ID, taxa names and genome sizes in a subtree
 fastsubtrees query nt.tree 562 taxname genome_size
 ```

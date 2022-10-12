@@ -155,7 +155,7 @@ As an example of attributes associated to tree nodes, we computed GC content and
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
 The genome size attribute file generation using the
-_fastsubtrees attr construct_ command required 2.9 seconds.
+_fastsubtrees attribute_ command required 2.9 seconds.
 Table 2 reports the running time and memory usage for the extraction
 of the genome size attribute values for different subtrees.
 

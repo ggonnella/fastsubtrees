@@ -14,7 +14,7 @@ def test_construct(testout, testdata, ids_modules, script, script_runner):
   assert ret.returncode == 0
   assert os.path.exists(testout("small_tree.tree"))
   # add an attribute
-  args = ["attr", "construct", testout("small_tree.tree"), 'attrX',
+  args = ["attribute", testout("small_tree.tree"), 'attrX',
           ids_modules("attr_from_tabular_file.py"),
           testdata("small_tree_attrX.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -38,7 +38,7 @@ def test_query(testout, testdata, ids_modules, script, script_runner,
           ids_modules("ids_from_tabular_file.py"), testdata("small_tree.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
   # add an attribute
-  args = ["attr", "construct", testout("small_tree.tree"), 'attrX',
+  args = ["attribute", testout("small_tree.tree"), 'attrX',
           ids_modules("attr_from_tabular_file.py"),
           testdata("small_tree_attrX.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -65,7 +65,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
           ids_modules("ids_from_tabular_file.py"), testdata("small_tree.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
   # add an attribute
-  args = ["attr", "construct", testout("small_tree.tree"), 'attrX',
+  args = ["attribute", testout("small_tree.tree"), 'attrX',
           ids_modules("attr_from_tabular_file.py"),
           testdata("small_tree_attrX.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -98,7 +98,7 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.stdout.strip() == \
     str(results_query_small_tree_id_8_attrX_after_add)
   # add attribute values
-  args = ["attr", "add", testout("small_tree.tree"), 'attrX',
+  args = ["attribute", "--add", testout("small_tree.tree"), 'attrX',
           ids_modules("attr_from_tabular_file.py"),
           testdata("small_tree_attrX_add.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)

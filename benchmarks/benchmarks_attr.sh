@@ -35,9 +35,8 @@ for attr in genome_size GC_content; do
   for ((i=0; i<$NREPEATS; i++)); do
     STEP="construct-$attr"
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-      fastsubtrees attr construct $TREE $attr \
+      fastsubtrees attribute $TREE $attr \
         $FST_MOD_DIR/attr_from_tabular_file.py --datatype ${attr_dt[$attr]} \
-          --keyargs \
             filename=$FST_DATA_DIR/accession_taxid_attribute.tsv.gz \
             id_col=1 attr_col=${attr_col[$attr]}
   done
