@@ -77,10 +77,14 @@ def show_header(attrnames, attributes_only):
   header_data.extend(attrnames)
   print("# "+"\t".join(header_data))
 
-def show_results(args, node_ids, attr_values, attrnames):
+def show_results(args, tree, node_ids, attr_values, attrnames):
+  n_nodes = 0
   if not args["--separator"]:
     args["--separator"] = "\t"
   for i, node_id in enumerate(node_ids):
+    if node_id == tree.DELETED:
+      continue
+    n_nodes += 1
     if not args["--show-none"] and \
         all([attr_values[attrname][i] is None for attrname in attrnames]):
       continue
@@ -94,6 +98,8 @@ def show_results(args, node_ids, attr_values, attrnames):
       else:
         line_data.append(str(value))
     print(args["--separator"].join(line_data))
+  if args["--stats"]:
+    logger.info("Number of nodes in subtree: {}".format(n_nodes))
 
 def get_parents(tree, node_ids, subtree_root):
   parents = []
@@ -119,9 +125,7 @@ def main(args):
     subtree_root = int(args["<subtreeroot>"])
   logger.debug(f"Extracting subtree under node '{subtree_root}'")
   attrnames = check_attribute_args(args)
-  node_ids = tree.subtree_ids(subtree_root)
-  if args["--stats"]:
-    logger.info("Number of nodes in subtree: {}".format(len(node_ids)))
+  node_ids = tree.subtree_ids(subtree_root, include_deleted=True)
   attr_values = get_attribute_values(attrnames, tree, subtree_root, args)
   if args["--subtree-sizes"]:
     attrnames.insert(0, "subtree_size")
@@ -131,7 +135,7 @@ def main(args):
     attr_values["parent"] = get_parents(tree, node_ids, subtree_root)
   if not args["--no-header"]:
     show_header(attrnames, args["--attributes-only"])
-  show_results(args, node_ids, attr_values, attrnames)
+  show_results(args, tree, node_ids, attr_values, attrnames)
 
 if __name__ == "__main__":
   args = docopt(__doc__, version=VERSION)

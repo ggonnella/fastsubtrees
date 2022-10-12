@@ -30,13 +30,16 @@ def get_attribute_list(tree, subtree_root, attributefile):
   return attribute_list
 
 def write_attribute_values(tree, attrvalues, outfile):
-  for element_id in tree.subtree_ids(tree.root_id):
-    attribute = attrvalues.get(element_id, None)
+  for element_id in tree.subtree_ids(tree.root_id, include_deleted=True):
+    if element_id == tree.DELETED:
+      attribute = None
+    else:
+      attribute = attrvalues.get(element_id, None)
     outfile.write(json.dumps(attribute) + "\n")
 
 def read_attribute_values(tree, fname):
   i = 0
-  all_ids = tree.subtree_ids(tree.root_id)
+  all_ids = tree.subtree_ids(tree.root_id, include_deleted=True)
   existing = {}
   with open(fname, "r") as f:
     for line in f:

@@ -157,12 +157,14 @@ class Tree():
     return self
 
   def get_parent(self, node):
-    if node == self.root_id:
+    if node == self.root_id or node == self.DELETED or node == self.UNDEF:
       return node
     else:
       return self.parents[node]
 
   def get_subtree_size(self, node):
+    if node == self.DELETED or node == self.UNDEF:
+      return 0
     return self.subtree_sizes[node] + 1
 
   def query_subtree(self, subtree_root):
@@ -176,11 +178,12 @@ class Tree():
     subtree_size = self.subtree_sizes[subtree_root]
     subtree_parents = self.parents[subtree_root]
     logger.debug(\
-        f"Subtree under node {subtree_root} has size {subtree_size + 1}")
+        f"Subtree under node {subtree_root} has size {subtree_size + 1} "+\
+        "(including deleted nodes, if any)")
     return self.treedata[pos:pos + subtree_size + 1], pos, \
          subtree_size, subtree_parents
 
-  def subtree_ids(self, subtree_root):
+  def subtree_ids(self, subtree_root, include_deleted=False):
     try:
       subtree_data, pos, subtree_size, subtree_parents = \
           self.query_subtree(subtree_root)
@@ -189,11 +192,13 @@ class Tree():
           f"The node ID does not exist, found: {subtree_root}")
     new_subtree_ids = array.array("Q")
     for data in subtree_data:
-      if data != Tree.UNDEF and data != Tree.DELETED:
+      if data != Tree.UNDEF and (data != Tree.DELETED or include_deleted):
         new_subtree_ids.append(data)
     return new_subtree_ids
 
-  def add_subtree(self, generator, attributefilenames=[]):
+  def add_subtree(self, generator, attributefilenames=[], skip_existing=False,
+                  rm_existing_set=None, list_added=None):
+    n_added = 0
     for node_number, parent in generator:
       if node_number <= 0:
         raise error.ConstructionError(\
@@ -201,30 +206,31 @@ class Tree():
       elif parent <= 0:
         raise error.ConstructionError(\
             f"The node IDs must be > 0, found: {parent}")
-      else:
-        if node_number < len(self.parents):
-          if self.treedata[self.coords[node_number]] == Tree.DELETED:
-            raise error.DeletedNodeError(\
-                f'Node {node_number} was already deleted once. ' + \
-                'Cannot add the same node again')
-          else:
-            if self.parents[node_number] != Tree.UNDEF:
-              raise error.ConstructionError(\
-                f"Node {node_number} had already been added with parent " + \
-                f"{self.parents[node_number]}, cannot add it again with " + \
-                f"parent {parent}")
-            else:
-              inspos = self.__prepare_node_insertion(node_number, parent)
-              if attributefilenames:
-                self.__insert_none_in_attribute_list(inspos, attributefilenames)
-              self.__insert_node(node_number, inspos, parent)
-              self.__update_subtree_sizes(node_number)
+      if node_number < len(self.parents):
+        if self.treedata[self.coords[node_number]] == Tree.DELETED:
+          raise error.DeletedNodeError(\
+              f'Node {node_number} was already deleted once. ' + \
+              'Cannot add the same node again')
         else:
-          inspos = self.__prepare_node_insertion(node_number, parent)
-          if attributefilenames:
-            self.__insert_none_in_attribute_list(inspos, attributefilenames)
-          self.__insert_node(node_number, inspos, parent)
-          self.__update_subtree_sizes(node_number)
+          if node_number == self.root_id or \
+              self.parents[node_number] != Tree.UNDEF:
+            if skip_existing:
+              if rm_existing_set is not None:
+                rm_existing_set.remove(node_number)
+              continue
+            raise error.ConstructionError(\
+              f"Node {node_number} had already been added with parent " + \
+              f"{self.parents[node_number]}, cannot add it again with " + \
+              f"parent {parent}")
+      n_added += 1
+      if list_added is not None:
+        list_added.append(node_number)
+      inspos = self.__prepare_node_insertion(node_number, parent)
+      if attributefilenames:
+        self.__insert_none_in_attribute_list(inspos, attributefilenames)
+      self.__insert_node(node_number, inspos, parent)
+      self.__update_subtree_sizes(node_number)
+    return n_added
 
   def __prepare_node_insertion(self, node_number, parent):
     try:
@@ -270,16 +276,20 @@ class Tree():
       self.subtree_sizes[p] += 1
       p = self.parents[p]
 
-  def delete_node(self, node_number, attributefilenames=[]):
+  def delete_node(self, node_number, attributefilenames=[],
+                  list_deleted = None):
     try:
       coord = self.coords[node_number]
     except IndexError:
       raise error.NodeNotFoundError(\
           f"The node ID does not exist: {node_number}")
     subtree_size = self.subtree_sizes[node_number]
+    if list_deleted is not None:
+      list_deleted.extend(self.subtree_ids(node_number))
     for i in range(subtree_size + 1):
       self.treedata[coord + i] = Tree.DELETED
       self.__delete_node_in_attribute_list(coord + i, attributefilenames)
+    return subtree_size + 1
 
   def __insert_none_in_attribute_list(self, inspos, attributefilenames):
     for filename in attributefilenames:
