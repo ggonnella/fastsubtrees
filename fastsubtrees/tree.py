@@ -277,14 +277,14 @@ class Tree():
       p = self.parents[p]
 
   def update(self, generator, attrfiles, list_added=None, list_deleted=None):
-    not_existing = set(tree.subtree_ids(tree.root_id))
-    n_added = tree.add_subtree(generator, attrfiles, skip_existing=True,
+    not_existing = set(self.subtree_ids(self.root_id))
+    n_added = self.add_subtree(generator, attrfiles, skip_existing=True,
         rm_existing_set=not_existing, list_added=list_added)
-    not_existing_parents = {n: tree.get_parent(n) for n in not_existing}
+    not_existing_parents = {n: self.get_parent(n) for n in not_existing}
     n_deleted = 0
     for n in not_existing:
       if not_existing_parents[n] not in not_existing:
-        n_deleted += tree.delete_node(n, attrfiles,
+        n_deleted += self.delete_node(n, attrfiles,
             list_deleted=list_deleted)
     return n_added, n_deleted
 
