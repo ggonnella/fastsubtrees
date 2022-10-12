@@ -170,7 +170,7 @@ Once the attributes are created, their values in any subtree can be
 easily queried:
 ```
 # query the genome size values under node 562
-fastsubtrees attr query --ids nt.tree genome_size,GC_content 562
+fastsubtrees query nt.tree 562 genome_size GC_content
 ```
 
 #### Adding the taxa names
@@ -185,7 +185,7 @@ ntnames ntdumps > names.tsv
 # create the attribute file
 fastsubtrees attr construct nt.tree taxname --tab names.tsv
 # query ID, taxa names and genome sizes in a subtree
-fastsubtrees attr query --ids nt.tree taxname,genome_size 562
+fastsubtrees query nt.tree 562 taxname genome_size
 ```
 
 #### CLI example with generic data

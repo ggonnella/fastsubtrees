@@ -11,17 +11,16 @@ displays the syntax and details of the subcommand.
 There are two sets of subcommands. For working with the tree itself,
 the corresponding verb (construct, query, add, delete) is used as subcommand
 directly. For working with attributes (see below), the subcommand is
-``attr`` and the verb (construct, query, add, delete) is used as sub-subcommand,
-after attr (e.g. ``fastsubtrees attr query``).
+``attr`` and the verb (construct, add, delete) is used as sub-subcommand,
+after attr (e.g. ``fastsubtrees attr construct``).
 
 The following subcommands are available:
 ```
   construct         Construct the tree data structure and save it to file
-  query             List the IDs of the subtree under a given node
+  query             List IDs/attribute values of the subtree under a given node
   add               Add new nodes to an existing tree data structure
   delete            Remove nodes from an existing tree data structure
   attr construct    Save values of an attribute to (some of the) nodes of a tree
-  attr query        List the values of an attribute in a given subtree
   attr add          Add additional attribute values for more nodes of a tree
   attr delete       Delete some or all values of an attribute
 ```
@@ -195,36 +194,21 @@ with the option ``--all``.
 
 ## Subtree queries
 
-### Querying node identifiers
-
 The subcommand ``fastsubtrees query`` loads a tree representation from file
-and performs a subtree IDs query to return a list of IDs of the subtree under a
-given node.
+and performs a subtree query to return a list of node IDs and/or attributes
+of the subtree under a given node.
 
 To run the query, two parameters are required:
-- `tree`: File containing the tree. It is the output of
-  **fastsubtrees construct** (eventually modified by other subcommands).
+- `tree`: File containing the tree.
 - `subtreeroot`: ID of the root of the subtree for which the IDs
                  have to be queried
 
-## Querying attribute values
+For query the values of an attribute in a subtree, the attribute names
+are passed as further arguments, after the subtree root argument.
+The output is tabular and a header line is output, which summarizes the content
+of each column.
 
-For query the values of an attribute in a subtree,
-``fastsubtrees attr query`` is used.
-
-Three parameters are mandatory to run the query:
-- `tree`: File containing the tree. It is the output of
-  **fastsubtrees construct** (eventually modified by other subcommands).
-- `attribute`: Name of the attribute to query; it can be also a comma-separated
-               list of multiple attributes
-- `subtreeroot`: ID of the root of the subtree for which the values
-                 have to be queried
-
-By default, only the attribute values are displayed, one node per line,
-only for nodes for which at least one value exists.
-To display the node ID alongside the values, use the option ``--ids``.
-To display also the results (``None``) also for nodes for which no
-value exists, use the option ``--nones``.
-If ``--ids`` is used or multiple attributes are specified, the output
-is tabular and a header line is output, which summarizes the content of
-each column.
+To hide the node IDs when attributes are printed, use the option
+``--attributes-only``. In this case, only nodes for which
+some attribute value exists are shown, unless the option ``--show-none``
+is used.
