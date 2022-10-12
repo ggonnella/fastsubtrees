@@ -1,3 +1,8 @@
+=== 1.8 ===
+- multiple attributes can be queried at once
+- explain how to load taxa names as attributes in README
+- simplification of the CLI: unify 'attr query' and 'query' subcommands
+
 === 1.7 ===
 - genomes_attributes_viewer is now a Python package, installable by pip
 - separated ntdownload from ntmirror, to ease installation when MariaDB is not available
