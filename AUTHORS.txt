@@ -1,0 +1,9 @@
+Giorgio Gonnella: funding acquisition, conceptualization,
+software development, test suite, documentation, Docker image,
+project supervision and manuscript redaction.
+
+Aman Modi: software development, test suite, example application,
+documentation and benchmarks.
+
+# Note: this file contains the list of the main developers of the project.
+# Minor contributors, patches, etc, are added to CONTRIBUTORS.txt.
