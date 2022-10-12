@@ -38,7 +38,7 @@ setup(name='fastsubtrees',
       zip_safe=False,
       include_package_data=True,
       install_requires=['tqdm>=4.57.0', 'loguru>=0.5.1', 'docopt>=0.6.2',
-        "schema>=0.7.4", "sh>=1.14.2", "PyYAML>=6.0"],
+        "schema>=0.7.4", "sh>=1.14.2"],
       test_suite="pytest",
       tests_require=['pytest', 'pytest-console-scripts', 'sh'],
     )
