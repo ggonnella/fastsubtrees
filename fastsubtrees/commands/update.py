@@ -78,7 +78,7 @@ def main(args):
         format("', '".join(attrfiles)))
   if args["--delete"]:
     for n in args["<subtree_root>"]:
-      n_deleted += tree.delete_node(int(n), attrfiles,
+      n_deleted += tree.delete_subtree(int(n), attrfiles,
           list_deleted=deleted_nodes)
   else:
     if args["--tab"]:
@@ -89,7 +89,7 @@ def main(args):
     posargs, keyargs = _scripts_support.get_fn_args(True, args["<idsmod_data>"])
     generator = m.element_parent_ids(*posargs, **keyargs)
     if args["--add"]:
-      n_added = tree.add_subtree(generator, attrfiles)
+      n_added = tree.add_nodes(generator, attrfiles)
     else:
       n_added, n_deleted = tree.update(self, generator, attrfiles,
           list_added=added_nodes, list_deleted=deleted_nodes)

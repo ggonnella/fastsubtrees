@@ -50,12 +50,11 @@ def test_add_subtree_err_node0(testdata):
   with pytest.raises(error.ConstructionError):
     tree.add_nodes(add_generator)
 
-def test_add_subtree_err_prev_deleted(testdata):
+def test_add_subtree_prev_deleted(testdata):
   construction_infname = testdata('small_tree.tsv')
   construction_generator = element_parent_ids(construction_infname)
   tree = Tree.construct(construction_generator)
   tree.delete_subtree(3)
   add_infname = testdata('add_already_deleted_node.tsv')
   add_generator = element_parent_ids(add_infname)
-  with pytest.raises(error.DeletedNodeError):
-    tree.add_nodes(add_generator)
+  tree.add_nodes(add_generator)

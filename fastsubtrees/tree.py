@@ -215,11 +215,6 @@ class Tree():
         raise error.ConstructionError(\
             f"The node parent IDs must be > 0, found: {parent}")
       if node_number < len(self.parents):
-        if self.treedata[self.coords[node_number]] == Tree.DELETED:
-            raise error.ConstructionError(\
-              f'Node {node_number} / parent {parent} was previously '+\
-              f'deleted and had a different parent '+\
-              f'({self.parents[node_number]})')
         if node_number == self.root_id:
           if skip_existing:
             if node_number != parent:
@@ -230,7 +225,8 @@ class Tree():
           else:
             raise error.ConstructionError(\
                 f"The root node {node_number} already exists")
-        if self.parents[node_number] != Tree.UNDEF:
+        if self.parents[node_number] != Tree.UNDEF and \
+              self.treedata[self.coords[node_number]] != Tree.DELETED:
           if skip_existing:
             if self.parents[node_number] != parent:
               if parent >= len(self.parents) or self.coords[parent] == 0:
@@ -294,7 +290,7 @@ class Tree():
       self.subtree_sizes.extend([0] * n_to_append)
     self.coords[node_number] = inspos
     self.parents[node_number] = parent
-    assert(self.subtree_sizes[node_number] == 0)
+    self.subtree_sizes[node_number] = 0
     p = self.parents[node_number]
     while p != Tree.UNDEF:
       self.subtree_sizes[p] += 1
@@ -324,7 +320,7 @@ class Tree():
       self.treedata[oldpos + i] = Tree.DELETED
       edit_script.append(("delete", oldpos + i))
     self.parents[subtree_root] = new_parent
-    p = self.parents[subtree_root]
+    p = new_parent
     while p != Tree.UNDEF:
       self.subtree_sizes[p] += subtree_size
       p = self.parents[p]
@@ -373,16 +369,18 @@ class Tree():
   NONELINE = 'null\n'
 
   def __edit_attribute_values(self, edit_script, attrfilenames):
+    print(edit_script)
     for attrfilename in attrfilenames:
       with open(attrfilename, 'r') as f:
         lines = f.readlines()
+      print(lines)
       for op in edit_script:
         if op[0] == "insert":
-          lines.insert(op[1], Tree.NONELINE)
+          lines.insert(op[1]-1, Tree.NONELINE)
         elif op[0] == "copy":
-          lines.insert(op[2], lines[op[1]])
+          lines[op[1]-1] = lines[op[2]-1]
         elif op[0] == "delete":
-          lines[op[1]] = Tree.NONELINE
+          lines[op[1]-1] = Tree.NONELINE
       with open(attrfilename, 'w') as f:
         f.writelines(lines)
 
