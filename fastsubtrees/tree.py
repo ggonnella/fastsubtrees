@@ -265,7 +265,7 @@ class Tree():
             del pending[node]
     if len(pending) > 0:
       raise error.ConstructionError(\
-          "Could not add nodes because their parents " + \
+          "Impossible operations because the node parents " + \
           f"were not present in the tree: {pending}")
     self.__edit_attribute_values(edit_script, attrfilenames)
     return n_added
