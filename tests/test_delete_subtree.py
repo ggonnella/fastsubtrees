@@ -7,7 +7,7 @@ def test_delete_node_small_tree(testdata,
   construction_infname = testdata('small_tree.tsv')
   construction_generator = element_parent_ids(construction_infname)
   tree = Tree.construct(construction_generator)
-  tree.delete_node(3)
+  tree.delete_subtree(3)
   subtree_ids = tree.subtree_ids(1)
   assert subtree_ids == results_delete_subtree_small_tree_id_1
 
@@ -16,7 +16,7 @@ def test_delete_node_medium_tree(testdata,
   construction_infname = testdata('medium_tree.tsv')
   construction_generator = element_parent_ids(construction_infname)
   tree = Tree.construct(construction_generator)
-  tree.delete_node(78)
+  tree.delete_subtree(78)
   subtree_ids = tree.subtree_ids(46)
   assert subtree_ids == results_delete_subtree_medium_tree_id_78
 
@@ -25,4 +25,4 @@ def test_delete_node_err_not_exist(testdata):
   construction_generator = element_parent_ids(construction_infname)
   tree = Tree.construct(construction_generator)
   with pytest.raises(error.NodeNotFoundError):
-    tree.delete_node(99)
+    tree.delete_subtree(99)

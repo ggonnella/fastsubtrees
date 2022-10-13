@@ -5,6 +5,7 @@ Computation of the information necessary for the subtree query
 import struct
 import array
 import sys
+from collections import defaultdict
 from fastsubtrees import logger, tqdm, error
 
 class Tree():
@@ -196,100 +197,140 @@ class Tree():
         new_subtree_ids.append(data)
     return new_subtree_ids
 
-  def add_subtree(self, generator, attributefilenames=[], skip_existing=False,
-                  rm_existing_set=None, list_added=None):
+  def add_nodes(self, generator, attrfilenames=[], skip_existing=False,
+                  rm_existing_set=None, list_added=None, total=None,
+                  edit_script=None):
     n_added = 0
-    for node_number, parent in generator:
+    pending = defaultdict(list)
+    logger.info("Tree root: " + str(self.root_id))
+    if edit_script is None:
+      edit_script = []
+    for node_number, parent in tqdm(generator, total=total):
+      if rm_existing_set is not None:
+        rm_existing_set.discard(node_number)
       if node_number <= 0:
         raise error.ConstructionError(\
             f"The node IDs must be > 0, found: {node_number}")
       elif parent <= 0:
         raise error.ConstructionError(\
-            f"The node IDs must be > 0, found: {parent}")
+            f"The node parent IDs must be > 0, found: {parent}")
       if node_number < len(self.parents):
         if self.treedata[self.coords[node_number]] == Tree.DELETED:
-          raise error.DeletedNodeError(\
-              f'Node {node_number} was already deleted once. ' + \
-              'Cannot add the same node again')
-        else:
-          if node_number == self.root_id or \
-              self.parents[node_number] != Tree.UNDEF:
-            if skip_existing:
-              if rm_existing_set is not None:
-                rm_existing_set.remove(node_number)
-              continue
             raise error.ConstructionError(\
-              f"Node {node_number} had already been added with parent " + \
-              f"{self.parents[node_number]}, cannot add it again with " + \
-              f"parent {parent}")
-      n_added += 1
-      if list_added is not None:
-        list_added.append(node_number)
-      inspos = self.__prepare_node_insertion(node_number, parent)
-      if attributefilenames:
-        self.__insert_none_in_attribute_list(inspos, attributefilenames)
-      self.__insert_node(node_number, inspos, parent)
-      self.__update_subtree_sizes(node_number)
+              f'Node {node_number} / parent {parent} was previously '+\
+              f'deleted and had a different parent '+\
+              f'({self.parents[node_number]})')
+        if node_number == self.root_id:
+          if skip_existing:
+            if node_number != parent:
+              raise error.ConstructionError(\
+                  f'Node {node_number} / parent {parent} already exists '+\
+                  f'as the root node')
+            continue
+          else:
+            raise error.ConstructionError(\
+                f"The root node {node_number} already exists")
+        if self.parents[node_number] != Tree.UNDEF:
+          if skip_existing:
+            if self.parents[node_number] != parent:
+              if parent >= len(self.parents) or self.coords[parent] == 0:
+                pending[parent].append(('move', node_number))
+              else:
+                self.__move_subtree(node_number, parent, edit_script)
+            continue
+          else:
+            if self.parents[node_number] != parent:
+              raise error.ConstructionError(\
+                f"Node {node_number} / parent {parent} already exists "+\
+                f"with a different parent ({self.parents[node_number]})")
+            else:
+              raise error.ConstructionError(\
+                f"Node {node_number} / parent {parent} already exists")
+      if parent >= len(self.parents) or self.coords[parent] == 0:
+        pending[parent].append(("insert", node_number))
+      else:
+        self.__insert_node(node_number, parent, edit_script, list_added)
+        n_added += 1
+        stack = [node_number]
+        while stack:
+          node = stack.pop()
+          if node in pending:
+            for child in pending[node]:
+              if child[0] == "insert":
+                self.__insert_node(child[1], node, edit_script, list_added)
+                n_added += 1
+                stack.append(child[1])
+              elif child[0] == "move":
+                self.__move_subtree(child[1], node, edit_script)
+            del pending[node]
+    if len(pending) > 0:
+      raise error.ConstructionError(\
+          "Could not add nodes because their parents " + \
+          f"were not present in the tree: {pending}")
+    self.__edit_attribute_values(edit_script, attrfilenames)
     return n_added
 
-  def __prepare_node_insertion(self, node_number, parent):
-    try:
-      inspos = self.coords[parent] + 1
-      self.treedata.insert(inspos, node_number)
-      return inspos
-    except IndexError:
-      raise error.ConstructionError(\
-          f"The node {node_number} has parent {parent}, " + \
-          f"which is not in the tree")
-
-  def __insert_node(self, node_number, inspos, parent):
-    if node_number < len(self.coords):
-      try:
-        self.coords[node_number] = inspos
-      except TypeError:
-        raise error.NodeNotFoundError(\
-            f'The node ID {node_number} does not exist')
-      self.parents[node_number] = parent
-      for i in range(len(self.coords)):
-        if i != node_number:
-          if self.coords[i] >= inspos:
-            self.coords[i] += 1
-    else:
-      len_coords = len(self.coords)
-      diff = node_number - len_coords
-      for i in range(diff):
-        self.coords.insert(len_coords + i, 0)
-        # subtree_size of 0 would mean 1, if so we would need to use an
-        # undef value
-        self.subtree_sizes.insert(len_coords + i, 0)
-        self.parents.insert(len_coords + i, Tree.UNDEF)
-      self.coords.insert(node_number, inspos)
-      self.subtree_sizes.insert(node_number, 0)
-      self.parents.insert(node_number, parent)
-      for i in range(len_coords):
-        if self.coords[i] >= inspos:
-          self.coords[i] += 1
-
-  def __update_subtree_sizes(self, node_number):
+  def __insert_node(self, node_number, parent, edit_script, list_added):
+    # the idea for the insertion is the following
+    # - in treedata, the insertion position is after the parent
+    # - thus coords must be updated, adding 1 to all the coords >= inspos
+    # - if the node_number is larger than the current max_node_number then
+    #   parents/coords and subtree_sizes must be extended
+    # - the parents/coords/subtree_sizes values for the node must be set
+    #   (to parent/inspos/0)
+    # - subtree_sizes must be updated, adding 1 to all ancestors of node_number
+    assert(self.coords[parent] > 0)
+    inspos = self.coords[parent] + 1
+    n_existing = len(self.coords)
+    for i in range(n_existing):
+      if self.coords[i] >= inspos:
+        self.coords[i] += 1
+    self.treedata.insert(inspos, node_number)
+    edit_script.append(("insert", inspos))
+    n_to_append = node_number + 1 - n_existing
+    if n_to_append > 0:
+      self.coords.extend([0] * n_to_append)
+      self.parents.extend([Tree.UNDEF] * n_to_append)
+      self.subtree_sizes.extend([0] * n_to_append)
+    self.coords[node_number] = inspos
+    self.parents[node_number] = parent
+    assert(self.subtree_sizes[node_number] == 0)
     p = self.parents[node_number]
     while p != Tree.UNDEF:
       self.subtree_sizes[p] += 1
       p = self.parents[p]
+    #logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
+    if list_added is not None:
+      list_added.append(node_number)
 
-  def update(self, generator, attrfiles, list_added=None, list_deleted=None):
-    not_existing = set(self.subtree_ids(self.root_id))
-    n_added = self.add_subtree(generator, attrfiles, skip_existing=True,
-        rm_existing_set=not_existing, list_added=list_added)
-    not_existing_parents = {n: self.get_parent(n) for n in not_existing}
-    n_deleted = 0
-    for n in not_existing:
-      if not_existing_parents[n] not in not_existing:
-        n_deleted += self.delete_node(n, attrfiles,
-            list_deleted=list_deleted)
-    return n_added, n_deleted
+  def __move_subtree(self, subtree_root, new_parent, edit_script):
+    subtree_size = self.subtree_sizes[subtree_root] + 1
+    assert(self.coords[new_parent] > 0)
+    inspos = self.coords[new_parent] + 1
+    for i in range(subtree_size):
+      self.treedata.insert(inspos, Tree.UNDEF)
+      edit_script.append(("insert", inspos))
+    n_existing = len(self.coords)
+    for i in range(n_existing):
+      if self.coords[i] >= inspos:
+        self.coords[i] += subtree_size
+    oldpos = self.coords[subtree_root]
+    for i in range(subtree_size):
+      nodenum = self.treedata[oldpos + i]
+      self.treedata[inspos + i] = nodenum
+      if nodenum != Tree.UNDEF and nodenum != Tree.DELETED:
+        self.coords[nodenum] = inspos + i
+        edit_script.append(("copy", oldpos + i, inspos + i))
+      self.treedata[oldpos + i] = Tree.DELETED
+      edit_script.append(("delete", oldpos + i))
+    self.parents[subtree_root] = new_parent
+    p = self.parents[subtree_root]
+    while p != Tree.UNDEF:
+      self.subtree_sizes[p] += subtree_size
+      p = self.parents[p]
 
-  def delete_node(self, node_number, attributefilenames=[],
-                  list_deleted = None):
+  def delete_subtree(self, node_number, attrfilenames=[],
+                     list_deleted = None, edit_script = None):
     try:
       coord = self.coords[node_number]
     except IndexError:
@@ -297,27 +338,51 @@ class Tree():
           f"The node ID does not exist: {node_number}")
     n_deleted = 0
     subtree_size = self.subtree_sizes[node_number]
+    if edit_script is None:
+      edit_script = []
     for i in range(subtree_size + 1):
-      if self.treedata[coord + i] != Tree.DELETED:
+      delpos = coord + i
+      if self.treedata[delpos] != Tree.DELETED:
+        deleted = self.treedata[delpos]
+        self.treedata[delpos] = Tree.DELETED
+        edit_script.append(("delete", delpos))
         n_deleted += 1
         if list_deleted is not None:
-          list_deleted.append(self.treedata[coord + i])
-        self.treedata[coord + i] = Tree.DELETED
-        self.__delete_node_in_attribute_list(coord + i, attributefilenames)
+          list_deleted.append(deleted)
+        #logger.info(f"Deleted node {deleted} at position {delpos}")
+    self.__edit_attribute_values(edit_script, attrfilenames)
     return n_deleted
 
-  def __insert_none_in_attribute_list(self, inspos, attributefilenames):
-    for filename in attributefilenames:
-      with open(filename, 'r+') as file:
-        contents = file.readlines()
-        contents.insert(inspos-1, 'null' + "\n")
-        file.seek(0)
-        file.writelines(contents)
+  def update(self, generator, attrfiles, list_added=None, list_deleted=None,
+             total=None):
+    edit_script = []
+    deleted = set(self.subtree_ids(self.root_id))
+    n_added = self.add_nodes(generator, skip_existing=True,
+        rm_existing_set=deleted, list_added=list_added, total=total,
+        edit_script=edit_script)
+    parents_of_deleted = {n: self.get_parent(n) for n in deleted}
+    n_deleted = 0
+    for n in deleted:
+      if parents_of_deleted[n] in deleted:
+        continue
+      n_deleted += self.delete_subtree(n, list_deleted=list_deleted,
+          edit_script=edit_script)
+    self.__edit_attribute_values(edit_script, attrfiles)
+    return n_added, n_deleted
 
-  def __delete_node_in_attribute_list(self, pos, attributefilenames):
-    for filename in attributefilenames:
-      with open(filename, 'r+') as file:
-        contents = file.readlines()
-        contents[pos-1] = str(Tree.DELETED) + "\n"
-        file.seek(0)
-        file.writelines(contents)
+  NONELINE = 'null\n'
+
+  def __edit_attribute_values(self, edit_script, attrfilenames):
+    for attrfilename in attrfilenames:
+      with open(attrfilename, 'r') as f:
+        lines = f.readlines()
+      for op in edit_script:
+        if op[0] == "insert":
+          lines.insert(op[1], Tree.NONELINE)
+        elif op[0] == "copy":
+          lines.insert(op[2], lines[op[1]])
+        elif op[0] == "delete":
+          lines[op[1]] = Tree.NONELINE
+      with open(attrfilename, 'w') as f:
+        f.writelines(lines)
+
