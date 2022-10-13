@@ -39,24 +39,17 @@ a file) can be modified, by adding or deleting leaf nodes or entire subtrees.
 
 ### Adding nodes
 
-For adding a single (leaf) node, the `tree.add_node(parent, node_number)`
-method can be used.
-Thereby `parent` is the identifier of the node to which to add a new leaf
-and `node_number` is the identifier of the leaf.
-
-For adding a subtree, the `tree.add_subtree(generator)` method is used.
+For adding new nodes, the `tree.add_nodes(generator)` method is used.
 The paremeter shall be a generator, which yields pairs of values, that
-are the ID of each node and the corresponding parent node ID. In the current
-implementation, the first yielded pair must be the root of the new subtree
-and parent nodes in the subtree must be defined before their children.
+are the ID of each node and the corresponding parent node ID.
 
-The ``add_subtree`` method also allows to modify trees for which attributes
-have been defined. For this, the optional argument ``attributefilenames``
+The ``add_nodes`` method also allows to modify trees for which attributes
+have been defined. For this, the optional argument ``attrfilenames``
 must be set to a list of filenames of attribute files.
 
 ### Removing nodes
 
-For removing a node, the `tree.delete_node(node_number)` function is used.
+For removing a node, the `tree.delete_subtree(node_number)` function is used.
 If the provided ID is for a leaf tree, then only that node is removed.
 If it is an internal node, the node, and the entire subtree under it
 are removed.
@@ -66,8 +59,8 @@ stored in the representation, but are flagged as removed and not output
 by subtree queries. Removed node IDs shall therefore not be used anymore
 in subsequent node or subtree adding operations.
 
-The ``delete_node`` method also allows to modify trees for which attributes
-have been defined. For this, the optional argument ``attributefilenames``
+The ``delete_subtree`` method also allows to modify trees for which attributes
+have been defined. For this, the optional argument ``attrfilenames``
 must be set to a list of filenames of attribute files.
 
 ## Defining an attribute
