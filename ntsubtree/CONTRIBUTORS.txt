@@ -1,0 +1,3 @@
+- Giorgio Gonnella (project creator, project supervisor, developer)
+- Aman Modi (developer)
+# This file will list minor contributors, by request

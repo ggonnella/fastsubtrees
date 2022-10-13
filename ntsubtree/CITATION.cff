@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Gonnella"
+  given-names: "Giorgio"
+  orcid: "https://orcid.org/0000-0003-3900-5397"
+title: 'NtSubtree: simple and efficient NCBI taxonomy subtrees extractions in Python'
+version: 1.0
+date-released: 2022-10-12
+url: "htts://github.com/ggonnella/fastsubtrees/tree/main/ntsubtree"
