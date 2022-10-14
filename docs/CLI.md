@@ -5,77 +5,62 @@ that can be used to construct and modify a tree, add attributes to nodes, and
 query subtree IDs and attribute values.
 
 The list of subcommands is displayed using ``fastsubtrees --help``.
-Using ``--help`` after a subcommand (e.g. ``fastsubtrees construct --help``
+Using ``--help`` after a subcommand (e.g. ``fastsubtrees tree --help``
 displays the syntax and details of the subcommand.
 
 The following subcommands are available:
 ```
-  construct         Construct the tree data structure and save it to file
-  update            Update an existing tree data structure
-  attribute         Create, update or delete node attributes
-  query             List node IDs and/or attributes in the subtree under a node
+  tree         Create or modify a tree.
+  attribute    Create, modify or remove an attribute.
+  query        List node IDs and/or attributes in a subtree.
 ```
 
 ## Tree construction
 
-The subcommand ``fastsubtrees construct`` constructs the tree representation
-from a tabular file.
+The subcommand ``fastsubtrees tree`` is used to construct the tree
+representation, from data consisting in node IDs and the corresponding parent
+IDs. The data can be obtained from a tabular file, or from a different data
+source.
 
-The script has different modes of use, depending on the input format,
-as described in the following subsections.
+### Construction from a tabular file
 
-Common to all modes of use is the first parameter, which is the output file
-name, containing the tree data, used for the subsequent queries.
+If the IDs of the elements and their parents are contained in a tabular
+file, the filename is given as an argument to ``fastsubtrees tree``, e.g.:
+```
+fastsubtrees tree my.tree
+```
 
-### NCBI taxonomy tree construction
+Details of the format can be specified using options. The separator
+is specified using ``--separator`` (default: tab), the columns containing
+the IDs using ``--elementscol`` and ``--parentscol`` (as
+1-based column numbers, default: 1 and 2), and the prefix of comment/header
+lines using ``--commentchar`` (default: #).
 
-For constructing the NCBI taxonomy tree, the directory containing ``nodes.dmp``
-is specified, after using the ``--ntdump`` option.
+When using ``nodes.dmp`` from
+the NCBI taxonomy tree dump, the preset ``--ncbi`` can be used.
 Example:
 ```
-fastsubtrees-construct my.tree --ntdump ntdumpsdir
+fastsubtrees-construct my.tree --ncbi ntdumpsdir/nodes.dmp
 ```
 
-### Using a tabular file
+### Generalized tree construction
 
-If the input data is contained in a TAB-separated input file, with two
-columns, the elements IDs in the first column, and the parent IDs in the second
-column, then the ``--tab`` option can be used:
+In the generalized tree construction mode, the path to a Python module
+is passed, using the option ``--module``, which contain a function, yielding
+the node and parent IDs. The default function name is ``element_parent_ids``
+and can be changed using the option ``--fn``.
 
-Example:
-```
-fastsubtrees-construct my.tree --tab elems_and_parents.tsv
-```
-
-If the separator is not TAB, or the column order is different, use the generic
-tree construction mode described below,
-passing the ``ids_from_tabular_file.py`` module.
-
-### Generic tree construction mode
-
-In the generic mode, the next parameter of ``fastsubtrees construct``
-is the name of a Python module. This must define a function called
-``element_parent_ids()``, which yields pairs of IDs ``(element_id, parent_id)``.
-Examples of this functions, obtaining the ID data from a database table or
-from a tabular file are given in the modules in the
-``fastsubtrees.ids_modules`` namespace modules.
-
-The ``element_parent_ids()`` function usually needs parameters. These
-can be passed either as positional or as keyword parameters. To pass them
-as positional parameters, they are just used as further arguments,
-after the module name.
-To define them as keyword parameters, the
-use the form ``key=value``.
-
+All positional arguments given to the script are passed to the function.
+If they contain a `=`, they are passed as keyword arguments.
 Examples:
 ```
-fastsubtrees construct my.tree my_module.py a b c
-fastsubtrees construct my.tree my_module.py k1=v1 k2=v=2 x
+fastsubtrees tree my.tree --module my_module.py a b c
+fastsubtrees tree my.tree --module my_module.py k1=v1 k2=v=2 x --fn myfn
 ```
 
 In the first example, the function in ``my_module.py`` is called as
 ``element_parent_ids("a", "b", "c")``, in the second as
-``element_parent_ids("x", k1="v1", k2="v=2")``.
+``myfn("x", k1="v1", k2="v=2")``.
 
 Some modules implementing the described interface are provided
 under ``fastsubtrees/ids_modules``. In particular, ``ids_from_database.py``
@@ -84,26 +69,37 @@ and ``ids_from_tabular_file.py`` from a tabular input file.
 
 ## Modifying an existing tree representation
 
+Existing tree representations can be modified using ``fastsubtrees tree``
+with the options ``--update``, ``--add``  or ``--delete``.
+
 ### Updating a tree
 
-It is possible to modify a tree, by updating the representation, given
-a source of node and parent IDs, similar to the one for the tree creation.
-For this the command ``fastsubtrees update`` is used.
-Any node not yielded in the source will be deleted, and new nodes
-will be added.
+If the option ``--update`` is provided, the tree is modified so to reflect the
+given source of IDs of elements and their parents (tabular file or Python
+function). The result is a tree,
+which is functionally equivalent to a new tree, constructed with the same
+data source.
 
-### Adding nodes
+The advantages of this operation, compared to creating a new tree, are two.
+First, this operation can be faster than creating a new tree from scratch.
+Second, the attribute files are edited, so that they do not have to be
+reconstructed from scratch.
 
-It is also possible to add nodes using a source which only specifies
-the new nodes to add, but not the existing ones. This is done by using
-``fastsubtrees update`` with the option ``--add``.
+The disadvantage is that moved or deleted nodes are simply marked and
+not really removed, thus the resulting tree file is larger. Furthermore,
+moving the tree root is not allowed.
 
-### Delete nodes
+### Adding leaf nodes or new subtrees
 
-To delete leaf nodes or an internal nodes and entire subtree under them,
-the ``fastsubtrees update`` command is used with the option ``--delete``
-by listing the leaf nodes to delete and/or the roots of subtrees
-to delete.
+If the option ``--add`` is used, new elements are added to an existing tree.
+The elements must not yet be present in the tree and they must all be connected
+to a node already present in the tree or added in the same operation.
+
+### Removing leaf nodes or subtrees
+
+If the option ``--delete`` is used, all remaining positional arguments of the
+script are IDs of nodes. If a node is a leaf node, it is removed from the tree.
+If it is an internal node, the entire subtree under that node is removed.
 
 ### Attributes when editing a tree
 
@@ -111,7 +107,8 @@ If attribute have been defined, as described in the following section,
 the attribute files are automatically detected and modified too,
 when adding or deleting nodes.
 
-If nodes have been added, new attribute values for those nodes
+If nodes have been added by ``--add`` or ``--update``,
+new attribute values for those nodes
 can be added using ``fastsubtrees attribute --add``, as explained below.
 
 ## Tree attributes
@@ -120,39 +117,49 @@ The tree can contain further information, except the IDs, in the form of
 attributes. Attribute values can be integers, floats or strings.
 Not all nodes will necessarily have an attribute value associated
 with them. Some nodes can contain multiple values for an attribute.
+Attributes are managed by the subcommand ``fastsubtrees attribute``.
 
 ### Adding an attribute
 
-The command `fastsubtrees attribute` constructs a file containing
-the values of a specified attribute for the nodes of the tree.
+To create a new attribute, a source of attribute values is
+passed to ``fastsubtree attribute``. Similar to the tree construction case,
+the source can be a tabular file, or a Python module, specifiying a function
+yielding node IDs and attribute values.
+The same node ID can appear multiple times, in which case the
+attribute values will all be stored, as a list.
 
-In order to generate attribute files, the user has to
-provide the following parameters:
-- `tree`: File containing the tree that has to be updated.
-- `attribute`: Name of the attribute; attribute names are not allowed
-               to contain spaces or commas
-- `attrmod`: Path to a python module that defines a function
-  ``attribute_values()`` which may take arguments (``<attrmod_data>``) and
-  returns pairs ``(element_id, attribute_value)`` for each node to which an
-  attribute value exists.
-- `attrmod_data`: This is an optional parameter. It consists of a list of
-  arguments to be passed to the ``attribute_values()`` function of the module
-  specified as **attrmod**.
-  To pass keyword arguments, the syntax **key=value** is used.
+#### Attribute values from a tabular file
 
-A module using the described ``attrmod`` interface for adding attributes
-from tabular files is provided under ``fastsubtrees/ids_modules`` and
-can be selected by the shorthand option ``--tab``:
+To create an attribute from a tabular file, the filename is passed, e.g.
 ```
-fastsubtrees attribute my.tree myattribute --tab tabularfile.tsv
+fastsubtrees attribute my.tree myattr value.tsv
 ```
-By default, the IDs are supposed to be in column 0, the attribute values in
-column 1 and the columns to be tab-separated; different values can be
-provided as keyword arguments, e.g.:
+Also in this case the format options can be used, for changing separator,
+comment character and specifying the columns containing the ID of the
+nodes (``--elementscol``) and attribute values (``--valuescol``).
+
+#### Generalized source of attribute values
+
+As a generalized attribute values source, the path to a Python module
+is passed, using the option ``--module``, which contain a function, yielding
+tuples ``(node_ID, attribute_value)``.
+The default function name is ``attribute_values``
+and can be changed using the option ``--fn``.
+
+All positional arguments given to the script are passed to the function.
+If they contain a `=`, they are passed as keyword arguments.
+Examples:
 ```
-fastsubtrees attribute my.tree myattribute --tab tabularfile.tsv \
-   id_col=2 attr_col=10 separator=';'
+fastsubtrees attribute my.tree myattr --module my_module.py a b c
+fastsubtrees attribute my.tree myattr --module my_module.py k1=v1 k2=v=2 x --fn myfn
 ```
+
+In the first example, the function in ``my_module.py`` is called as
+``attribute_values("a", "b", "c")``, in the second as
+``myfn("x", k1="v1", k2="v=2")``.
+
+An example module implementing the described interface is provided
+under ``fastsubtrees/ids_modules/attrs_from_tabular_file.py``.
 
 ### Editing attribute values
 

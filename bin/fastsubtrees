@@ -3,13 +3,12 @@
 Construct, modify or query a tree data structure for fast subtree queries.
 
 Usage:
-  fastsubtrees [attr] <command> [<args>...]
+  fastsubtrees <command> [<args>...]
 
 Available commands:
-  construct         Construct the tree data structure and save it to file
-  update            Update an existing tree data structure
-  attribute         Create, update or delete node attributes
-  query             List node IDs and/or attributes in the subtree under a node
+  tree         Create or modify a tree.
+  attribute    Create, modify or remove an attribute.
+  query        List node IDs and/or attributes in a subtree.
 
 See 'fastsubtrees <command> --help' for more information on a specific command.
 
@@ -20,12 +19,10 @@ from fastsubtrees import VERSION, _scripts_support
 if __name__ == '__main__':
   args = docopt(__doc__, version=VERSION, options_first=True)
   command = args['<command>']
-  if command == 'construct':
-    import fastsubtrees.commands.construct as cmd
+  if command == 'tree':
+    import fastsubtrees.commands.tree as cmd
   elif command == 'query':
     import fastsubtrees.commands.query as cmd
-  elif command == 'update':
-    import fastsubtrees.commands.update as cmd
   elif command == 'attribute':
     import fastsubtrees.commands.attribute as cmd
   else:

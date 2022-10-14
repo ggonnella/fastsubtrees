@@ -58,7 +58,7 @@ def get_datatype_casting_fn(value, m, mfilename):
       fastsubtrees.logger.debug(\
           f"Using function '{value}()' for datatype casting")
     except NameError:
-      if m.__dict__.get(value):
+      if m and m.__dict__.get(value):
         cast = m.__dict__[value]
         fastsubtrees.logger.debug(\
             "Using function {}() from module {} for datatype casting".\
@@ -66,5 +66,5 @@ def get_datatype_casting_fn(value, m, mfilename):
       else:
         raise ValueError("Invalid datatype casting function '{}'".\
             format(value))
-    return cast
+  return cast
 

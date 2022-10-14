@@ -145,7 +145,7 @@ This is an example of the basic operations using the NCBI taxonomy tree:
 # download the NCBI taxonomy database dumps
 ntmirror-download ntdumps
 # construct the fastsubtrees tree data structure
-fastsubtrees construct nt.tree --ntdump ntdumps
+fastsubtrees tree nt.tree --ncbi ntdumps/nodes.dmp
 # query the IDs under node 562
 faststubrees query nt.tree 562
 ```
@@ -156,14 +156,14 @@ stored in the repository:
 
 ```
 # add a genome size attribute from a tabular file
-# the IDs are in column 1, the values in column 2 of the table
-fastsubtrees attribute nt.tree genome_size --tab \
-  data/accession_taxid_attribute.tsv.gz 1 2
+# the IDs are in column 2, the values in column 3 of the table
+fastsubtrees attribute nt.tree genome_size \
+  data/accession_taxid_attribute.tsv.gz --elementscol 2 --valuescol 3
 
 # add a GC content attribute from a tabular file
-# the IDs are in column 1, the values in column 3 of the table
-fastsubtrees attribute nt.tree GC_content --tab \
-  data/accession_taxid_attribute.tsv.gz 1 3
+# the IDs are in column 2, the values in column 4 of the table
+fastsubtrees attribute nt.tree GC_content \
+  data/accession_taxid_attribute.tsv.gz --elementscol 2 --valuescol 4
 ```
 
 Once the attributes are created, their values in any subtree can be
@@ -183,7 +183,7 @@ dumps, the _ntdownload_ package provides a ``ntnames`` command:
 # extract the names from the dump files
 ntnames ntdumps > names.tsv
 # create the attribute file
-fastsubtrees attribute nt.tree taxname --tab names.tsv
+fastsubtrees attribute nt.tree taxname names.tsv
 # query ID, taxa names and genome sizes in a subtree
 fastsubtrees query nt.tree 562 taxname genome_size
 ```
@@ -196,12 +196,11 @@ loading it from a tabular file.
 
 ```
 # construct the tree, using a tabular file as data source
-fastsubtrees construct small.tree --tab tests/testdata/small_tree.tsv
+fastsubtrees construct small.tree tests/testdata/small_tree.tsv
 ```
 
-The data source can be differet: for example also a differently
-formatted tabular file or a database table. For these cases, a Python
-module is passed, which yields the tree data, as described in the
+The data source can be different, for example a database table.
+For these cases, a Python module is passed, as described in the
 CLI manual.
 
 ### API

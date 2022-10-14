@@ -30,6 +30,15 @@ def testout():
   return lambda fn: os.path.join(testoutdir, fn)
 
 @pytest.fixture
+def small_tree_file(testdata, testout):
+  import fastsubtrees
+  import fastsubtrees.ids_modules.ids_from_tabular_file as m
+  generator = m.element_parent_ids(testdata("small_tree.tsv"))
+  tree = fastsubtrees.Tree.construct(generator)
+  tree.to_file(testout("small_tree.tree"))
+  return testout("small_tree.tree")
+
+@pytest.fixture
 def results_query_small_tree_id_1():
   return array('Q', [1, 2, 8, 3, 7, 9, 4, 5])
 
