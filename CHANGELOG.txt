@@ -4,6 +4,7 @@
 - implement tree update operation
 - enable new edit operations, such as moving a subtree
 - simplification of the CLI: only 'tree', 'attribute' and 'query'
+- all operations of the CLI are now available in the API
 
 === 1.7 ===
 - genomes_attributes_viewer is now a Python package, installable by pip

@@ -1,7 +1,7 @@
 IMAGE_NAME="fastsubtrees"
 CONTAINER_NAME="fastsubtreesC"
 DOCKERHUB_USER=ggonnella
-VERSION=$(shell grep -P -o "(?<=VERSION=\")[^\"]*" fastsubtrees/__init__.py)
+VERSION=$(shell grep -P -o "(?<=__version__=\")[^\"]*" fastsubtrees/__init__.py)
 
 default:
 	@echo "Python package:"

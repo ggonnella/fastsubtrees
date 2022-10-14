@@ -143,9 +143,7 @@ def update_figure(clicks, attribute, taxid):
       boxplot_dict[id + ')'] = []
       my_str = id.partition('(')[-1]
       subtree_root = int(my_str)
-      attrfname = fastsubtrees.attribute.attrfilename(treefname, attribute)
-      attribute_list = fastsubtrees.get_attribute_list(tree, subtree_root,
-                                                       attrfname)
+      attribute_list = tree.subtree_attribute_data(subtree_root, attribute)
       sublist = list()
       for att in attribute_list:
         if att is not None:

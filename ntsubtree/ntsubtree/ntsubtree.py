@@ -1,5 +1,4 @@
 import fastsubtrees
-from fastsubtrees import attribute
 import fastsubtrees.ids_modules.ids_from_tabular_file as ids_from_tabular_file
 from ntdownload import Downloader
 from pathlib import Path
@@ -51,16 +50,11 @@ def update(redownload=False, force=False):
         str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME), separator=NCBI_DUMP_SEP,
         element_id_column=NCBI_NODES_DUMP_TAXID_COL,
         parent_id_column=NCBI_NODES_DUMP_PARENT_COL)
-    names_attrfname = Path(attribute.attrfilename(TREEFILE, "taxname"))
-    if names_attrfname.exists():
-      names_attrfname.unlink()
-    attrfiles = attribute.attrfiles(TREEFILE).values()
-    n_added, n_deleted = tree.update(generator, attrfiles,
-        total=n_node_lines)
+    if tree.has_attribute("taxname"):
+      tree.destroy_attribute("taxname")
+    n_added, n_deleted, n_moved = tree.update(generator, total=n_node_lines)
     tree.to_file(TREEFILE)
-    names = read_names()
-    with open(names_attrfname, "w") as f:
-      attribute.write_attribute_values(tree, names, f)
+    tree.save_attribute_values(tree, "taxname", read_names())
 
 def __auto_init():
   if not NTDUMPSDIR.exists():
@@ -77,6 +71,6 @@ def __auto_init():
     tree.to_file(TREEFILE)
     ### tree = fastsubtrees.Tree.from_file(TREEFILE)
     names = read_names()
-    outfname = attribute.attrfilename(TREEFILE, "taxname")
+    outfname = tree.attrfilename("taxname")
     with open(outfname, "w") as outfile:
       attribute.write_attribute_values(tree, names, outfile)

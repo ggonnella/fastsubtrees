@@ -29,7 +29,7 @@ Options:
 
 import os
 from docopt import docopt
-from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
+from fastsubtrees import Tree, logger, _scripts_support, __version__
 
 def check_attribute_args(args):
   attrnames = args["<attribute>"]
@@ -50,49 +50,34 @@ def check_attribute_args(args):
     args["--show-none"] = True
   return attrnames
 
-def get_attribute_values(attrnames, tree, subtree_root, args):
-  attr_values = {}
-  for attrname in attrnames:
-    attributefile = attribute.attrfilename(args["<tree>"], attrname)
-    if not os.path.isfile(attributefile):
-      logger.error("Attribute '{}' not found".format(attrname))
-      exit(1)
-    logger.debug("Loading attribute '{}' values from file '{}'".\
-        format(attrname, attributefile))
-    attr_values[attrname] = attribute.get_attribute_list(tree, subtree_root, \
-        attributefile)
-    if args["--stats"]:
-      filtered = [a for a in attr_values[attrname] if a is not None]
-      flattened = [e for sl in filtered for e in sl]
-      logger.info("Number of nodes with attribute '{}': {}".\
-          format(attrname, len(filtered)))
-      logger.info("Number of values of attribute '{}': {}".\
-          format(attrname, len(flattened)))
-  return attr_values
+def show_header(args, attrnames):
+  if not args["--no-header"]:
+    header_data = []
+    if not args["--attributes_only"]:
+      header_data.append("node_id")
+    if args["--subtree-sizes"]:
+      header_data.append("subtree_size")
+    if args["--parents"]:
+      header_data.append("parent")
+    header_data.extend(attrnames)
+    print("# "+"\t".join(header_data))
 
-def show_header(attrnames, attributes_only):
-  header_data = []
-  if not attributes_only:
-    header_data.append("node_id")
-  header_data.extend(attrnames)
-  print("# "+"\t".join(header_data))
-
-def show_results(args, tree, node_ids, attr_values, attrnames):
+def show_data(args, subtree_info, attrnames):
   n_nodes = 0
   if not args["--separator"]:
     args["--separator"] = "\t"
-  for i, node_id in enumerate(node_ids):
-    if node_id == tree.DELETED:
+  for i, node_id in enumerate(subtree_info["node_id"]):
+    if node_id == Tree.DELETED:
       continue
     n_nodes += 1
     if not args["--show-none"] and \
-        all([attr_values[attrname][i] is None for attrname in attrnames]):
+        all([subtree_info[attrname][i] is None for attrname in attrnames]):
       continue
     line_data = []
     if not args["--attributes-only"]:
       line_data.append(str(node_id))
     for attrname in attrnames:
-      value = attr_values[attrname][i]
+      value = subtree_info[attrname][i]
       if isinstance(value, list):
         line_data.append(", ".join([str(v) for v in value]))
       else:
@@ -100,21 +85,6 @@ def show_results(args, tree, node_ids, attr_values, attrnames):
     print(args["--separator"].join(line_data))
   if args["--stats"]:
     logger.info("Number of nodes in subtree: {}".format(n_nodes))
-
-def get_parents(tree, node_ids, subtree_root):
-  parents = []
-  for node_id in node_ids:
-    if node_id == subtree_root:
-      parents.append(node_id)
-    else:
-      parents.append(tree.get_parent(node_id))
-  return parents
-
-def get_subtree_sizes(tree, node_ids):
-  subtree_sizes = []
-  for node_id in node_ids:
-    subtree_sizes.append(tree.get_subtree_size(node_id))
-  return subtree_sizes
 
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<tree>']))
@@ -125,19 +95,14 @@ def main(args):
     subtree_root = int(args["<subtreeroot>"])
   logger.debug(f"Extracting subtree under node '{subtree_root}'")
   attrnames = check_attribute_args(args)
-  node_ids = tree.subtree_ids(subtree_root, include_deleted=True)
-  attr_values = get_attribute_values(attrnames, tree, subtree_root, args)
-  if args["--subtree-sizes"]:
-    attrnames.insert(0, "subtree_size")
-    attr_values["subtree_size"] = get_subtree_sizes(tree, node_ids)
-  if args["--parents"]:
-    attrnames.insert(0, "parent")
-    attr_values["parent"] = get_parents(tree, node_ids, subtree_root)
-  if not args["--no-header"]:
-    show_header(attrnames, args["--attributes-only"])
-  show_results(args, tree, node_ids, attr_values, attrnames)
+  if not tree.check_has_attributes(attrnames):
+    exit(1)
+  subtree_info = tree.subtree_info(subtree_root, attrnames,
+      args["--subtree-sizes"], args["--parents"], args["--stats"])
+  show_header(args, attrnames)
+  show_data(args, subtree_info, attrnames)
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version=VERSION)
+  args = docopt(__doc__, version=__version__)
   _scripts_support.setup_verbosity(args)
   main(args)

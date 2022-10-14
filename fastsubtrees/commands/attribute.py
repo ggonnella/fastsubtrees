@@ -41,7 +41,7 @@ Further options:
 """
 
 from docopt import docopt
-from fastsubtrees import _scripts_support, logger, Tree, attribute, VERSION
+from fastsubtrees import _scripts_support, logger, Tree, __version__
 from collections import defaultdict
 from pathlib import Path
 
@@ -138,7 +138,7 @@ def main(args):
     logger.error(msg)
     exit(1)
   attrfname = \
-      Path(attribute.attrfilename(args["<treefile>"], args["<attribute>"]))
+        Path(Tree.compute_attribute_filename(args["<treefile>"], args["<attribute>"]))
   action = get_action(args, attrfname)
   if action == "delete":
     if not args["<node_id>"]:
@@ -153,7 +153,7 @@ def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
   tree = Tree.from_file(args["<treefile>"])
   if action != "new":
-    existing = attribute.read_attribute_values(tree, attrfname)
+    existing = tree.load_attribute_values(args["<attribute>"])
     if action == "delete":
       delete_from_existing(args["<node_id>"], existing, args["--strict"])
     elif action == "add":
@@ -161,11 +161,9 @@ def main(args):
     elif action == "replace":
       replace_in_existing(new_attrvalues, existing, args["--strict"])
     new_attrvalues = existing
-  logger.debug("Writing attribute values to file '{}'...".format(attrfname))
-  with open(attrfname, "w") as outfile:
-    attribute.write_attribute_values(tree, new_attrvalues, outfile)
+  tree.save_attribute_values(args["<attribute>"], new_attrvalues)
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version=VERSION)
+  args = docopt(__doc__, version=__version__)
   _scripts_support.setup_verbosity(args)
   main(args)

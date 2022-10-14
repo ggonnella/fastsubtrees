@@ -1,0 +1,6 @@
+
+implement CLI:
+update runs the same as the update() API function
+query:
+  probably the best is to wrap the functionality of the query script
+  into an API function in fastsubtrees and call it here

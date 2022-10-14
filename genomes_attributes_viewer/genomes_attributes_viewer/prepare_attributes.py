@@ -31,7 +31,7 @@ def generate_attribute_files(workdir, force):
     logger.info(f"Force updating, since upstream data was updated")
   else:
     for attribute in gav.ATTRIBUTES:
-      outfilename = fastsubtrees.attribute.attrfilename(f'{workdir}/{gav.TREEFILE}',
+      outfilename = fastsubtrees.Tree.compute_attrfilename(f'{workdir}/{gav.TREEFILE}',
                                                         attribute)
 
       logger.info(f"Expected location: {outfilename}")
@@ -43,12 +43,8 @@ def generate_attribute_files(workdir, force):
     attrvalues = read_attr_input_file(workdir)
     tree = fastsubtrees.Tree.from_file(f'{workdir}/{gav.TREEFILE}')
     for attribute in gav.ATTRIBUTES:
-      outfilename = fastsubtrees.attribute.attrfilename(f'{workdir}/{gav.TREEFILE}',
-                                                        attribute)
-      with open(outfilename, 'w') as outfile:
-        fastsubtrees.attribute.write_attribute_values(tree,
-                                attrvalues[attribute], outfile)
-    logger.success(f"Attribute file generated: {outfilename}")
+      tree.save_attribute_values(tree, attribute, attrvalues[attribute])
+      logger.success(f"Attribute file for '{attribute}' generated")
     return True
   else:
     logger.success(f"Attribute files found")

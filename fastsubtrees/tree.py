@@ -6,7 +6,12 @@ import struct
 import array
 import sys
 from collections import defaultdict
+from typing import List, Union, Iterator, Tuple, Dict, Any
+import json
+import glob
+from pathlib import Path
 from fastsubtrees import logger, tqdm, error
+from fastsubtrees.ids_modules import ids_from_tabular_file
 
 class Tree():
 
@@ -16,21 +21,10 @@ class Tree():
     self.treedata = array.array("Q")
     self.parents = array.array("Q")
     self.root_id = None
+    self.filename = None
 
   UNDEF = sys.maxsize
   DELETED = sys.maxsize - 1
-
-  @staticmethod
-  def __from_csv(filename, separator, elem_field_num, parent_field_num):
-    logger.info(f"Reading data from file \"{filename}\" ...")
-    with open(filename) as f:
-      for line in tqdm(f):
-        if line[0] == "#":
-          continue
-        fields = line.rstrip().split(separator)
-        elem = int(fields[elem_field_num])
-        parent = int(fields[parent_field_num])
-        yield elem, parent
 
   def __compute_parents(self, generator):
     self.parents = array.array("Q")
@@ -113,7 +107,11 @@ class Tree():
             self.treedata[pos] = node
 
   @classmethod
-  def construct(cls, generator):
+  def construct(cls, generator: Iterator[Tuple[int, int]]):
+    """
+    Construct a tree from a generator that yields tuples of the form
+    (node, parent).
+    """
     self = cls()
     logger.info("Constructing temporary parents table...")
     self.__compute_parents(generator)
@@ -125,14 +123,29 @@ class Tree():
     return self
 
   @classmethod
-  def construct_from_csv(cls, filename, separator,
-               elem_field_num, parent_field_num):
-    generator = cls.__from_csv(filename, separator,
-                   elem_field_num, parent_field_num)
+  def construct_from_tabular(cls, filename: Union[str, Path],
+                             separator: str = "\t", elem_field_num: int = 0,
+                             parent_field_num: int = 1):
+    """
+    Construct a tree from a tabular file.
+    """
+    generator = ids_from_tabular_file(filename, separator,
+        elem_field_num, parent_field_num)
     return cls.construct(generator)
 
-  def to_file(self, outfname):
-    logger.debug(f"Writing tree to file \"{outfname}\" ...")
+  @classmethod
+  def construct_from_ncbi_dump(cls, filename: Union[str, Path]):
+    """
+    Constructs a tree from a NCBI taxonomy dump nodes file.
+    """
+    generator = ids_from_tabular_file(filename, ncbi_preset=True)
+    return cls.construct(generator)
+
+  def to_file(self, outfname: Union[str, Path]):
+    """
+    Save the tree to file.
+    """
+    self.filename = Path(outfname)
     with open(outfname, "wb") as f:
       f.write(struct.pack("QQQ", len(self.subtree_sizes), len(self.treedata),
                                  len(self.parents)))
@@ -141,12 +154,13 @@ class Tree():
       self.treedata.tofile(f)
       self.parents.tofile(f)
     logger.info(f"Tree written to file \"{outfname}\"")
-    return self.treedata
 
   @classmethod
-  def from_file(cls, filename):
+  def from_file(cls, filename: Union[str, Path]):
+    """
+    Load a tree from a file.
+    """
     self = cls()
-    logger.debug(f"Loading tree from file \"{filename}\" ...")
     with open(filename, "rb") as f:
       idxsize, nelems, nparents = struct.unpack("QQQ", f.read(24))
       self.subtree_sizes.fromfile(f, idxsize)
@@ -155,52 +169,85 @@ class Tree():
       self.parents.fromfile(f, nparents)
       self.root_id = self.treedata[1]
     logger.debug(f"Tree loaded from file \"{filename}\"")
+    self.filename = filename
     return self
 
-  def get_parent(self, node):
+  def __check_node_number(self, node):
+    if node <= 0 or node > len(self.coords) - 1:
+      raise error.NodeNotFoundError(f"Node ID '{node}' does not exist.")
+
+  def get_parent(self, node: int) -> int:
+    """
+    Returns the parent ID of the given node.
+    """
+    self.__check_node_number(node)
     if node == self.root_id or node == self.DELETED or node == self.UNDEF:
       return node
     else:
       return self.parents[node]
 
-  def get_subtree_size(self, node):
+  def get_subtree_size(self, node: int) -> int:
+    """
+    Returns the number of nodes in the subtree rooted at the given node.
+    """
+    self.__check_node_number(node)
     if node == self.DELETED or node == self.UNDEF:
       return 0
     return self.subtree_sizes[node] + 1
 
-  def query_subtree(self, subtree_root):
-    if subtree_root <= 0 or subtree_root > len(self.coords) - 1:
-      logger.info(f"Node {subtree_root} not in tree => subtree is empty")
-      return []
-    pos = self.coords[subtree_root]
-    logger.debug(f"Coordinate of node {subtree_root}: {pos}")
-    if pos == 0:
-      return []
-    subtree_size = self.subtree_sizes[subtree_root]
-    subtree_parents = self.parents[subtree_root]
-    logger.debug(\
-        f"Subtree under node {subtree_root} has size {subtree_size + 1} "+\
-        "(including deleted nodes, if any)")
-    return self.treedata[pos:pos + subtree_size + 1], pos, \
-         subtree_size, subtree_parents
+  def get_treedata_coord(self, node: int) -> int:
+    """
+    Returns the position of the given node in the treedata array.
+    """
+    self.__check_node_number(node)
+    return self.coords[node]
 
-  def subtree_ids(self, subtree_root, include_deleted=False):
-    try:
-      subtree_data, pos, subtree_size, subtree_parents = \
-          self.query_subtree(subtree_root)
-    except ValueError:
-      raise error.NodeNotFoundError(\
-          f"The node ID does not exist, found: {subtree_root}")
-    new_subtree_ids = array.array("Q")
-    for data in subtree_data:
-      if data != Tree.UNDEF and (data != Tree.DELETED or include_deleted):
-        new_subtree_ids.append(data)
-    return new_subtree_ids
+  def get_subtree_data(self, subtree_root: int) -> array.array:
+    """
+    Returns the treedata array for the subtree rooted at the given node.
 
-  def add_nodes(self, generator, attrfilenames=[], skip_existing=False,
-                  rm_existing_set=None, list_added=None, total=None,
-                  edit_script=None):
+    This includes nodes marked as deleted.
+    """
+    self.__check_node_number(subtree_root)
+    pos = self.get_treedata_coord(subtree_root)
+    if pos > 0:
+      subtree_size = self.get_subtree_size(subtree_root)
+      return self.treedata[pos:pos + subtree_size]
+    else:
+      return array.array("Q")
+
+  def subtree_ids(self, subtree_root: int) -> array.array:
+    """
+    Returns the IDs of the nodes in the subtree rooted at the given node.
+    """
+    self.__check_node_number(subtree_root)
+    result = array.array("Q")
+    for node_id in self.get_subtree_data(subtree_root):
+      if (node_id != self.DELETED and node_id != self.UNDEF):
+        result.append(node_id)
+    return result
+
+  NONELINE = 'null\n'
+
+  def __edit_attribute_values(self, edit_script, attrfilenames):
+    for attrfilename in attrfilenames:
+      with open(attrfilename, 'r') as f:
+        lines = f.readlines()
+      for op in edit_script:
+        if op[0] == "insert":
+          lines.insert(op[1]-1, Tree.NONELINE)
+        elif op[0] == "copy":
+          lines[op[1]-1] = lines[op[2]-1]
+        elif op[0] == "delete":
+          lines[op[1]-1] = Tree.NONELINE
+      with open(attrfilename, 'w') as f:
+        f.writelines(lines)
+
+  def __add_or_move_nodes(self, generator, attrfilenames=[],
+      skip_existing=False, rm_existing_set=None, list_added=None,
+      list_moved=None, total=None, edit_script=None):
     n_added = 0
+    n_moved = 0
     pending = defaultdict(list)
     logger.info("Tree root: " + str(self.root_id))
     if edit_script is None:
@@ -233,6 +280,9 @@ class Tree():
                 pending[parent].append(('move', node_number))
               else:
                 self.__move_subtree(node_number, parent, edit_script)
+                n_moved += 1
+                if list_moved is not None:
+                  list_moved.append(node_number)
             continue
           else:
             if self.parents[node_number] != parent:
@@ -258,13 +308,16 @@ class Tree():
                 stack.append(child[1])
               elif child[0] == "move":
                 self.__move_subtree(child[1], node, edit_script)
+                n_moved += 1
+                if list_moved is not None:
+                  list_moved.append(child[1])
             del pending[node]
     if len(pending) > 0:
       raise error.ConstructionError(\
           "Impossible operations because the node parents " + \
           f"were not present in the tree: {pending}")
     self.__edit_attribute_values(edit_script, attrfilenames)
-    return n_added
+    return n_added, n_moved
 
   def __insert_node(self, node_number, parent, edit_script, list_added):
     # the idea for the insertion is the following
@@ -325,7 +378,7 @@ class Tree():
       self.subtree_sizes[p] += subtree_size
       p = self.parents[p]
 
-  def delete_subtree(self, node_number, attrfilenames=[],
+  def __delete_subtree(self, node_number, attrfilenames=[],
                      list_deleted = None, edit_script = None):
     try:
       coord = self.coords[node_number]
@@ -349,38 +402,280 @@ class Tree():
     self.__edit_attribute_values(edit_script, attrfilenames)
     return n_deleted
 
-  def update(self, generator, attrfiles, list_added=None, list_deleted=None,
-             total=None):
+  def __get_attrfilenames(self):
+    if self.filename:
+      attrfilenames = self.existing_attribute_filenames(self.filename).values()
+      if attrfilenames:
+        logger.debug("Attribute files to be updated: '{}'".\
+            format("', '".join([str(x) for x in attrfilenames])))
+      else:
+        logger.debug("No attribute files to be updated")
+    else:
+      logger.debug("Attribute files will not be updated because the tree " +\
+          "filename is not set")
+      attrfilenames = []
+    return attrfilenames
+
+  def move_subtree(self, subtree_root: int, new_parent: int):
+    """
+    Moves a subtree to a different point in the tree.
+    If the tree filename is set and attributes exist, then the attribute values
+    are moved to reflect the new node positions.
+    """
+    __check_node_number(subtree_root)
+    if subtree_root == self.root_id:
+      raise error.ConstructionError("The root node cannot be moved")
+    __check_node_number(new_parent)
+    if self.get_parent(subtree_root) == new_parent:
+      return
     edit_script = []
+    self.__move_subtree(subtree_root, new_parent, edit_script)
+    attrfilenames = self.__get_attrfilenames()
+    self.__edit_attribute_values(edit_script, attrfilenames)
+
+  def delete_subtree(self, subtree_root: int,
+      list_deleted: Union[None, List[int]] = None) -> int:
+    """
+    Deletes the subtree rooted at node, and returns the number of deleted nodes.
+    If the tree filename is set and attributes exist, then the attribute values
+    are deleted from the corresponding nodes.
+
+    If list_deleted is not None, then the list is filled with the node numbers
+    of the deleted nodes.
+
+    Returns the number of deleted nodes.
+    """
+    attrfilenames = self.__get_attrfilenames()
+    return self.__delete_subtree(subtree_root, attrfilenames, list_deleted)
+
+  def add_nodes(self, generator: Iterator[Tuple[int, int]],
+                list_added: Union[None, List[int]] = None,
+                total: Union[None, int] = None) -> int:
+    """
+    Add the nodes yielded by the generator to the tree.
+    The generator must yield tuples of the form (node_number, parent_number).
+
+    The nodes must be not yet present in the tree, and the parent must be
+    present or added in the same call to add_nodes.
+
+    If the tree filename is set and attributes exist, then empty attribute
+    values are added for the added nodes.
+
+    If list_added is not None, then the list is filled with the node numbers
+    of the added nodes.
+
+    If total is provided, then it is used to display a progress bar.
+    It should be set to the total number of tuples yielded by the generator.
+
+    Returns the number of added nodes.
+    """
+    attrfilenames = self.__get_attrfilenames()
+    n_added, _ = self.__add_or_move_nodes(generator, attrfilenames,
+        list_added=list_added, total=total)
+    return n_added
+
+  def update(self, generator: Iterator[Tuple[int, int]],
+             list_added: Union[None, List[int]] = None,
+             list_deleted: Union[None, List[int]] = None,
+             list_moved: Union[None, List[int]] = None,
+             total: Union[None, int] = None) -> Tuple[int, int, int]:
+    """
+    Updates the tree with the nodes in the generator.
+    The generator must yield tuples of the form (node_number, parent_number).
+
+    If the tree filename is set and attributes exist, then the attribute
+    values are updated for the corresponding nodes.
+
+    If list_added, list_deleted, list_moved are not None, then the lists are
+    filled with the node numbers of the added nodes, deleted nodes, and moved
+    nodes, respectively.
+
+    If total is provided, then it is used to display a progress bar.
+    It should be set to the total number of tuples yielded by the generator.
+
+    Returns a tuple (n_added, n_deleted, n_moved).
+    """
+    edit_script = []
+    attrfilenames = self.__get_attrfilenames()
     deleted = set(self.subtree_ids(self.root_id))
-    n_added = self.add_nodes(generator, skip_existing=True,
-        rm_existing_set=deleted, list_added=list_added, total=total,
-        edit_script=edit_script)
+    n_added, n_moved = self.__add_or_move_nodes(generator, skip_existing=True,
+        rm_existing_set=deleted, list_added=list_added, list_moved=list_moved,
+        total=total, edit_script=edit_script)
     parents_of_deleted = {n: self.get_parent(n) for n in deleted}
     n_deleted = 0
     for n in deleted:
       if parents_of_deleted[n] in deleted:
         continue
-      n_deleted += self.delete_subtree(n, list_deleted=list_deleted,
+      n_deleted += self.__delete_subtree(n, list_deleted=list_deleted,
           edit_script=edit_script)
     self.__edit_attribute_values(edit_script, attrfiles)
-    return n_added, n_deleted
+    return n_added, n_deleted, n_moved
 
-  NONELINE = 'null\n'
+  ATTR_EXT = "attr"
 
-  def __edit_attribute_values(self, edit_script, attrfilenames):
-    print(edit_script)
-    for attrfilename in attrfilenames:
-      with open(attrfilename, 'r') as f:
-        lines = f.readlines()
-      print(lines)
-      for op in edit_script:
-        if op[0] == "insert":
-          lines.insert(op[1]-1, Tree.NONELINE)
-        elif op[0] == "copy":
-          lines[op[1]-1] = lines[op[2]-1]
-        elif op[0] == "delete":
-          lines[op[1]-1] = Tree.NONELINE
-      with open(attrfilename, 'w') as f:
-        f.writelines(lines)
+  def set_filename(self, filename: Union[str, Path]):
+    """
+    Sets the filename of the tree.
 
+    The filename is used to compute the name of the files where
+    attribute values are stored.
+
+    The filename is automatically set when the tree is loaded from a file
+    or saved to a file.
+    """
+    self.filename = Path(filename)
+
+  @staticmethod
+  def compute_attribute_filename(treefilename, attribute):
+    return Path(f"{treefilename}.{attribute}.{Tree.ATTR_EXT}")
+
+  @staticmethod
+  def existing_attribute_filenames(treefilename: Union[str, Path]) \
+      -> Dict[str, Path]:
+    treefilename = str(treefilename)
+    result = {}
+    globpattern = treefilename + ".*." + Tree.ATTR_EXT
+    for file in glob.glob(globpattern):
+      attribute = file[len(treefilename)+1:-(len(Tree.ATTR_EXT))-1]
+      result[attribute] = Path(file)
+    return result
+
+  def destroy_all_attributes(self):
+    """
+    Destroys all attribute values associated with the tree.
+    """
+    self.__check_filename_set()
+    for filename in self.existing_attribute_filenames(self.filename).values():
+      logger.info("Removing obsolete attribute file {}".format(filename))
+      filename.unlink()
+
+  def __check_filename_set(self):
+    if self.filename is None:
+      raise RuntimeError("The tree filename is not set")
+
+  def attribute_filename(self, attribute) -> Path:
+    """
+    Returns the filename where the attribute values are stored.
+    """
+    self.__check_filename_set()
+    return self.compute_attribute_filename(self.filename, attribute)
+
+  def list_attributes(self) -> List[str]:
+    """
+    Returns a list of the attribute names.
+    """
+    self.__check_filename_set()
+    return list(self.existing_attribute_filenames(self.filename).keys())
+
+  def has_attribute(self, attribute):
+    attrfilename = self.attribute_filename(attribute)
+    return attrfilename.exists()
+
+  def __check_has_attribute(self, attribute):
+    if not self.has_attribute(attribute):
+      attrfilename = self.attribute_filename(attribute)
+      raise RuntimeError(f"Attribute '{attribute}' does not exist "+\
+          "(file '{attrfilename}' does not exist)")
+
+  def destroy_attribute(self, attribute: str):
+    """
+    Destroys the attribute values associated with the given attribute.
+    """
+    self.__check_filename_set()
+    self.__check_has_attribute(attribute)
+    filename = self.attribute_filename(attribute)
+    logger.info("Removing obsolete attribute file {}".format(filename))
+    filename.unlink()
+
+  def subtree_attribute_data(self, subtree_root, attribute):
+    self.__check_filename_set()
+    self.__check_has_attribute(attribute)
+    subtree_size = self.get_subtree_size(subtree_root)
+    coord = self.get_treedata_coord(subtree_root) - 1
+    attrfilename = self.attribute_filename(attribute)
+    line_no = 0
+    result = []
+    with open(attrfilename, 'r') as f:
+      for line in f:
+        if line_no in range(coord, coord + subtree_size):
+          result.append(json.loads(line.rstrip()))
+        line_no += 1
+    return result
+
+  def save_attribute_values(self, attribute, attrvalues):
+    self.__check_filename_set()
+    attrfname = self.attribute_filename(attribute)
+    with open(attrfname, "w") as outfile:
+      for element_id in self.get_subtree_data(self.root_id):
+        if element_id == self.DELETED:
+          attribute = None
+        else:
+          attribute = attrvalues.get(element_id, None)
+        outfile.write(json.dumps(attribute) + "\n")
+    logger.debug("Saved attribute values to file '{}'...".format(attrfname))
+
+  def check_has_attributes(self, attributes):
+    self.__check_filename_set()
+    for attribute in attributes:
+      attrfname = self.attribute_filename(attribute)
+      if not attrfname.exists():
+        logger.error("Attribute '{}' not found".format(attribute))
+        return False
+    return True
+
+  def query_attributes(self, subtree_root: int, attributes: List[str],
+                       show_stats: bool = False) -> Dict[str, List[Any]]:
+    """
+    Returns attribute values for the given subtree, for multiple
+    attributes, as a dictionary in the form {'attribute_name': [values]}.
+    """
+    result = {}
+    for attrname in attributes:
+      logger.debug("Loading attribute '{}' values".format(attrname))
+      result[attrname] = self.subtree_attribute_data(subtree_root, attrname)
+      if show_stats:
+        filtered = [a for a in result[attrname] if a is not None]
+        flattened = [e for sl in filtered for e in sl]
+        logger.info("Number of nodes with attribute '{}': {}".\
+            format(attrname, len(filtered)))
+        logger.info("Number of values of attribute '{}': {}".\
+            format(attrname, len(flattened)))
+    return result
+
+  def subtree_info(self, subtree_root: int, attributes: List[str] = [],
+                   include_subtree_sizes: bool = False,
+                   include_parents: bool = False,
+                   show_stats: bool = False,
+                   node_id_key = "node_id",
+                   subtree_size_key = "subtree_size",
+                   parent_key = "parent") -> Dict[str, List[Any]]:
+    result = {}
+    node_ids = self.get_subtree_data(subtree_root)
+    result[node_id_key] = node_ids
+    if include_subtree_sizes:
+      result[subtree_size_key] = []
+      for node_id in node_ids:
+        result[subtree_size_key].append(self.get_subtree_size(node_id))
+    if include_parents:
+      result[parent_key] = []
+      for node_id in node_ids:
+        result[parent_key].append(self.get_parent(node_id))
+    if attributes:
+      attr_values = self.query_attributes(subtree_root, attributes, show_stats)
+      for attrname in attributes:
+        result[attrname] = attr_values[attrname]
+    return result
+
+  def load_attribute_values(self, attribute):
+    self.__check_filename_set()
+    self.__check_has_attribute(attribute)
+    i = 0
+    fname = self.attribute_filename(attribute)
+    all_ids = self.get_subtree_data(self.root_id)
+    existing = {}
+    with open(fname, "r") as f:
+      for line in f:
+        data = json.loads(line.rstrip())
+        existing[all_ids[i]] = data
+        i += 1
+    return existing

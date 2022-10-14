@@ -1,6 +1,6 @@
 # Fastsubtrees library
 
-VERSION="1.7"
+__version__="2.0"
 
 # setup loguru by disabling it, as expected for libraries
 from loguru import logger
@@ -24,4 +24,3 @@ tqdm = lambda *args, **kargs: \
 
 from fastsubtrees.error import *
 from fastsubtrees.tree import Tree
-from fastsubtrees.attribute import *

@@ -40,11 +40,9 @@ Further options:
 
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, logger, _scripts_support, VERSION, attribute
-
-NCBI_DUMP_SEP = "\t|\t"
-NCBI_DUMP_TAXID_COL = 0
-NCBI_DUMP_PARENT_COL = 1
+from fastsubtrees import Tree, logger, _scripts_support, __version__
+from fastsubtrees.ids_modules.ids_from_tabular_file import \
+    NCBI_DUMP_SEP, NCBI_DUMP_TAXID_COL, NCBI_DUMP_PARENT_COL
 
 def get_generator(args):
   fn = "element_parent_ids"
@@ -110,7 +108,6 @@ def report_changes(n_changes, changes, report=[]):
 
 def main(args):
   action = get_action(args)
-  attrfiles = attribute.attrfiles(args["<treefile>"]).values()
   if action != "delete":
     generator = get_generator(args)
   if action == "new":
@@ -119,11 +116,8 @@ def main(args):
       logger.error("File {} already exists".format(args["<treefile>"]))
       exit(1)
     tree = Tree.construct(generator)
-    for fname in attrfiles:
-      fname = Path(fname)
-      if fname.exists():
-        logger.info("Removing obsolete attribute file {}".format(fname))
-        fname.unlink()
+    tree.set_filename(args["<treefile>"])
+    tree.destroy_all_attributes()
   else:
     if not Path(args["<treefile>"]).exists():
       msg = "Tree file {} does not exist".format(args["<treefile>"])
@@ -131,9 +125,6 @@ def main(args):
       exit(1)
     logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
     tree = Tree.from_file(args["<treefile>"])
-    if attrfiles:
-      logger.debug("Attribute files to be updated: '{}'".\
-          format("', '".join(attrfiles)))
     n_changes = {"added": 0, "moved": 0, "deleted": 0}
     if args["--changes"]:
       changes = {"added": [], "moved": [], "deleted": []}
@@ -141,21 +132,22 @@ def main(args):
       changes = {"added": None, "moved": None, "deleted": None}
     if action == "delete":
       for n in args["<subtree_root>"]:
-        n_changes["deleted"] += tree.delete_subtree(int(n), attrfiles,
+        n_changes["deleted"] += tree.delete_subtree(int(n),
             list_deleted=changes["deleted"])
       report_changes(n_changes, changes, ["deleted"])
     elif action == "add":
-      n_changes["added"] = tree.add_nodes(generator, attrfiles,
+      n_changes["added"] = tree.add_nodes(generator,
           list_added=changes["added"])
       report_changes(n_changes, changes, ["added"])
     elif action == "update":
-      n_changes["added"], n_changes["deleted"] = \
-          tree.update(self, generator, attrfiles,
-              list_added=changes["added"], list_deleted=changes["deleted"])
+      n_changes["added"], n_changes["deleted"], n_changes["moved"] = \
+          tree.update(self, generator,
+              list_added=changes["added"], list_deleted=changes["deleted"],
+              list_moved=changes["moved"])
       report_changes(n_changes, changes, ["added", "deleted", "moved"])
   tree.to_file(args["<treefile>"])
 
 if __name__ == "__main__":
-  args = docopt(__doc__, version=VERSION)
+  args = docopt(__doc__, version=__version__)
   _scripts_support.setup_verbosity(args)
   main(args)
