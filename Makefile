@@ -62,7 +62,7 @@ tests:
 
 testcov:
 	pip install pytest-cov
-	pytest --cov=fastsubtrees -v tests/
+	pytest --cov=fastsubtrees --cov-report html -v tests/
 
 upload: tests clean sdist wheel
 	cd dist; \
