@@ -31,6 +31,7 @@ Module input:
 
 Further options:
   --force      overwrite the output file if it exists (action --new)
+  --nokeys     disable interpreting '=' in <args> as keyword arguments separator
   --debug      print debug information
   --changes    verbosily report changes made to the tree
   --quiet      disable log messages
@@ -54,7 +55,8 @@ def get_generator(args):
     logger.debug("Using function {} from module {} as a source of IDs".\
         format(fn, args["--module"]))
     m = _scripts_support.get_module(args["--module"], fn)
-    posargs, keyargs = _scripts_support.get_fn_args(True, args["<args>"])
+    posargs, keyargs = _scripts_support.get_fn_args(not args["--nokeys"],
+                                                    args["<args>"])
   else:
     if args["--fn"]:
       logger.warning("Argument --fn ignored when not using --module")
@@ -146,8 +148,3 @@ def main(args):
               list_moved=changes["moved"])
       report_changes(n_changes, changes, ["added", "deleted", "moved"])
   tree.to_file(args["<treefile>"])
-
-if __name__ == "__main__":
-  args = docopt(__doc__, version=__version__)
-  _scripts_support.setup_verbosity(args)
-  main(args)

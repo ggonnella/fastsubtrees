@@ -19,15 +19,21 @@ def setup_verbosity(args):
 def get_module(fname, function):
   fastsubtrees.logger.debug("Loading Python module '{}'".format(fname))
   modulename = Path(fname).stem
+  if not Path(fname).exists():
+    fastsubtrees.logger.error("The specified Python module '{}' does not exist".\
+        format(fname))
+    sys.exit(1)
   spec = importlib.util.spec_from_file_location(modulename, fname)
   if spec is None:
-    raise ValueError("The specified Python module {} cannot be loaded".\
+    fastsubtrees.logger.error("The specified Python module {} cannot be loaded".\
         format(fname))
+    sys.exit(1)
   m = importlib.util.module_from_spec(spec)
   spec.loader.exec_module(m)
   if not m.__dict__.get(function):
-    raise ValueError("The specified Python module {} does not define a "
+    fastsubtrees.logger.error("The specified Python module {} does not define a "
                      "function {}()".format(fname, function))
+    sys.exit(1)
   fastsubtrees.logger.success("Module loaded, function {}() found".\
       format(function))
   return m

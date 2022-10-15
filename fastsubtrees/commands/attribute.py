@@ -34,6 +34,7 @@ Conversion of attribute values:
 Further options:
   --strict       exit with an error if a node ID is not found in the tree
                  (default: ignore lines with non-existing node IDs)
+  --nokeys       disable interpreting '=' in <args> as keyword arguments separator
   --quiet        disable log messages
   --debug        print debug information
   --help         show this help message and exit
@@ -54,7 +55,8 @@ def get_generator_and_casting_fn(args):
         "{} from module {} as a source of attribute values".format(\
           fn, args["--module"]))
     m = _scripts_support.get_module(args["--module"], fn)
-    posargs, keyargs = _scripts_support.get_fn_args(True, args["<args>"])
+    posargs, keyargs = _scripts_support.get_fn_args(not args["--nokeys"],
+                                                    args["<args>"])
     casting_fn = _scripts_support.get_datatype_casting_fn(args["--datatype"], \
                                                           m, args["--module"])
   else:
@@ -84,14 +86,15 @@ DEFAULT_ACTION = "new"
 
 def get_action(args, attrfname):
   actions = [a for a in ["new", "add", "replace", "delete"] if args["--" + a]]
+  assert(len(actions) <= 1)
   if len(actions) == 0:
     action = DEFAULT_ACTION
   elif len(actions) == 1:
     action = actions[0]
-  else:
-    msg = "Only one of actions --new, --add, --replace, --delete can be used"
-    logger.error(msg)
-    exit(1)
+  # else:
+  #   msg = "Only one of actions --new, --add, --replace, --delete can be used"
+  #   logger.error(msg)
+  #   exit(1)
   if not attrfname.exists():
     if action != "new":
       msg = "Attribute file {} does not exist".format(attrfname)
@@ -104,7 +107,7 @@ def delete_from_existing(node_ids, existing, strict):
     k = int(k)
     if k in existing:
       del existing[k]
-    elif args["--strict"]:
+    elif strict:
       logger.error(f"Node '{k}' not found in the tree")
       exit(1)
 
@@ -120,14 +123,9 @@ def add_to_existing(new_attrvalues, existing, strict):
       exit(1)
 
 def replace_in_existing(new_attrvalues, existing, strict):
-  replaced = set()
   for k in new_attrvalues:
     if k in existing:
-      if existing[k] is None or (k not in replaced and args["--replace"]):
-        existing[k] = new_attrvalues[k]
-        replaced.add(k)
-      else:
-        existing[k].extend(new_attrvalues[k])
+      existing[k] = new_attrvalues[k]
     elif strict:
       logger.error(f"Node '{k}' not found in the tree")
       exit(1)
@@ -162,8 +160,3 @@ def main(args):
       replace_in_existing(new_attrvalues, existing, args["--strict"])
     new_attrvalues = existing
   tree.save_attribute_values(args["<attribute>"], new_attrvalues)
-
-if __name__ == "__main__":
-  args = docopt(__doc__, version=__version__)
-  _scripts_support.setup_verbosity(args)
-  main(args)

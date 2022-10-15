@@ -17,12 +17,13 @@ Options:
   -d, --debug            print debug information
   -s, --stats            show subtree statistics
   -a, --attributes-only  do not print node IDs (only attributes)
-  -n, --show-none        print None for missing attributes in -a mode
-  -N, --no-header        do not print header line
+  -m, --missing          print None for missing attributes in -a mode
+  -H, --no-header        do not print header line
   -S, --separator SEP    use SEP as separator [default: \t]
   -p, --parents          show parents of nodes
   -z, --subtree-sizes    show size of subtree under each nodes
                          (including nodes marked as deleted!)
+  -o, --only             show only selected node, not the subtree
   -h, --help             show this help message and exit
   -V, --version          show program's version number and exit
 """
@@ -42,23 +43,23 @@ def check_attribute_args(args):
       exit(1)
   if args["--attributes-only"]:
     logger.debug("Printing only attributes, no IDs")
-    if args["--show-none"]:
+    if args["--missing"]:
       logger.debug("Showing None for nodes without attribute values")
     else:
       logger.debug("Hiding nodes without attribute values")
   else:
-    args["--show-none"] = True
+    args["--missing"] = True
   return attrnames
 
 def show_header(args, attrnames):
   if not args["--no-header"]:
     header_data = []
-    if not args["--attributes_only"]:
+    if not args["--attributes-only"]:
       header_data.append("node_id")
-    if args["--subtree-sizes"]:
-      header_data.append("subtree_size")
     if args["--parents"]:
       header_data.append("parent")
+    if args["--subtree-sizes"]:
+      header_data.append("subtree_size")
     header_data.extend(attrnames)
     print("# "+"\t".join(header_data))
 
@@ -67,15 +68,21 @@ def show_data(args, subtree_info, attrnames):
   if not args["--separator"]:
     args["--separator"] = "\t"
   for i, node_id in enumerate(subtree_info["node_id"]):
+    if args["--only"] and node_id != int(args["<subtreeroot>"]):
+      continue
     if node_id == Tree.DELETED:
       continue
     n_nodes += 1
-    if not args["--show-none"] and \
+    if not args["--missing"] and \
         all([subtree_info[attrname][i] is None for attrname in attrnames]):
       continue
     line_data = []
     if not args["--attributes-only"]:
       line_data.append(str(node_id))
+    if args["--parents"]:
+      line_data.append(str(subtree_info["parent"][i]))
+    if args["--subtree-sizes"]:
+      line_data.append(str(subtree_info["subtree_size"][i]))
     for attrname in attrnames:
       value = subtree_info[attrname][i]
       if isinstance(value, list):
@@ -101,8 +108,3 @@ def main(args):
       args["--subtree-sizes"], args["--parents"], args["--stats"])
   show_header(args, attrnames)
   show_data(args, subtree_info, attrnames)
-
-if __name__ == "__main__":
-  args = docopt(__doc__, version=__version__)
-  _scripts_support.setup_verbosity(args)
-  main(args)

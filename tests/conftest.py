@@ -48,16 +48,16 @@ def results_query_small_tree_id_8():
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX():
-   return "\n".join(['H', 'C', 'G', 'I', 'D', 'E'])
+   return "\n".join(['H', 'C, c', 'G', 'I', 'D', 'E'])
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX_after_add():
-   return "\n".join(['H', 'None', 'C', 'G', 'None', 'None', 'None', \
+   return "\n".join(['H', 'None', 'C, c', 'G', 'None', 'None', 'None', \
           'None', 'None', 'None', 'I', 'D', 'E'])
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX_after_add2():
-   return "\n".join(['H', 'F, X', 'C', 'G', 'TEN', 'TWELVE', 'None', \
+   return "\n".join(['H', 'F, X', 'C, c', 'G', 'TEN', 'TWELVE', 'None', \
            'ELEVEN', 'None', '13, 10+3', 'I', 'D', 'E'])
 
 @pytest.fixture

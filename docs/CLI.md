@@ -51,16 +51,22 @@ the node and parent IDs. The default function name is ``element_parent_ids``
 and can be changed using the option ``--fn``.
 
 All positional arguments given to the script are passed to the function.
-If they contain a `=`, they are passed as keyword arguments.
+If they contain a `=`, they are passed as keyword arguments (unless
+the option ``--nokeys`` is used).
 Examples:
 ```
 fastsubtrees tree my.tree --module my_module.py a b c
 fastsubtrees tree my.tree --module my_module.py k1=v1 k2=v=2 x --fn myfn
+fastsubtrees tree my.tree --module my_module.py k1=v1 k2=v=2 x --nokeys
 ```
 
-In the first example, the function in ``my_module.py`` is called as
-``element_parent_ids("a", "b", "c")``, in the second as
-``myfn("x", k1="v1", k2="v=2")``.
+This is the called function in the tree cases:
+```
+element_parent_ids("a", "b", "c")
+myfn("x", k1="v1", k2="v=2")
+element_parent_ids("k1=v1", "k2=v=2", "x")
+```
+
 
 Some modules implementing the described interface are provided
 under ``fastsubtrees/ids_modules``. In particular, ``ids_from_database.py``
@@ -147,16 +153,21 @@ The default function name is ``attribute_values``
 and can be changed using the option ``--fn``.
 
 All positional arguments given to the script are passed to the function.
-If they contain a `=`, they are passed as keyword arguments.
+If they contain a `=`, they are passed as keyword arguments (unless
+the option ``--nokeys`` is used).
 Examples:
 ```
 fastsubtrees attribute my.tree myattr --module my_module.py a b c
 fastsubtrees attribute my.tree myattr --module my_module.py k1=v1 k2=v=2 x --fn myfn
+fastsubtrees attribute my.tree myattr --module my_module.py k1=v1 k2=v=2 x --nokeys
 ```
 
-In the first example, the function in ``my_module.py`` is called as
-``attribute_values("a", "b", "c")``, in the second as
-``myfn("x", k1="v1", k2="v=2")``.
+This is the called function in the tree cases:
+```
+attribute_values("a", "b", "c")
+myfn("x", k1="v1", k2="v=2")
+attribute_values("k1=v1", "k2=v=2", "x")
+```
 
 An example module implementing the described interface is provided
 under ``fastsubtrees/ids_modules/attrs_from_tabular_file.py``.
@@ -191,5 +202,5 @@ of each column.
 
 To hide the node IDs when attributes are printed, use the option
 ``--attributes-only``. In this case, only nodes for which
-some attribute value exists are shown, unless the option ``--show-none``
+some attribute value exists are shown, unless the option ``--missing``
 is used.
