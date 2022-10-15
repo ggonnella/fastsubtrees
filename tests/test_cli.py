@@ -14,6 +14,17 @@ def test_new_from_tabular(testout, testdata, script, script_runner):
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert os.path.exists(testout("small_tree.tree"))
+  # setting format options
+  args = ["tree", testout("small_tree.tree"), testdata("small_tree.tsv"),
+       "--separator", "\t", "--commentchar", "#", "--elementscol", "1",
+       "--parentscol", "2"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  args.append("--force")
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(testout("small_tree.tree"))
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_update(testout, testdata, script, script_runner):
@@ -33,6 +44,12 @@ def test_update(testout, testdata, script, script_runner):
   args = ["query", testout("small_tree.tree"), "root", "--subtree-sizes"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
+  # add to tree which does not exist
+  args = ["tree", testout("not_existing.tree"), "--add",
+      testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_new_from_nodes_dmp(testout, testdata, script, script_runner):
@@ -42,6 +59,25 @@ def test_new_from_nodes_dmp(testout, testdata, script, script_runner):
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert os.path.exists(testout("small_ncbi.tree"))
+  # setting format options results to a warning
+  args = ["tree", testout("small_tree.ncbi"), testdata("small_ncbi.tsv"),
+       "--ncbi", "--separator", "\t", "--commentchar", "#",
+       "--elementscol", "1", "--parentscol", "2", "--force"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert "WARNING" in ret.stderr
+
+def ids_wrapper(filename, a, b=None):
+  assert (a == "A")
+  assert (b == "B=B")
+  import fastsubtrees.ids_modules.ids_from_tabular_file as iftf
+  return iftf.element_parent_ids(filename)
+
+def ids_wrapper2(filename, a, b=None):
+  assert (a == "b=B=B")
+  assert (b == "A")
+  import fastsubtrees.ids_modules.ids_from_tabular_file as iftf
+  return iftf.element_parent_ids(filename)
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_new_from_module(testout, testdata, ids_modules, script, script_runner):
@@ -51,6 +87,30 @@ def test_new_from_module(testout, testdata, ids_modules, script, script_runner):
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert os.path.exists(testout("small_tree.tree"))
+  # ncbi is ignored when using module
+  Path(testout("small_tree.tree")).unlink(missing_ok=True)
+  args = ["tree", testout("small_tree.tree"), "--force", "--ncbi", "--module",
+          ids_modules("ids_from_tabular_file.py"), testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert "WARNING" in ret.stderr
+  # using --fn
+  args = ["tree", testout("small_tree.tree"), "--force", "--fn", "ids_wrapper",
+      "--module", __file__, testdata("small_tree.tsv"), "b=B=B", "A"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # using --nokeys
+  args = ["tree", testout("small_tree.tree"), "--force", "--fn", "ids_wrapper2",
+      "--module", __file__, testdata("small_tree.tsv"), "b=B=B", "A",
+      "--nokeys"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # --fn is ignored with a warning if --module is not used
+  args = ["tree", testout("small_tree.tree"), "--force", "--fn", "ids_wrapper",
+      testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert "WARNING" in ret.stderr
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_new_attribute_from_tabular(testout, testdata, script,

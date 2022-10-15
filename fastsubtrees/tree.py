@@ -427,10 +427,10 @@ class Tree():
     If the tree filename is set and attributes exist, then the attribute values
     are moved to reflect the new node positions.
     """
-    __check_node_number(subtree_root)
+    self.__check_node_number(subtree_root)
     if subtree_root == self.root_id:
       raise error.ConstructionError("The root node cannot be moved")
-    __check_node_number(new_parent)
+    self.__check_node_number(new_parent)
     if self.get_parent(subtree_root) == new_parent:
       return
     edit_script = []

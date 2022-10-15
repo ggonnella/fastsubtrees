@@ -88,14 +88,15 @@ DEFAULT_ACTION = "new"
 
 def get_action(args):
   actions = [a for a in ["new", "update", "add", "delete"] if args["--" + a]]
+  assert(len(actions) <= 1)
   if len(actions) == 0:
     return DEFAULT_ACTION
   elif len(actions) == 1:
     return actions[0]
-  else:
-    msg = "Only one of the actions --new, --update, --add, --delete can be used"
-    logger.error(msg)
-    exit(1)
+  #else:
+  #  msg = "Only one of the actions --new, --update, --add, --delete can be used"
+  #  logger.error(msg)
+  #  exit(1)
 
 def report_changes(n_changes, changes, report=[]):
   for c in report:

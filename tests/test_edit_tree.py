@@ -90,3 +90,13 @@ def test_update_tree(testdata):
   with open(testdata("small_tree.updated.query.root.parents.results")) as f:
     expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert list(tree.subtree_ids(tree.root_id)) == expected_results
+
+def test_move_subtree(testdata):
+  tree = Tree.construct_from_tabular(testdata('small_tree.tsv'))
+  with pytest.raises(error.ConstructionError):
+    tree.move_subtree(tree.root_id, 2)
+  with pytest.raises(error.NodeNotFoundError):
+    tree.move_subtree(2, -1)
+  with pytest.raises(error.NodeNotFoundError):
+    tree.move_subtree(-2, 1)
+  tree.move_subtree(2, tree.get_parent(2))
