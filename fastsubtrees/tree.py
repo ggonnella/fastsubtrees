@@ -12,6 +12,7 @@ import glob
 from pathlib import Path
 from fastsubtrees import logger, tqdm, error
 from fastsubtrees.ids_modules import ids_from_tabular_file
+from fastsubtrees.ids_modules import attr_from_tabular_file
 
 class Tree():
 
@@ -74,10 +75,7 @@ class Tree():
           break
         else:
           grandparent = self.parents[parent]
-          if grandparent == Tree.UNDEF:
-            raise error.ConstructionError( \
-              f"The parent of node {elem} is {parent}, " + \
-              f"but this is not correctly connected to the tree")
+          assert(grandparent != Tree.UNDEF)
           elem = parent
           parent = grandparent
 
@@ -129,7 +127,7 @@ class Tree():
     """
     Construct a tree from a tabular file.
     """
-    generator = ids_from_tabular_file(filename, separator,
+    generator = ids_from_tabular_file.element_parent_ids(filename, separator,
         elem_field_num, parent_field_num)
     return cls.construct(generator)
 
@@ -138,7 +136,8 @@ class Tree():
     """
     Constructs a tree from a NCBI taxonomy dump nodes file.
     """
-    generator = ids_from_tabular_file(filename, ncbi_preset=True)
+    generator = ids_from_tabular_file.element_parent_ids(filename,
+        ncbi_preset=True)
     return cls.construct(generator)
 
   def to_file(self, outfname: Union[str, Path]):
@@ -181,7 +180,7 @@ class Tree():
     Returns the parent ID of the given node.
     """
     self.__check_node_number(node)
-    if node == self.root_id or node == self.DELETED or node == self.UNDEF:
+    if node == self.root_id:
       return node
     else:
       return self.parents[node]
@@ -191,9 +190,15 @@ class Tree():
     Returns the number of nodes in the subtree rooted at the given node.
     """
     self.__check_node_number(node)
-    if node == self.DELETED or node == self.UNDEF:
-      return 0
-    return self.subtree_sizes[node] + 1
+    stsize = self.subtree_sizes[node]
+    if (stsize == 0):
+      pos = self.coords[node]
+      if pos == 0:
+        return 0
+      else:
+        return 1
+    else:
+      return stsize + 1
 
   def get_treedata_coord(self, node: int) -> int:
     """
@@ -508,8 +513,32 @@ class Tree():
         continue
       n_deleted += self.__delete_subtree(n, list_deleted=list_deleted,
           edit_script=edit_script)
-    self.__edit_attribute_values(edit_script, attrfiles)
+    self.__edit_attribute_values(edit_script, attrfilenames)
     return n_added, n_deleted, n_moved
+
+  def update_from_tabular(self, filename: Union[str, Path],
+                             separator: str = "\t", elem_field_num: int = 0,
+                             parent_field_num: int = 1,
+                             list_added: Union[None, List[int]] = None,
+                             list_deleted: Union[None, List[int]] = None,
+                             list_moved: Union[None, List[int]] = None,
+                             total: Union[None, int] = None)\
+                               -> Tuple[int, int, int]:
+    generator = ids_from_tabular_file.element_parent_ids(filename, separator,
+        elem_field_num, parent_field_num)
+    return self.update(generator, list_added=list_added,
+        list_deleted=list_deleted, list_moved=list_moved, total=total)
+
+  def update_from_ncbi_dump(self, filename: Union[str, Path],
+                            list_added: Union[None, List[int]] = None,
+                            list_deleted: Union[None, List[int]] = None,
+                            list_moved: Union[None, List[int]] = None,
+                            total: Union[None, int] = None)\
+                              -> Tuple[int, int, int]:
+    generator = ids_from_tabular_file.element_parent_ids(filename,
+        ncbi_preset=True)
+    return self.update(generator, list_added=list_added,
+        list_deleted=list_deleted, list_moved=list_moved, total=total)
 
   ATTR_EXT = "attr"
 
@@ -602,6 +631,20 @@ class Tree():
         line_no += 1
     return result
 
+  @staticmethod
+  def prepare_attribute_values(generator, casting_fn=str):
+    result = defaultdict(list)
+    for k, v in generator:
+      result[int(k)].append(casting_fn(v))
+    return result
+
+  @staticmethod
+  def prepare_attribute_values_from_tabular(filename, separator="\t",
+        elem_field_num=0, attr_field_num=1, comment_char="#", casting_fn=str):
+    generator = attr_from_tabular_file.attribute_values(filename,
+        elem_field_num, attr_field_num, separator, comment_char)
+    return Tree.prepare_attribute_values(generator, casting_fn)
+
   def save_attribute_values(self, attribute, attrvalues):
     self.__check_filename_set()
     attrfname = self.attribute_filename(attribute)
@@ -655,11 +698,17 @@ class Tree():
     if include_subtree_sizes:
       result[subtree_size_key] = []
       for node_id in node_ids:
-        result[subtree_size_key].append(self.get_subtree_size(node_id))
+        if node_id != Tree.UNDEF and node_id != Tree.DELETED:
+          result[subtree_size_key].append(self.get_subtree_size(node_id))
+        else:
+          result[subtree_size_key].append(None)
     if include_parents:
       result[parent_key] = []
       for node_id in node_ids:
-        result[parent_key].append(self.get_parent(node_id))
+        if node_id != Tree.UNDEF and node_id != Tree.DELETED:
+          result[parent_key].append(self.get_parent(node_id))
+        else:
+          result[parent_key].append(None)
     if attributes:
       attr_values = self.query_attributes(subtree_root, attributes, show_stats)
       for attrname in attributes:

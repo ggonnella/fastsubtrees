@@ -139,7 +139,7 @@ def main(args):
       report_changes(n_changes, changes, ["added"])
     elif action == "update":
       n_changes["added"], n_changes["deleted"], n_changes["moved"] = \
-          tree.update(self, generator,
+          tree.update(generator,
               list_added=changes["added"], list_deleted=changes["deleted"],
               list_moved=changes["moved"])
       report_changes(n_changes, changes, ["added", "deleted", "moved"])

@@ -145,9 +145,7 @@ def main(args):
       exit(0)
   else:
     generator, casting_fn = get_generator_and_casting_fn(args)
-    new_attrvalues = defaultdict(list)
-    for k, v in generator:
-      new_attrvalues[int(k)].append(casting_fn(v))
+    new_attrvalues = Tree.prepare_attribute_values(generator, casting_fn)
   logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
   tree = Tree.from_file(args["<treefile>"])
   if action != "new":

@@ -16,6 +16,25 @@ def test_new_from_tabular(testout, testdata, script, script_runner):
   assert os.path.exists(testout("small_tree.tree"))
 
 @pytest.mark.script_launch_mode('subprocess')
+def test_update(testout, testdata, script, script_runner):
+  Path(testout("small_tree.tree")).unlink(missing_ok=True)
+  args = ["tree", testout("small_tree.tree"), testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  args = ["tree", testout("small_tree.tree"), "--update", "--changes",
+      testdata("small_tree.update.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  with open(testdata("small_tree.updated.query.root.parents.results")) as f:
+    expected_results = f.read()
+  args = ["query", testout("small_tree.tree"), "root", "--parents"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert ret.stdout == expected_results
+  args = ["query", testout("small_tree.tree"), "root", "--subtree-sizes"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+
+@pytest.mark.script_launch_mode('subprocess')
 def test_new_from_nodes_dmp(testout, testdata, script, script_runner):
   Path(testout("small_ncbi.tree")).unlink(missing_ok=True)
   args = ["tree", testout("small_ncbi.tree"), testdata("small_ncbi.tsv"),

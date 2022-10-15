@@ -58,3 +58,35 @@ def test_add_subtree_prev_deleted(testdata):
   add_infname = testdata('add_already_deleted_node.tsv')
   add_generator = element_parent_ids(add_infname)
   tree.add_nodes(add_generator)
+
+def test_delete_node_small_tree(testdata,
+                                results_delete_subtree_small_tree_id_1):
+  construction_infname = testdata('small_tree.tsv')
+  construction_generator = element_parent_ids(construction_infname)
+  tree = Tree.construct(construction_generator)
+  tree.delete_subtree(3)
+  subtree_ids = tree.subtree_ids(1)
+  assert subtree_ids == results_delete_subtree_small_tree_id_1
+
+def test_delete_node_medium_tree(testdata,
+                                 results_delete_subtree_medium_tree_id_78):
+  construction_infname = testdata('medium_tree.tsv')
+  construction_generator = element_parent_ids(construction_infname)
+  tree = Tree.construct(construction_generator)
+  tree.delete_subtree(78)
+  subtree_ids = tree.subtree_ids(46)
+  assert subtree_ids == results_delete_subtree_medium_tree_id_78
+
+def test_delete_node_err_not_exist(testdata):
+  construction_infname = testdata('small_tree.tsv')
+  construction_generator = element_parent_ids(construction_infname)
+  tree = Tree.construct(construction_generator)
+  with pytest.raises(error.NodeNotFoundError):
+    tree.delete_subtree(99)
+
+def test_update_tree(testdata):
+  tree = Tree.construct_from_tabular(testdata('small_tree.tsv'))
+  tree.update_from_tabular(testdata('small_tree.update.tsv'))
+  with open(testdata("small_tree.updated.query.root.parents.results")) as f:
+    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+  assert list(tree.subtree_ids(tree.root_id)) == expected_results

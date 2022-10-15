@@ -1,5 +1,6 @@
 import pytest
 from fastsubtrees.ids_modules.ids_from_tabular_file import element_parent_ids
+from fastsubtrees.ids_modules.attr_from_tabular_file import attribute_values
 from fastsubtrees import Tree, error
 
 def test_construction_small(testdata, prebuilt):
@@ -10,6 +11,67 @@ def test_construction_small(testdata, prebuilt):
   prebuilt_tree = Tree.from_file(prebuilt('small_tree.tree'))
   prebuilt_subtree_ids = prebuilt_tree.subtree_ids(1)
   assert constructed_subtree_ids == prebuilt_subtree_ids
+
+def test_construction_small_from_tabular(testdata, prebuilt):
+  infname = testdata('small_tree.tsv')
+  constructed_tree = Tree.construct_from_tabular(infname)
+  assert constructed_tree.root_id == 1
+  constructed_subtree_ids = constructed_tree.subtree_ids(1)
+  prebuilt_tree = Tree.from_file(prebuilt('small_tree.tree'))
+  prebuilt_subtree_ids = prebuilt_tree.subtree_ids(1)
+  assert constructed_subtree_ids == prebuilt_subtree_ids
+
+def test_construction_small_from_ncbi_dump(testdata):
+  infname = testdata('small_ncbi.tsv')
+  tree = Tree.construct_from_ncbi_dump(infname)
+  subtree_ids = \
+      list(tree.subtree_ids(tree.root_id))
+  with open(testdata("small_ncbi_query_ids_root.results")) as f:
+    expected_subtree_ids = [int(line.strip()) for line in f]
+  assert subtree_ids == expected_subtree_ids
+
+def test_attribute_construction(testdata, testout):
+  infname = testdata('small_tree.tsv')
+  tree = Tree.construct_from_tabular(infname)
+  infname = testdata('small_tree_attrX.tsv')
+  generator = attribute_values(infname)
+  attrvalues = Tree.prepare_attribute_values(generator)
+  with pytest.raises(RuntimeError):
+    tree.save_attribute_values("attrX", attrvalues)
+  tree.set_filename(testout('small_tree.tree'))
+  tree.save_attribute_values("attrX", attrvalues)
+  assert Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrX").exists()
+  tree.destroy_attribute("attrX")
+  assert not Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrX").exists()
+  with pytest.raises(RuntimeError):
+    tree.destroy_attribute("attrX")
+  attrvalues = Tree.prepare_attribute_values_from_tabular(infname)
+  tree.save_attribute_values("attrX", attrvalues)
+  assert Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrX").exists()
+  tree.save_attribute_values("attrY", attrvalues)
+  assert Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrY").exists()
+  assert set(tree.list_attributes()) == {"attrX", "attrY"}
+  tree.destroy_all_attributes()
+  assert not Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrX").exists()
+  assert not Tree.compute_attribute_filename(testout('small_tree.tree'),
+      "attrY").exists()
+  assert tree.list_attributes() == []
+
+def test_get_methods(testdata):
+  infname = testdata('small_tree.tsv')
+  tree = Tree.construct_from_tabular(infname)
+  assert tree.get_parent(1) == 1
+  assert tree.get_parent(8) == 1
+  assert tree.get_subtree_size(1) == 8
+  assert tree.get_subtree_size(8) == 6
+  assert tree.get_parent(6) == Tree.UNDEF
+  assert tree.get_subtree_size(6) == 0
+  assert list(tree.get_subtree_data(6)) == []
 
 def test_construction_medium(testdata, prebuilt):
   infname = testdata('medium_tree.tsv')
@@ -40,6 +102,18 @@ def test_construction_err_no_root(testdata):
 
 def test_construction_err_multiple_roots(testdata):
   infname = testdata('multiple_root_nodes.tsv')
+  generator = element_parent_ids(infname)
+  with pytest.raises(error.ConstructionError):
+    Tree.construct(generator)
+
+def test_construction_err_same_node_root_and_not(testdata):
+  infname = testdata('same_node_root_and_not.tsv')
+  generator = element_parent_ids(infname)
+  with pytest.raises(error.ConstructionError):
+    Tree.construct(generator)
+
+def test_construction_err_negative_parent(testdata):
+  infname = testdata('negative_parent.tsv')
   generator = element_parent_ids(infname)
   with pytest.raises(error.ConstructionError):
     Tree.construct(generator)
