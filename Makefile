@@ -61,7 +61,7 @@ tests:
 	pytest
 
 testcov:
-	pip install pytest-cov and running
+	pip install pytest-cov
 	pytest --cov=fastsubtrees -v tests/
 
 upload: tests clean sdist wheel
