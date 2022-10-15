@@ -134,6 +134,11 @@ yielding node IDs and attribute values.
 The same node ID can appear multiple times, in which case the
 attribute values will all be stored, as a list.
 
+By default, attribute values are stored as strings. The option
+``--type f`` can be used to apply a function ``f()`` to each attribute
+value. The function can be either from the standard library (e.g.
+``int`` or ``float``, or, if ``--module`` is used, from that module.
+
 #### Attribute values from a tabular file
 
 To create an attribute from a tabular file, the filename is passed, e.g.

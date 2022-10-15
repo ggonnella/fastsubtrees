@@ -70,7 +70,8 @@ def get_datatype_casting_fn(value, m, mfilename):
             "Using function {}() from module {} for datatype casting".\
               format(value, mfilename))
       else:
-        raise ValueError("Invalid datatype casting function '{}'".\
+        fastsubtrees.logger.error("Invalid datatype casting function '{}'".\
             format(value))
+        sys.exit(1)
   return cast
 

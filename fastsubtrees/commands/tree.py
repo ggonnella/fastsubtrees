@@ -8,42 +8,40 @@ Usage:
   fastsubtrees tree <treefile> --delete <subtree_root>... [options]
 
 Actions:
-  --new      (default) create a new tree from the given IDs source
-  --update   update an existing tree to reflect the given IDs source;
-             the root cannot be changed
-  --add      add new nodes to an existing tree
-  --delete   remove leaves or subtrees from an existing tree
+  -N, --new      (default) create a new tree from the given IDs source
+  -U, --update   update an existing tree to reflect the given IDs source;
+                 the root cannot be changed
+  -A, --add      add new nodes to an existing tree
+  -D, --delete   remove leaves or subtrees from an existing tree
 
 Tabular file input:
-  <tabfile>        tabular file containing IDs of the nodes and their parents
-  --ncbi           the tabular file is in NCBI taxonomy dump format
-  --separator S    separator in the tabular file (default: tab)
-  --elementscol E  column with the IDs of the elements (1-based, default: 1)
-  --parentscol P   column with the IDs of the parents (1-based, default: 2)
-  --commentchar C  lines starting with this character are ignored (default: #)
+  <tabfile>            tabular file containing IDs of the nodes and their parents
+  -n, --ncbi           the tabular file is in NCBI taxonomy dump format
+  -s, --separator S    separator in the tabular file (default: tab)
+  -e, --elementscol E  column with the IDs of the elements (1-based, default: 1)
+  -p, --parentscol P   column with the IDs of the parents (1-based, default: 2)
+  -c, --commentchar C  lines starting with this character are ignored (default: #)
 
 Module input:
-  --module M  select file <M> as a Python module defining a function
-              yielding IDs of elements and parents
-  <args>...   arguments to be passed to the function;
-              if they contain a '=', they are passed as keyword arguments
-  --fn FN     name of the function to be called (default: element_parent_ids)
+  -m, --module M  select file <M> as a Python module defining a function
+                  yielding IDs of elements and parents
+  <args>...       arguments to be passed to the function;
+                  if they contain a '=', they are passed as keyword arguments
+  -F, --fn FN     name of the function to be called (default: element_parent_ids)
+  -K, --nokeys    disable interpreting '=' in <args> as keyword arguments separator
 
 Further options:
-  --force      overwrite the output file if it exists (action --new)
-  --nokeys     disable interpreting '=' in <args> as keyword arguments separator
-  --debug      print debug information
-  --changes    verbosily report changes made to the tree
-  --quiet      disable log messages
-  --help       show this help message and exit
-  --version    show program's version number and exit
+  -f, --force      overwrite the output file if it exists (action --new)
+  -C, --changes    verbosily report changes made to the tree
+  -q, --quiet      disable log messages
+  -d, --debug      print debug information
+  -h, --help       show this help message and exit
+  -V, --version    show program's version number and exit
 """
 
 from docopt import docopt
 from pathlib import Path
 from fastsubtrees import Tree, logger, _scripts_support, __version__
-from fastsubtrees.ids_modules.ids_from_tabular_file import \
-    NCBI_DUMP_SEP, NCBI_DUMP_TAXID_COL, NCBI_DUMP_PARENT_COL
 
 def get_generator(args):
   fn = "element_parent_ids"
@@ -69,9 +67,7 @@ def get_generator(args):
           or args["--parentscol"] or args["--commentchar"]:
         logger.warning("The --ncbi option overrides the following options: " +
             "--separator, --elementscol, --parentscol, --commentchar")
-      keyargs = {"separator": NCBI_DUMP_SEP,
-                 "element_id_column": NCBI_DUMP_TAXID_COL,
-                 "parent_id_column": NCBI_DUMP_PARENT_COL,
+      keyargs = {"ncbi_preset": True,
                  "comment_pfx": "#"}
     else:
       keyargs = {"separator": "\t",

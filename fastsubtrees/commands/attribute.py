@@ -8,37 +8,37 @@ Usage:
   fastsubtrees attribute <treefile> --delete <attribute> [<node_id>...] [options]
 
 Actions:
-  --new        (default) create a new attribute
-  --add        add further values to an existing attribute
-  --replace    replace some values of an existing attribute
-  --delete     delete an attribute or attribute values
+  -N, --new        (default) create a new attribute
+  -A, --add        add further values to an existing attribute
+  -R, --replace    replace some values of an existing attribute
+  -D, --delete     delete an attribute or attribute values
 
 Tabular file input:
   <tabfile>        tabular file with node IDs and attribute values
-  --separator S    separator in the tabular file (default: tab)
-  --elementscol E  column with the IDs of the elements (1-based, default: 1)
-  --valuescol P    column with the attribute values (1-based, default: 2)
-  --commentchar C  lines starting with this character are ignored (default: #)
+  -s, --separator S    separator in the tabular file (default: tab)
+  -e, --elementscol E  column with the IDs of the elements (1-based, default: 1)
+  -v, --valuescol P    column with the attribute values (1-based, default: 2)
+  -c, --commentchar C  lines starting with this character are ignored (default: #)
 
 Module input:
-  --module M  select file <M> as a Python module defining a function
-              yielding element IDs and attribute values
-  <args>...   arguments to be passed to the function;
-              if they contain a '=', they are passed as keyword arguments
-  --fn FN     name of the function to be called (default: attribute_values)
+  -m, --module M  select file <M> as a Python module defining a function
+                  yielding element IDs and attribute values
+  <args>...       arguments to be passed to the function;
+                  if they contain a '=', they are passed as keyword arguments
+  -F, --fn FN     name of the function to be called (default: attribute_values)
+  -K, --nokeys    disable interpreting '=' in <args> as keyword arguments separator
 
 Conversion of attribute values:
-  --datatype DT  function to apply to the attribute values; either from the
+  -t, --type T   function to apply to the attribute values; either from the
                  standard library or defined in the specified --module M
 
 Further options:
-  --strict       exit with an error if a node ID is not found in the tree
+  -S, --strict   exit with an error if a node ID is not found in the tree
                  (default: ignore lines with non-existing node IDs)
-  --nokeys       disable interpreting '=' in <args> as keyword arguments separator
-  --quiet        disable log messages
-  --debug        print debug information
-  --help         show this help message and exit
-  --version      show program's version number and exit
+  -q, --quiet    disable log messages
+  -d, --debug    print debug information
+  -h, --help     show this help message and exit
+  -V, --version  show program's version number and exit
 """
 
 from docopt import docopt
@@ -57,7 +57,7 @@ def get_generator_and_casting_fn(args):
     m = _scripts_support.get_module(args["--module"], fn)
     posargs, keyargs = _scripts_support.get_fn_args(not args["--nokeys"],
                                                     args["<args>"])
-    casting_fn = _scripts_support.get_datatype_casting_fn(args["--datatype"], \
+    casting_fn = _scripts_support.get_datatype_casting_fn(args["--type"], \
                                                           m, args["--module"])
   else:
     if args["--fn"]:
@@ -78,7 +78,7 @@ def get_generator_and_casting_fn(args):
       keyargs["attr_col"] = int(args["--valuescol"]) - 1
     if args["--commentchar"]:
       keyargs["comment_pfx"] = args["--commentchar"]
-    casting_fn = _scripts_support.get_datatype_casting_fn(args["--datatype"], \
+    casting_fn = _scripts_support.get_datatype_casting_fn(args["--type"], \
                                                           None, None)
   return getattr(m, fn)(*posargs, **keyargs), casting_fn
 

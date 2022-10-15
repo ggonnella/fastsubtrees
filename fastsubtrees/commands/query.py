@@ -13,8 +13,6 @@ Arguments:
   attribute    Attributes to be printed for each node
 
 Options:
-  -q, --quiet            disable log messages
-  -d, --debug            print debug information
   -s, --stats            show subtree statistics
   -a, --attributes-only  do not print node IDs (only attributes)
   -m, --missing          print None for missing attributes in -a mode
@@ -24,6 +22,8 @@ Options:
   -z, --subtree-sizes    show size of subtree under each nodes
                          (including nodes marked as deleted!)
   -o, --only             show only selected node, not the subtree
+  -q, --quiet            disable log messages
+  -d, --debug            print debug information
   -h, --help             show this help message and exit
   -V, --version          show program's version number and exit
 """
@@ -61,12 +61,10 @@ def show_header(args, attrnames):
     if args["--subtree-sizes"]:
       header_data.append("subtree_size")
     header_data.extend(attrnames)
-    print("# "+"\t".join(header_data))
+    print("# "+args["--separator"].join(header_data))
 
 def show_data(args, subtree_info, attrnames):
   n_nodes = 0
-  if not args["--separator"]:
-    args["--separator"] = "\t"
   for i, node_id in enumerate(subtree_info["node_id"]):
     if args["--only"] and node_id != int(args["<subtreeroot>"]):
       continue

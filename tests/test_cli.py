@@ -16,6 +16,15 @@ def test_new_from_tabular(testout, testdata, script, script_runner):
   assert os.path.exists(testout("small_tree.tree"))
 
 @pytest.mark.script_launch_mode('subprocess')
+def test_new_from_nodes_dmp(testout, testdata, script, script_runner):
+  Path(testout("small_ncbi.tree")).unlink(missing_ok=True)
+  args = ["tree", testout("small_ncbi.tree"), testdata("small_ncbi.tsv"),
+          "--ncbi"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(testout("small_ncbi.tree"))
+
+@pytest.mark.script_launch_mode('subprocess')
 def test_new_from_module(testout, testdata, ids_modules, script, script_runner):
   Path(testout("small_tree.tree")).unlink(missing_ok=True)
   args = ["tree", testout("small_tree.tree"), "--module",
@@ -65,6 +74,18 @@ def test_query(testout, testdata, script, script_runner,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == str(results_query_small_tree_id_8_attrX)
+  # error, --attributes-only without attributes
+  args = ["query", small_tree_file, "8", "-a", "-H"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  # query from root, --stats
+  args = ["query", small_tree_file, "root", "attrX", "-a", "-H", "--stats"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  with open(testdata("small_tree_attrX.query_root.a.H.results")) as f:
+    assert ret.stdout.strip() == f.read().strip()
+  assert "Number of nodes in subtree: 8" in ret.stderr
 
 def attribute_values_wrapper(filename, a, b=None):
   assert (a == "A")
@@ -77,6 +98,9 @@ def attribute_values_wrapperB(filename, a, b=None):
   assert (b == "A")
   import fastsubtrees.ids_modules.attr_from_tabular_file as aftf
   return aftf.attribute_values(filename)
+
+def add_10_percent(x):
+  return "{:.1f}".format(float(x)*1.1)
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_attribute_failures_and_warnings(testout, testdata, ids_modules, script,
@@ -150,6 +174,19 @@ def test_attribute_failures_and_warnings(testout, testdata, ids_modules, script,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 1
   assert "ERROR" in ret.stderr
+  # non-existing casting function from module
+  args = ["attribute", small_tree_file, 'attrX', "--type", "not_existing_fn",
+          "--module", ids_modules("ids_from_tabular_file.py"),
+          testdata("small_tree_attrX.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  # non-existing casting function from standard library
+  args = ["attribute", small_tree_file, 'attrX', "--type", "not_existing_fn",
+          testdata("small_tree_attrX.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_attribute_edit_and_query(testout, testdata, script,
@@ -168,12 +205,19 @@ def test_attribute_edit_and_query(testout, testdata, script,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == "I, I"
-  # query with all extra information and header
-  args = ["query", small_tree_file, "9", "attrX", "--parents", "--subtree-sizes"]
+  # query with all extra information and header, --separator
+  args = ["query", small_tree_file, "9", "attrX", "--parents",
+      "--subtree-sizes"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout == "# node_id\tparent\tsubtree_size\tattrX\n"+\
                        "9\t3\t1\tI, I\n"
+  # query with --separator
+  args = ["query", small_tree_file, "9", "attrX", "--separator", ";"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert ret.stdout == "# node_id;attrX\n"+\
+                       "9;I, I\n"
   # replace
   args = ["attribute", small_tree_file, 'attrX', "--replace", \
       testdata("small_tree_attrX.tsv")]
@@ -203,6 +247,28 @@ def test_attribute_edit_and_query(testout, testdata, script,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == "None"
+  # create int attribute
+  args = ["attribute", small_tree_file, 'attrI', \
+      testdata("small_tree_attrI.tsv"), '--type', 'int']
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # query int attribute
+  args = ["query", small_tree_file, "9", "attrI", "-a", "-H"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert ret.stdout.strip() == "900"
+  # create custom type attribute
+  args = ["attribute", small_tree_file, 'attrJ',
+          "--module", __file__, "--fn", "attribute_values_wrapper",
+          testdata("small_tree_attrI.tsv"), "b=B=B", "A",
+          "--type", "add_10_percent"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # query custom type attribute
+  args = ["query", small_tree_file, "9", "attrJ", "-a", "-H"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert ret.stdout.strip() == "990.0"
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_edit(testout, testdata, ids_modules, script, script_runner,
