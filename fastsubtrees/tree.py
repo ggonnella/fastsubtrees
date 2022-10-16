@@ -11,8 +11,8 @@ import json
 import glob
 from pathlib import Path
 from fastsubtrees import logger, tqdm, error
-from fastsubtrees.ids_modules import ids_from_tabular_file
-from fastsubtrees.ids_modules import attr_from_tabular_file
+from fastsubtrees.ids_modules import ids_from_tabular_file, \
+                                     attr_from_tabular_file
 
 class Tree():
 
@@ -269,11 +269,12 @@ class Tree():
       if node_number < len(self.parents):
         if node_number == self.root_id:
           if skip_existing:
-            if node_number != parent:
+            if node_number == parent:
+              continue
+            else:
               raise error.ConstructionError(\
                   f'Node {node_number} / parent {parent} already exists '+\
                   f'as the root node')
-            continue
           else:
             raise error.ConstructionError(\
                 f"The root node {node_number} already exists")
@@ -433,6 +434,9 @@ class Tree():
     self.__check_node_number(new_parent)
     if self.get_parent(subtree_root) == new_parent:
       return
+    if new_parent in self.subtree_ids(subtree_root):
+      raise error.ConstructionError(\
+          "A node cannot be moved to be a descendant of itself")
     edit_script = []
     self.__move_subtree(subtree_root, new_parent, edit_script)
     attrfilenames = self.__get_attrfilenames()
@@ -580,7 +584,7 @@ class Tree():
 
   def __check_filename_set(self):
     if self.filename is None:
-      raise RuntimeError("The tree filename is not set")
+      raise error.FilenameNotSetError("The tree filename is not set")
 
   def attribute_filename(self, attribute) -> Path:
     """
@@ -603,8 +607,9 @@ class Tree():
   def __check_has_attribute(self, attribute):
     if not self.has_attribute(attribute):
       attrfilename = self.attribute_filename(attribute)
-      raise RuntimeError(f"Attribute '{attribute}' does not exist "+\
-          "(file '{attrfilename}' does not exist)")
+      raise error.AttributeNotFoundError(\
+          f"Attribute '{attribute}' does not exist "+\
+          f"(file '{attrfilename}' does not exist)")
 
   def destroy_attribute(self, attribute: str):
     """
@@ -632,7 +637,7 @@ class Tree():
     return result
 
   @staticmethod
-  def prepare_attribute_values(generator, casting_fn=str):
+  def prepare_attribute_values(generator, casting_fn=lambda x: x):
     result = defaultdict(list)
     for k, v in generator:
       result[int(k)].append(casting_fn(v))
@@ -640,28 +645,60 @@ class Tree():
 
   @staticmethod
   def prepare_attribute_values_from_tabular(filename, separator="\t",
-        elem_field_num=0, attr_field_num=1, comment_char="#", casting_fn=str):
+        elem_field_num=0, attr_field_num=1, comment_char="#",
+        casting_fn=lambda x: x):
     generator = attr_from_tabular_file.attribute_values(filename,
         elem_field_num, attr_field_num, separator, comment_char)
     return Tree.prepare_attribute_values(generator, casting_fn)
 
+  def create_attribute(self, attribute, generator, casting_fn=lambda x: x,
+                       force=False):
+    """
+    Creates a new attribute.
+
+    The attribute values are given by the generator. The generator
+    should yield pairs of the form (element_id, attribute_value).
+    """
+    self.__check_filename_set()
+    if self.has_attribute(attribute) and not force:
+      raise error.AttributeCreationError(\
+          f"Attribute '{attribute}' already exists")
+    attribute_values = Tree.prepare_attribute_values(generator, casting_fn)
+    self.save_attribute_values(attribute, attribute_values)
+
+  def create_attribute_from_tabular(self, attribute, filename,
+      separator="\t", elem_field_num=0, attr_field_num=1, comment_char="#",
+      casting_fn=lambda x: x, force = False):
+    """
+    Creates a new attribute.
+
+    The attribute values are given in the tabular file.
+    """
+    self.__check_filename_set()
+    if self.has_attribute(attribute) and not force:
+      raise error.AttributeCreationError(\
+          f"Attribute '{attribute}' already exists")
+    attribute_values = Tree.prepare_attribute_values_from_tabular(filename,
+        separator, elem_field_num, attr_field_num, comment_char, casting_fn)
+    self.save_attribute_values(attribute, attribute_values)
+
   def save_attribute_values(self, attribute, attrvalues):
     self.__check_filename_set()
-    attrfname = self.attribute_filename(attribute)
-    with open(attrfname, "w") as outfile:
+    attrfilename = self.attribute_filename(attribute)
+    logger.debug("Creating attribute file '{}'...".format(attrfilename))
+    with open(attrfilename, "w") as outfile:
       for element_id in self.get_subtree_data(self.root_id):
         if element_id == self.DELETED:
           attribute = None
         else:
           attribute = attrvalues.get(element_id, None)
         outfile.write(json.dumps(attribute) + "\n")
-    logger.debug("Saved attribute values to file '{}'...".format(attrfname))
 
   def check_has_attributes(self, attributes):
     self.__check_filename_set()
     for attribute in attributes:
-      attrfname = self.attribute_filename(attribute)
-      if not attrfname.exists():
+      attrfilename = self.attribute_filename(attribute)
+      if not attrfilename.exists():
         logger.error("Attribute '{}' not found".format(attribute))
         return False
     return True

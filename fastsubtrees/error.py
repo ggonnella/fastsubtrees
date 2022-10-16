@@ -21,3 +21,16 @@ class DuplicatedNodeError(FastsubtreesError):
 class DeletedNodeError(FastsubtreesError):
   """cannot add a node which has already been deleted once"""
   pass
+
+class FilenameNotSetError(FastsubtreesError):
+  """the filename associated with tree is not set"""
+  pass
+
+class AttributeNotFoundError(FastsubtreesError):
+  """trying to access an attribute which does not exist"""
+  pass
+
+class AttributeCreationError(FastsubtreesError):
+  """attempted to create an attribute which already exists"""
+  pass
+

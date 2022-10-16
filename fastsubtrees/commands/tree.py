@@ -41,7 +41,7 @@ Further options:
 
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, logger, _scripts_support, __version__
+from fastsubtrees import Tree, logger, _scripts_support, __version__, error
 
 def get_generator(args):
   fn = "element_parent_ids"

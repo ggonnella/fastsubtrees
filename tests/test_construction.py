@@ -31,27 +31,26 @@ def test_construction_small_from_ncbi_dump(testdata):
   assert subtree_ids == expected_subtree_ids
 
 def test_attribute_construction(testdata, testout):
-  infname = testdata('small_tree.tsv')
-  tree = Tree.construct_from_tabular(infname)
+  tree = Tree.construct_from_tabular(testdata('small_tree.tsv'))
   infname = testdata('small_tree_attrX.tsv')
-  generator = attribute_values(infname)
-  attrvalues = Tree.prepare_attribute_values(generator)
-  with pytest.raises(RuntimeError):
-    tree.save_attribute_values("attrX", attrvalues)
+  with pytest.raises(error.FilenameNotSetError):
+    tree.create_attribute("attrX", attribute_values(infname))
   tree.set_filename(testout('small_tree.tree'))
-  tree.save_attribute_values("attrX", attrvalues)
+  tree.create_attribute("attrX", attribute_values(infname))
+  # attribute exists already:
+  with pytest.raises(error.AttributeCreationError):
+    tree.create_attribute("attrX", attribute_values(infname))
+  with pytest.raises(error.AttributeCreationError):
+    tree.create_attribute_from_tabular("attrX", infname)
   assert Tree.compute_attribute_filename(testout('small_tree.tree'),
       "attrX").exists()
   tree.destroy_attribute("attrX")
   assert not Tree.compute_attribute_filename(testout('small_tree.tree'),
       "attrX").exists()
-  with pytest.raises(RuntimeError):
+  with pytest.raises(error.AttributeNotFoundError):
     tree.destroy_attribute("attrX")
-  attrvalues = Tree.prepare_attribute_values_from_tabular(infname)
-  tree.save_attribute_values("attrX", attrvalues)
-  assert Tree.compute_attribute_filename(testout('small_tree.tree'),
-      "attrX").exists()
-  tree.save_attribute_values("attrY", attrvalues)
+  tree.create_attribute("attrX", attribute_values(infname))
+  tree.create_attribute("attrY", attribute_values(infname))
   assert Tree.compute_attribute_filename(testout('small_tree.tree'),
       "attrY").exists()
   assert set(tree.list_attributes()) == {"attrX", "attrY"}
@@ -61,6 +60,17 @@ def test_attribute_construction(testdata, testout):
   assert not Tree.compute_attribute_filename(testout('small_tree.tree'),
       "attrY").exists()
   assert tree.list_attributes() == []
+  # delete a node, then setting the attribute does not really set it
+  tree.create_attribute("attrX", attribute_values(infname))
+  values = tree.load_attribute_values("attrX")
+  assert values[9] == ["I"]
+  tree.delete_subtree(9)
+  values = tree.load_attribute_values("attrX")
+  assert 9 not in values
+  values[9] = ["I"]
+  tree.save_attribute_values("attrX", values)
+  values = tree.load_attribute_values("attrX")
+  assert 9 not in values
 
 def test_get_methods(testdata):
   infname = testdata('small_tree.tsv')

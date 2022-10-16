@@ -14,7 +14,7 @@ See 'fastsubtrees <command> --help' for more information on a specific command.
 
 """
 from docopt import docopt
-from fastsubtrees import __version__, _scripts_support
+from fastsubtrees import __version__, _scripts_support, error, logger
 
 if __name__ == '__main__':
   args = docopt(__doc__, version=__version__, options_first=True)
@@ -31,4 +31,8 @@ if __name__ == '__main__':
   argv = [command] + args["<args>"]
   cmd_args = docopt(cmd.__doc__, version=__version__, argv=argv)
   _scripts_support.setup_verbosity(cmd_args)
-  cmd.main(cmd_args)
+  try:
+    cmd.main(cmd_args)
+  except error.FastsubtreesError as e:
+    logger.error(f"Error: {e}")
+    exit(1)

@@ -4,5 +4,8 @@
 5	2
 3	5
 7	3
-9	3
-10	1
+# 9 moved to a parent which is inserted later on (10)
+9	10
+# 10 is a new node, attached to a new node inserted later on (11)
+10	11
+11	1

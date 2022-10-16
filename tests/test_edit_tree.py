@@ -90,9 +90,22 @@ def test_update_tree(testdata):
   with open(testdata("small_tree.updated.query.root.parents.results")) as f:
     expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert list(tree.subtree_ids(tree.root_id)) == expected_results
+  tree.update_from_tabular(testdata('small_tree.rootonly.tsv'))
+  assert list(tree.subtree_ids(tree.root_id)) == [1]
+  tree = Tree.construct_from_ncbi_dump(testdata('small_ncbi.tsv'))
+  tree.update_from_ncbi_dump(testdata("small_ncbi.update.tsv"))
+  with open(testdata("small_ncbi.updated.query.root.parents.results")) as f:
+    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+  assert list(tree.subtree_ids(tree.root_id)) == expected_results
 
-def test_move_subtree(testdata):
+def test_move_subtree(testdata, testout):
   tree = Tree.construct_from_tabular(testdata('small_tree.tsv'))
+  tree.set_filename(testout("small_tree.tree"))
+  tree.destroy_all_attributes()
+  attrvalues = tree.create_attribute_from_tabular("attrX",
+      testdata("small_tree_attrX.tsv"))
+  attrvalues = tree.create_attribute_from_tabular("attrX",
+      testdata("small_tree_attrX.tsv"), force=True)
   with pytest.raises(error.ConstructionError):
     tree.move_subtree(tree.root_id, 2)
   with pytest.raises(error.NodeNotFoundError):
@@ -100,3 +113,6 @@ def test_move_subtree(testdata):
   with pytest.raises(error.NodeNotFoundError):
     tree.move_subtree(-2, 1)
   tree.move_subtree(2, tree.get_parent(2))
+  tree.move_subtree(2, 8)
+  with pytest.raises(error.ConstructionError):
+    tree.move_subtree(3, 7)

@@ -31,6 +31,12 @@ def test_update(testout, testdata, script, script_runner):
   Path(testout("small_tree.tree")).unlink(missing_ok=True)
   args = ["tree", testout("small_tree.tree"), testdata("small_tree.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
+  # updating the tree with itself
+  args = ["tree", testout("small_tree.tree"), "--update",
+      testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # really updating now
   args = ["tree", testout("small_tree.tree"), "--update", "--changes",
       testdata("small_tree.update.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
@@ -44,9 +50,31 @@ def test_update(testout, testdata, script, script_runner):
   args = ["query", testout("small_tree.tree"), "root", "--subtree-sizes"]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
+  # updating to just the root
+  args = ["tree", testout("small_tree.tree"), "--update",
+      testdata("just_root.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  # try to set root node as internal
+  args = ["tree", testout("small_tree.tree"), "--update",
+      testdata("same_node_root_and_not.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
   # add to tree which does not exist
   args = ["tree", testout("not_existing.tree"), "--add",
       testdata("small_tree.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  # negative parent
+  args = ["tree", testout("small_tree.tree"), "--add",
+      testdata("negative_parent.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  args = ["tree", testout("small_tree.tree"), "--update",
+      testdata("negative_parent.tsv")]
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 1
   assert "ERROR" in ret.stderr
@@ -384,6 +412,18 @@ def test_edit(testout, testdata, ids_modules, script, script_runner,
   assert ret.returncode == 0
   assert ret.stdout == "".join(f"{x}\n" for x in
       results_query_small_tree_id_8_add_subtree2)
+  # add failing, since nodes are repeated, failing at the root
+  args = ["tree", "--add", testout("small_tree.tree"),
+      testdata("just_root.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  # add failing, since nodes are repeated, failing at other node
+  args = ["tree", "--add", testout("small_tree.tree"),
+      testdata("small_tree.shuffled.tsv")]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
   # attribute query before changing it
   args = ["query", testout("small_tree.tree"), "8", "attrX", "-a", "-H", "-m"]
   ret = script_runner.run(script("fastsubtrees"), *args)

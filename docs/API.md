@@ -103,19 +103,36 @@ saved yet to file, the filename can be set with ``tree.set_filename``.
 If a tree topology changes, the attribute values files will be adapted
 accordingly.
 
-For defining an attribute, a dictionary must be provided, with the IDs
-of the nodes as keys and the associated values of the attribute as values.
-An attribute file is written when the method
-``tree.save_attribute_values(tree, attribute_name, attrvalues)`` is called.
-A dict ``{id: attribute values}`` stored in the file can be loaded using
-the method ``tree.load_attribute_values(attribute_name)``.
-To change attributes, e.g. deleting values or adding new values, the
-attribute values are loaded, the dict is changed accordingly and finally
-passed to the save method.
+### Creating attributes
+
+To create an attribute, a source of element IDs and associated attribute values
+is required. This can be a generator function which yields tuples
+``(element_ID, attribute_value)``, and is passed to the function
+``tree.create_attribute(attribute_name, generator)`` or a tabular file,
+whose name is passed to
+``tree.create_attribute_from_tabular(attribute_name, tabular_filename)``.
+In both cases, a single-argument casting function can be passed as the argument
+``casting_fn``, which converts the values from the values source, e.g. from
+strings to another datatype.
+
+### Modifying attributes
+
+For modifying an attribute, a dictionary of the form
+``{node_id: attribute values}``
+(nodes as keys and the associated values of the attribute as values)
+is obtained using the method
+``attrvalues = tree.load_attribute_values(attribute_name)``.
+After loading, the dictionary entries are changed, by deleting, adding or
+modifying some values and finally passed to the method
+``tree.save_attribute_values(tree, attribute_name, attrvalues)``.
+
+### Checking if an attribute exists
 
 To check if an attribute exists, the ``tree.has_attribute(attribute_name)``
 method can be used. The list of all attributes is returned by
 ``tree.list_attributes()``.
+
+### Destroying attributes
 
 To remove an attribute completely, the
 ``tree.destroy_attribute(attribute_name)`` method is used. To remove all
