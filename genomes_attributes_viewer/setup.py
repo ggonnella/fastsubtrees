@@ -12,11 +12,11 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='genomes_attributes_viewer',
-      version='1.1',
+      version='1.2',
       description="Example application of fastsubtrees",
       long_description=readme(),
       long_description_content_type="text/markdown",
-      install_requires=["fastsubtrees", "ntdownload", "dash==2.0.0",
+      install_requires=["fastsubtrees>=2.0", "ntdownload", "dash==2.0.0",
         "dash-bootstrap-components==1.0.2", "dash-core-components==2.0.0",
         "dash-html-components==2.0.0", "dash-table==5.0.0", "Werkzeug==2.0.0",
         "Flask==2.1.2", "pandas"],

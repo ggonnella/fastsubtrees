@@ -1,3 +1,6 @@
+== 1.2 ==
+- update to changes in fastsubtrees
+
 == 1.1 ==
 - options to specify port and host
 - update documentation

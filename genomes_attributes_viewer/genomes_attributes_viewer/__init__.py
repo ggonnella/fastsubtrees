@@ -1,6 +1,6 @@
 # Genomes Attributes Viewer package
 
-VERSION = "1.1"
+__version__ = "1.2"
 
 NTDUMPSDIR = "ntdumps"
 NCBI_SEP = "\t|\t"

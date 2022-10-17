@@ -29,7 +29,7 @@ import genomes_attributes_viewer
 genomes_attributes_viewer.workdir = scriptdir
 
 if __name__ == '__main__':
-  args = docopt(__doc__, version=genomes_attributes_viewer.VERSION)
+  args = docopt(__doc__, version=genomes_attributes_viewer.__version__)
   import genomes_attributes_viewer.first_run as gav_fr
   gav_fr.prepare_first_run(scriptdir)
   import genomes_attributes_viewer.app as gav_app
