@@ -145,7 +145,7 @@ class Tree():
   ROOT_COORD=1
 
   def __compute_treedata_and_coords(self):
-    self.treedata = array.array("Q", [0] * (self.get_treesize() + 1))
+    self.treedata = array.array("Q", [Tree.UNDEF] * (self.get_treesize() + 1))
     self.coords = array.array("Q", [0] * (self.max_node_id() + 1))
     self.treedata[self.ROOT_COORD] = self.root_id
     self.coords[self.root_id] = self.ROOT_COORD
@@ -161,7 +161,7 @@ class Tree():
             pos = self.coords[self.parents[node]] + 1
             while True:
               treedatanode = self.treedata[pos]
-              if treedatanode == 0:
+              if treedatanode == Tree.UNDEF:
                 break
               else:
                 pos += (self.subtree_sizes[treedatanode])
