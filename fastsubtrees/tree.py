@@ -17,10 +17,29 @@ from fastsubtrees.ids_modules import ids_from_tabular_file, \
 class Tree():
 
   def __init__(self):
-    self.subtree_sizes = array.array("Q")
+    # coords[node] is the position of the node in the treedata array
+    # coords[missing] is 0
+    # coords[root] is ROOT_COORD == 1
+    # coords[deleted] => value is not changed
     self.coords = array.array("Q")
+
+    # treedata[pos] is the node ID of the pos-th node in depth-first order
+    # treedata[ROOT_COORD] is the root node ID
+    # treedata[deleted] is Tree.DELETED
     self.treedata = array.array("Q")
-    self.parents = array.array("Q")
+
+    # subtree_sizes[node] = size of subtree, including node itself
+    # subtree_sizes[root] = total size of the tree
+    # subtree_sizes[missing] = 0
+    # subtree_sizes[deleted] => value is not deleted
+    self.subtree_sizes = None
+
+    # parent[root] = root
+    # parent[node] = ID of node parent (*)
+    # parent[missing] = Tree.UNDEF
+    # parent[deleted] => value is not deleted
+    self.parents = None
+
     self.root_id = None
     self.filename = None
 
@@ -29,12 +48,8 @@ class Tree():
 
   def __compute_parents(self, generator):
     """
-    values:
-    - parent[root] = 0
-    - parent["missing"] = Tree.UNDEF
-    - parent[node] = ID of node parent (*)
-
-    (*) parent IDs are not checked, i.e. they may be invalid in two ways:
+    Copy the parents ID from the generator, after some checks;
+    parent IDs can still be invalid in two ways:
     - parent_ID < 0 or parent_ID > max_node_ID
     - parent_ID is a "missing" node
     """
@@ -74,17 +89,11 @@ class Tree():
 
   def max_node_id(self) -> int:
     """
-    Return the maximum node ID in the tree.
+    Return the maximum node ID in the tree
+    (after __compute_parents has been called).
     """
+    assert (self.parents is not None)
     return len(self.parents) - 1
-
-  def has_node(self, node: int) -> bool:
-    """
-    Check whether the tree has a node with the given ID.
-    """
-    if node < 1 or node > self.max_node_id():
-      return False
-    return self.parents[node] != Tree.UNDEF
 
   def __compute_subtree_sizes(self):
     self.subtree_sizes = array.array('Q', [0] * (self.max_node_id()+1))
@@ -92,6 +101,7 @@ class Tree():
                              total=self.max_node_id()+1):
       if parent == Tree.UNDEF:
         continue
+      self.subtree_sizes[elem] += 1
       while parent != elem:
         if parent >= len(self.parents):
           raise error.ConstructionError( \
@@ -105,13 +115,21 @@ class Tree():
         elem = parent
         parent = grandparent
 
-  def __compute_treedata(self):
-    treesize = self.subtree_sizes[self.root_id] + 1
-    self.treedata = array.array("Q", [0] * (treesize + 1))
-    self.coords = array.array("Q", [0] * len(self.parents))
-    self.treedata[1] = self.root_id
-    self.coords[self.root_id] = 1
-    for i in tqdm(range(len(self.parents))):
+  def get_treesize(self) -> int:
+    """
+    Returns the number of nodes in the tree.
+    """
+    assert(self.subtree_sizes is not None)
+    return self.subtree_sizes[self.root_id]
+
+  ROOT_COORD=1
+
+  def __compute_treedata_and_coords(self):
+    self.treedata = array.array("Q", [0] * (self.get_treesize() + 1))
+    self.coords = array.array("Q", [0] * (self.max_node_id() + 1))
+    self.treedata[self.ROOT_COORD] = self.root_id
+    self.coords[self.root_id] = self.ROOT_COORD
+    for i in tqdm(range(self.max_node_id() + 1)):
       if i != self.root_id and self.parents[i] != Tree.UNDEF:
         path = [i]
         parent = self.parents[i]
@@ -126,7 +144,7 @@ class Tree():
               if treedatanode == 0:
                 break
               else:
-                pos += (self.subtree_sizes[treedatanode] + 1)
+                pos += (self.subtree_sizes[treedatanode])
             self.coords[node] = pos
             self.treedata[pos] = node
 
@@ -142,7 +160,7 @@ class Tree():
     logger.info("Constructing subtree sizes table...")
     self.__compute_subtree_sizes()
     logger.info("Constructing tree data and index...")
-    self.__compute_treedata()
+    self.__compute_treedata_and_coords()
     logger.success("Tree data structure constructed")
     return self
 
@@ -188,9 +206,11 @@ class Tree():
     self = cls()
     with open(filename, "rb") as f:
       idxsize, nelems, nparents = struct.unpack("QQQ", f.read(24))
+      self.subtree_sizes = array.array("Q")
       self.subtree_sizes.fromfile(f, idxsize)
       self.coords.fromfile(f, idxsize)
       self.treedata.fromfile(f, nelems)
+      self.parents = array.array("Q")
       self.parents.fromfile(f, nparents)
       self.root_id = self.treedata[1]
     logger.debug(f"Tree loaded from file \"{filename}\"")
@@ -216,15 +236,7 @@ class Tree():
     Returns the number of nodes in the subtree rooted at the given node.
     """
     self.__check_node_number(node)
-    stsize = self.subtree_sizes[node]
-    if (stsize == 0):
-      pos = self.coords[node]
-      if pos == 0:
-        return 0
-      else:
-        return 1
-    else:
-      return stsize + 1
+    return self.subtree_sizes[node]
 
   def get_treedata_coord(self, node: int) -> int:
     """
@@ -375,7 +387,7 @@ class Tree():
       self.subtree_sizes.extend([0] * n_to_append)
     self.coords[node_number] = inspos
     self.parents[node_number] = parent
-    self.subtree_sizes[node_number] = 0
+    self.subtree_sizes[node_number] = 1
     if list_added is not None:
       list_added.append(node_number)
     p = self.parents[node_number]
@@ -387,7 +399,7 @@ class Tree():
     #logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
 
   def __move_subtree(self, subtree_root, new_parent, edit_script):
-    subtree_size = self.subtree_sizes[subtree_root] + 1
+    subtree_size = self.subtree_sizes[subtree_root]
     assert(self.coords[new_parent] > 0)
     inspos = self.coords[new_parent] + 1
     for i in range(subtree_size):
@@ -423,10 +435,10 @@ class Tree():
       raise error.NodeNotFoundError(\
           f"The node ID does not exist: {node_number}")
     n_deleted = 0
-    subtree_size = self.subtree_sizes[node_number]
     if edit_script is None:
       edit_script = []
-    for i in range(subtree_size + 1):
+    subtree_size = self.subtree_sizes[node_number]
+    for i in range(subtree_size):
       delpos = coord + i
       if self.treedata[delpos] != Tree.DELETED:
         deleted = self.treedata[delpos]
