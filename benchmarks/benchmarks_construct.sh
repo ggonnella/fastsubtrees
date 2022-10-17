@@ -3,13 +3,13 @@
 # Benchmarks the construction of the tree data files for fastsubtrees
 #
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <ntdumpdir>"
-    echo "where <ntdumpdir> is the directory containing the NCBI taxonomy"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <tree> <ntdumpsdir>"
+    echo "where <ntdumpsdir> is the directory containing the NCBI taxonomy"
     echo "dump files to be used for the tree construction"
     exit 1
 fi
-NTDUMPDIR=$1
+NTDUMPSDIR=$1
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..
@@ -25,7 +25,6 @@ for ((i=0; i<$NREPEATS; i++)); do
   echo "Step $STEP, iteration $i..."
   rm -f nt.tree
   /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-    fastsubtrees tree nt.tree --force \
-      --module $FST_IDS_MODULES_DIR/ids_from_tabular_file.py \
-        --keyargs separator='	|	' inputfile=$NTDUMPDIR/nodes.dmp
+    fastsubtrees tree --force $TREE \
+                      --ncbi $NTDUMPSDIR/nodes.dmp
 done

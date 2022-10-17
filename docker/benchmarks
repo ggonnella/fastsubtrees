@@ -7,21 +7,23 @@ function benchmark_done {
   echo "# docker cp $CONTAINER:$FILENAME $FILENAME"
   echo
 }
+TREE=/fastsubtrees/nt.tree
+NTDUMPSDIR=/fastsubtrees/ntdumps
 if [ "$1" == "--all" ]; then
   echo "# Running the fastsubtrees construction benchmarks..."
-  /fastsubtrees/benchmarks/benchmarks_construct.sh /fastsubtrees/ntdumpdir
+  /fastsubtrees/benchmarks/benchmarks_construct.sh $TREE $NTDUMPSDIR
   FILENAME="/fastsubtrees/benchmarks_construct.tsv"
   benchmark_done
 fi
 echo "# Running the fastsubtrees query benchmarks..."
-/fastsubtrees/benchmarks/benchmarks_fst.sh /fastsubtrees/ncbi-taxonomy.tree
+/fastsubtrees/benchmarks/benchmarks_fst.sh $TREE
 FILENAME="/fastsubtrees/benchmarks_fst.tsv"
 benchmark_done
-/fastsubtrees/benchmarks/benchmarks_attr.sh /fastsubtrees/ncbi-taxonomy.tree
+/fastsubtrees/benchmarks/benchmarks_attr.sh $TREE
 FILENAME="/fastsubtrees/benchmarks_attr.tsv"
 benchmark_done
 start-and-init-db
 /fastsubtrees/benchmarks/benchmarks_sql.sh myuser mypass ntmirror_test \
-  /run/mysqld/mysqld.sock
+  /run/mysqld/mysqld.sock $NTDUMPSDIR
 FILENAME="/fastsubtrees/benchmarks_sql.tsv"
 benchmark_done

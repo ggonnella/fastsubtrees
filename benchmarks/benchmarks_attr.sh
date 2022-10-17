@@ -34,6 +34,7 @@ attr_dt[GC_content]=float
 for attr in genome_size GC_content; do
   for ((i=0; i<$NREPEATS; i++)); do
     STEP="construct-$attr"
+    ROOT=""
     /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
       fastsubtrees attribute $TREE $attr \
         --type ${attr_dt[$attr]} \
@@ -47,7 +48,7 @@ for attr in genome_size GC_content; do
     for ROOT in $NODES; do
       echo "Step $STEP from node $ROOT, iteration $i..."
       /usr/bin/time -f "$STEP\t$ROOT\t$i\t%U\t%S\t%e\t%M" -o $OUTFILE -a \
-        fastsubtrees query -N -a --stats $TREE $ROOT $attr > \
+        fastsubtrees query -H -a -s $TREE $ROOT $attr > \
         $OUTDIR/attr_values.$attr.$ROOT
     done
   done

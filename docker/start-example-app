@@ -1,13 +1,8 @@
 #!/bin/bash
 if [ ! -e /fastsubtrees/example-app-initialized ]; then
   # doing this allows to avoid re-creating the tree data
-  # if it was already done before, e.g. for the benchmarks
+  # if it was already done before, e.g. for the benchmarks or ntsubtree
   create-tree-file
-  rm -rf /fastsubtrees/genomes_attributes_viewer/ntdumps
-  ln -s /fastsubtrees/ntdumpdir /fastsubtrees/genomes_attributes_viewer/ntdumps
-  rm -f /fastsubtrees/genomes_attributes_viewer/nt.tree
-  ln -s /fastsubtrees/ncbi-taxonomy.tree \
-        /fastsubtrees/genomes_attributes_viewer/nt.tree
   cd /fastsubtrees/genomes_attributes_viewer/ && pip install -e .
   touch /fastsubtrees/example-app-initialized
 fi

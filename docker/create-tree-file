@@ -1,8 +1,57 @@
-if [ ! -e ncbi-taxonomy.tree ]; then
-  if [ ! -e ntdumpdir ]; then
+#
+# it looks for the NT dumps and tree file in three locations:
+# - fastsubtrees (created by benchmarks)
+# - genomes_attributes_viewer
+# - ntsubtree
+#
+# if they exist not in fastsubtrees location, move them there;
+# if they don't exist anywhere, create them at the fastsubtrees location;
+# finally link the one in the fastsubtrees location to the other locations
+#
+
+NTSUBTREE_DIR=/root/.local/share/NtSubtree/1.0
+mkdir -p $NTSUBTREE_DIR
+
+NTDUMP_PATH_FST=/fastsubtrees/ntdumps
+NTDUMP_PATH_GAV=/fastsubtrees/genomes_attributes_viewer/bin/ntdumps
+NTDUMP_PATH_NTSUBTREE=/$NTSUBTREE_DIR/ntdumps
+
+if [ ! -e $NTDUMP_PATH_FST ]; then
+  if [ -e $NTDUMP_PATH_GAV ]; then
+    echo "# Using NCBI dumps of genomes_attributes_viewer..."
+    mv $NTDUMP_PATH_GAV $NTDUMP_PATH_FST
+  elif [ -e $NTDUMP_PATH_NTSUBTREE ]; then
+    echo "# Using NCBI dumps of ntsubtree..."
+    mv $NTDUMP_PATH_NTSUBTREE $NTDUMP_PATH_FST
+  else
     echo "# Downloading the NCBI taxonomy dump..."
-    ntdownload ntdumpdir
+    ntdownload $NTDUMP_PATH_FST
   fi
-  echo "# Building the fastsubtrees NCBI taxonomy tree..."
-  fastsubtrees construct ncbi-taxonomy.tree --ntdump ntdumpdir
+else
+  echo "# NCBI dumps found..."
 fi
+rm -rf $NTDUMP_PATH_GAV
+ln -s $NTDUMP_PATH_FST $NTDUMP_PATH_GAV
+rm -rf $NTDUMP_PATH_NTSUBTREE
+ln -s $NTDUMP_PATH_FST $NTDUMP_PATH_NTSUBTREE
+
+TREE_PATH_FST=/fastsubtrees/nt.tree
+TREE_PATH_GAV=/fastsubtrees/genomes_attributes_viewer/bin/nt.tree
+TREE_PATH_NTSUBTREE=$NTSUBTREE_DIR/nt.tree
+
+if [ ! -e $TREE_PATH_FST ]; then
+  if [ -e $TREE_PATH_GAV ]; then
+    echo "# Using NCBI taxonomy tree of genomes_attributes_viewer..."
+    mv $TREE_PATH_GAV $TREE_PATH_FST
+  elif [ -e $TREE_PATH_NTSUBTREE ]; then
+    echo "# Using NCBI taxonomy tree of ntsubtree..."
+    mv $TREE_PATH_NTSUBTREE $TREE_PATH_FST
+  else
+    echo "# Building the fastsubtrees NCBI taxonomy tree..."
+    fastsubtrees tree $TREE_PATH_FST --ncbi $NTDUMP_PATH_FST/nodes.dmp
+  fi
+else
+  echo  "# NCBI taxonomy tree found..."
+fi
+ln -f -s $TREE_PATH_FST $TREE_PATH_GAV
+ln -f -s $TREE_PATH_FST $TREE_PATH_NTSUBTREE
