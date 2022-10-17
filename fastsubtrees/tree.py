@@ -68,14 +68,16 @@ class Tree():
       while parent != Tree.UNDEF:
         if parent >= len(self.parents):
           raise error.ConstructionError( \
-            f"The node {elem} has parent {parent}, " + \
-            f"which is not in the tree")
+            f"The node '{elem}' has parent '{parent}', which is not in the tree")
         self.subtree_sizes[parent] += 1
         if parent == self.root_id:
           break
         else:
           grandparent = self.parents[parent]
-          assert(grandparent != Tree.UNDEF)
+          if (grandparent == Tree.UNDEF):
+            raise error.ConstructionError( \
+              f"The node '{parent}' has parent '{grandparent}'"+\
+              ", which is not in the tree")
           elem = parent
           parent = grandparent
 

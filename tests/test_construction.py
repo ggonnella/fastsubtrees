@@ -133,3 +133,7 @@ def test_construction_err_parent_not_exist(testdata):
   generator = element_parent_ids(infname)
   with pytest.raises(error.ConstructionError):
     Tree.construct(generator)
+  infname = testdata('parent_not_exist_small.tsv')
+  generator = element_parent_ids(infname)
+  with pytest.raises(error.ConstructionError):
+    Tree.construct(generator)
