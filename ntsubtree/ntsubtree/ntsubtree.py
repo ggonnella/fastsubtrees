@@ -44,15 +44,13 @@ def update(redownload=False, force=False):
   if updated or force:
     fastsubtrees.logger.info("Updating taxonomy tree...")
     tree = fastsubtrees.Tree.from_file(TREEFILE)
-    n_node_lines = n_lines(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME)
+    filename = str(NTDUMPDIR / NCBI_NODES_DUMP_FILENAME)
+    n_node_lines = n_lines(filename)
     fastsubtrees.logger.info("Number of nodes: {}".format(n_node_lines))
-    generator = ids_from_tabular_file.element_parent_ids(\
-        str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME), separator=NCBI_DUMP_SEP,
-        element_id_column=NCBI_NODES_DUMP_TAXID_COL,
-        parent_id_column=NCBI_NODES_DUMP_PARENT_COL)
     if tree.has_attribute("taxname"):
       tree.destroy_attribute("taxname")
-    n_added, n_deleted, n_moved = tree.update(generator, total=n_node_lines)
+    n_added, n_deleted, n_moved = \
+        tree.update_from_ncbi_dump(filename, total=n_node_lines)
     tree.to_file(TREEFILE)
     tree.save_attribute_values(tree, "taxname", read_names())
 
@@ -65,9 +63,8 @@ def __auto_init():
     fastsubtrees.logger.info("Downloading NCBI taxonomy data...")
     NTDUMPSDIR.mkdir(parents=True, exist_ok=True)
     Downloader(str(NTDUMPSDIR)).run()
-    tree = fastsubtrees.Tree.construct_from_csv(\
-        str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME),
-        NCBI_DUMP_SEP, NCBI_NODES_DUMP_TAXID_COL, NCBI_NODES_DUMP_PARENT_COL)
+    tree = fastsubtrees.Tree.construct_from_ncbi_dump(\
+        str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME))
     tree.to_file(TREEFILE)
     ### tree = fastsubtrees.Tree.from_file(TREEFILE)
     names = read_names()
