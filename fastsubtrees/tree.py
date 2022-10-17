@@ -28,58 +28,82 @@ class Tree():
   DELETED = sys.maxsize - 1
 
   def __compute_parents(self, generator):
+    """
+    values:
+    - parent[root] = 0
+    - parent["missing"] = Tree.UNDEF
+    - parent[node] = ID of node parent (*)
+
+    (*) parent IDs are not checked, i.e. they may be invalid in two ways:
+    - parent_ID < 0 or parent_ID > max_node_ID
+    - parent_ID is a "missing" node
+    """
     self.parents = array.array("Q")
     assert (self.root_id is None)
     for elem, parent in generator:
-      if elem == self.root_id:
-        raise error.ConstructionError( \
-          f"Node {elem} had already been added as root, cannot " + \
-          f"add it again with parent {parent}")
       if elem <= 0:
         raise error.ConstructionError( \
           f"The node IDs must be > 0, found: {elem}")
       if parent <= 0:
         raise error.ConstructionError( \
           f"The node IDs must be > 0, found: {parent}")
+      if elem == self.root_id:
+        raise error.ConstructionError( \
+          f"Node {elem} had already been added as root, cannot " + \
+          f"add it again with parent {parent}")
       n_missing = elem + 1 - len(self.parents)
       if n_missing > 0:
         for i in range(n_missing):
           self.parents.append(Tree.UNDEF)
-      if self.parents[elem] != Tree.UNDEF:
+      elif self.parents[elem] != Tree.UNDEF:
         raise error.ConstructionError( \
-          f"Node {elem} had already been added with parent " + \
-          f"{self.parents[elem]}, cannot add it again with " + \
+          f"Node '{elem}' had already been added with parent " + \
+          f"'{self.parents[elem]}', cannot add it again with " + \
           f"parent {parent}")
-      if parent != elem:
-        self.parents[elem] = parent
-      elif self.root_id is None:
-        self.root_id = elem
-      else:
-        raise error.ConstructionError( \
-          f"The tree already has a root node {self.root_id}, " + \
-          f"cannot add a second root node {elem}")
+      if elem == parent:
+        if self.root_id is None:
+          self.root_id = elem
+        else:
+          raise error.ConstructionError( \
+            f"The tree already has a root node {self.root_id}, " + \
+            f"cannot add a second root node {elem}")
+      self.parents[elem] = parent
     if self.root_id is None:
       raise error.ConstructionError( \
         "The tree does not have any root node")
 
+  def max_node_id(self) -> int:
+    """
+    Return the maximum node ID in the tree.
+    """
+    return len(self.parents) - 1
+
+  def has_node(self, node: int) -> bool:
+    """
+    Check whether the tree has a node with the given ID.
+    """
+    if node < 1 or node > self.max_node_id():
+      return False
+    return self.parents[node] != Tree.UNDEF
+
   def __compute_subtree_sizes(self):
-    self.subtree_sizes = array.array('Q', [0] * len(self.parents))
-    for elem, parent in tqdm(enumerate(self.parents)):
-      while parent != Tree.UNDEF:
+    self.subtree_sizes = array.array('Q', [0] * (self.max_node_id()+1))
+    for elem, parent in tqdm(enumerate(self.parents), \
+                             total=self.max_node_id()+1):
+      if parent == Tree.UNDEF:
+        continue
+      while parent != elem:
         if parent >= len(self.parents):
           raise error.ConstructionError( \
             f"The node '{elem}' has parent '{parent}', which is not in the tree")
         self.subtree_sizes[parent] += 1
-        if parent == self.root_id:
-          break
-        else:
-          grandparent = self.parents[parent]
-          if (grandparent == Tree.UNDEF):
-            raise error.ConstructionError( \
-              f"The node '{parent}' has parent '{grandparent}'"+\
-              ", which is not in the tree")
-          elem = parent
-          parent = grandparent
+        grandparent = self.parents[parent]
+        if (grandparent == Tree.UNDEF):
+          raise error.ConstructionError( \
+            f"The node '{parent}' has parent '{grandparent}'"+\
+            ", which is not in the tree")
+        elem = parent
+        parent = grandparent
 
   def __compute_treedata(self):
     treesize = self.subtree_sizes[self.root_id] + 1
@@ -88,7 +112,7 @@ class Tree():
     self.treedata[1] = self.root_id
     self.coords[self.root_id] = 1
     for i in tqdm(range(len(self.parents))):
-      if self.parents[i] != Tree.UNDEF:
+      if i != self.root_id and self.parents[i] != Tree.UNDEF:
         path = [i]
         parent = self.parents[i]
         while parent != self.root_id:
@@ -352,13 +376,15 @@ class Tree():
     self.coords[node_number] = inspos
     self.parents[node_number] = parent
     self.subtree_sizes[node_number] = 0
-    p = self.parents[node_number]
-    while p != Tree.UNDEF:
-      self.subtree_sizes[p] += 1
-      p = self.parents[p]
-    #logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
     if list_added is not None:
       list_added.append(node_number)
+    p = self.parents[node_number]
+    while p != node_number:
+      assert(p != Tree.UNDEF)
+      self.subtree_sizes[p] += 1
+      node_number = p
+      p = self.parents[node_number]
+    #logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
 
   def __move_subtree(self, subtree_root, new_parent, edit_script):
     subtree_size = self.subtree_sizes[subtree_root] + 1
@@ -382,9 +408,12 @@ class Tree():
       edit_script.append(("delete", oldpos + i))
     self.parents[subtree_root] = new_parent
     p = new_parent
-    while p != Tree.UNDEF:
+    while True:
       self.subtree_sizes[p] += subtree_size
-      p = self.parents[p]
+      gp = self.parents[p]
+      if gp == p:
+        break
+      p = gp
 
   def __delete_subtree(self, node_number, attrfilenames=[],
                      list_deleted = None, edit_script = None):
