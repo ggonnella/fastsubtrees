@@ -68,7 +68,7 @@ def show_data(args, subtree_info, attrnames):
   for i, node_id in enumerate(subtree_info["node_id"]):
     if args["--only"] and node_id != int(args["<subtreeroot>"]):
       continue
-    if node_id == Tree.DELETED:
+    if node_id == Tree.UNDEF:
       continue
     n_nodes += 1
     if not args["--missing"] and \

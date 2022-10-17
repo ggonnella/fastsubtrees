@@ -17,34 +17,54 @@ from fastsubtrees.ids_modules import ids_from_tabular_file, \
 class Tree():
 
   def __init__(self):
-    # coords[node] is the position of the node in the treedata array
-    # coords[missing] is 0
-    # coords[root] is ROOT_COORD == 1
-    # coords[deleted] => value is not changed
-    self.coords = array.array("Q")
-
-    # treedata[pos] is the node ID of the pos-th node in depth-first order
-    # treedata[ROOT_COORD] is the root node ID
-    # treedata[deleted] is Tree.DELETED
+    # treedata contains:
+    #  dummy value, so that treedata[coords[missing]] == UNDEF
+    #  |      ROOT_COORD == 1
+    #  |      |     node ids in depth-first order
+    #  |      |     |                            deleted nodes
+    #  |      |     |                            |
+    # [UNDEF, root, child1, child2, child3, ..., UNDEF, ...]
     self.treedata = array.array("Q")
 
-    # subtree_sizes[node] = size of subtree, including node itself
-    # subtree_sizes[root] = total size of the tree
-    # subtree_sizes[missing] = 0
-    # subtree_sizes[deleted] => value is not deleted
+    # coords contains:
+    #
+    #  at 0: pointing to a UNDEF value in treedata
+    #  |  pos in treedata of i-th node
+    #  |  |    pos of root in treedata is ROOT_COORD == 1
+    #  |  |    |       i-th node not contained in the tree, points to UNDEF
+    #  |  |    |       |       deleted nodes: not changed, but point to UNDEFs
+    #  |  |    |       |       |
+    # [0, pos, 1, ..., 0, ..., pos, ...]
+    self.coords = array.array("Q")
+
+    # subtree_sizes contains:
+    #
+    #  at 0: 0, as node 0 does not exist
+    #  |  size of i-th subtree, including node itself
+    #  |  |     rootID is handled as every other
+    #  |  |     |                    i-th node not contained in the tree
+    #  |  |     |                    |       deleted nodes: not changed (*)
+    #  |  |     |                    |       |
+    # [0, size, treesize, size, ..., 0, ..., size, ]
+    # (*) not changed because the corresponding data is still in treedata
     self.subtree_sizes = None
 
-    # parent[root] = root
-    # parent[node] = ID of node parent (*)
-    # parent[missing] = Tree.UNDEF
-    # parent[deleted] => value is not deleted
+    # parents contains:
+    #
+    #  at 0: 0, as node 0 does not exist
+    #  |  parent of i-th node
+    #  |  |       rootID: rootID itself, special case
+    #  |  |       |                  i-th node not contained in the tree
+    #  |  |       |                  |           deleted nodes: not changed (*)
+    #  |  |       |                  |           |
+    # [0, parent, rootID, size, ..., UNDEF, ..., size, ]
+    # (*) not changed because the corresponding data is still in treedata
     self.parents = None
 
     self.root_id = None
     self.filename = None
 
   UNDEF = sys.maxsize
-  DELETED = sys.maxsize - 1
 
   def __compute_parents(self, generator):
     """
@@ -266,7 +286,7 @@ class Tree():
     self.__check_node_number(subtree_root)
     result = array.array("Q")
     for node_id in self.get_subtree_data(subtree_root):
-      if (node_id != self.DELETED and node_id != self.UNDEF):
+      if node_id != self.UNDEF:
         result.append(node_id)
     return result
 
@@ -317,7 +337,7 @@ class Tree():
             raise error.ConstructionError(\
                 f"The root node {node_number} already exists")
         if self.parents[node_number] != Tree.UNDEF and \
-              self.treedata[self.coords[node_number]] != Tree.DELETED:
+              self.treedata[self.coords[node_number]] != Tree.UNDEF:
           if skip_existing:
             if self.parents[node_number] != parent:
               if parent >= len(self.parents) or self.coords[parent] == 0:
@@ -413,10 +433,10 @@ class Tree():
     for i in range(subtree_size):
       nodenum = self.treedata[oldpos + i]
       self.treedata[inspos + i] = nodenum
-      if nodenum != Tree.UNDEF and nodenum != Tree.DELETED:
+      if nodenum != Tree.UNDEF:
         self.coords[nodenum] = inspos + i
         edit_script.append(("copy", oldpos + i, inspos + i))
-      self.treedata[oldpos + i] = Tree.DELETED
+      self.treedata[oldpos + i] = Tree.UNDEF
       edit_script.append(("delete", oldpos + i))
     self.parents[subtree_root] = new_parent
     p = new_parent
@@ -440,9 +460,9 @@ class Tree():
     subtree_size = self.subtree_sizes[node_number]
     for i in range(subtree_size):
       delpos = coord + i
-      if self.treedata[delpos] != Tree.DELETED:
+      if self.treedata[delpos] != Tree.UNDEF:
         deleted = self.treedata[delpos]
-        self.treedata[delpos] = Tree.DELETED
+        self.treedata[delpos] = Tree.UNDEF
         edit_script.append(("delete", delpos))
         n_deleted += 1
         if list_deleted is not None:
@@ -731,7 +751,7 @@ class Tree():
     logger.debug("Creating attribute file '{}'...".format(attrfilename))
     with open(attrfilename, "w") as outfile:
       for element_id in self.get_subtree_data(self.root_id):
-        if element_id == self.DELETED:
+        if element_id == self.UNDEF:
           attribute = None
         else:
           attribute = attrvalues.get(element_id, None)
@@ -778,14 +798,14 @@ class Tree():
     if include_subtree_sizes:
       result[subtree_size_key] = []
       for node_id in node_ids:
-        if node_id != Tree.UNDEF and node_id != Tree.DELETED:
+        if node_id != Tree.UNDEF:
           result[subtree_size_key].append(self.get_subtree_size(node_id))
         else:
           result[subtree_size_key].append(None)
     if include_parents:
       result[parent_key] = []
       for node_id in node_ids:
-        if node_id != Tree.UNDEF and node_id != Tree.DELETED:
+        if node_id != Tree.UNDEF:
           result[parent_key].append(self.get_parent(node_id))
         else:
           result[parent_key].append(None)
