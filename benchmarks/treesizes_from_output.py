@@ -17,15 +17,17 @@ import re
 
 # Example output of benchmarks_attrs.sh
 """
-2022-10-07 09:31:18 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:31:19 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:31:19 INFO: Number of attribute values: 27515
+Step query-genome_size from node 83333, iteration 0...
+2022-10-17 11:03:37 INFO: Number of nodes with attribute 'genome_size': 1
+2022-10-17 11:03:37 INFO: Number of values of attribute 'genome_size': 9
+2022-10-17 11:03:37 INFO: Number of nodes in subtree: 1
 """
 
 def main(args):
-  re1 = re.compile(r"Subtree of node (\d+) has size (\d+)")
-  re2 = re.compile(r"Number of nodes with attributes: (\d+)")
-  re3 = re.compile(r"Number of attribute values: (\d+)")
+  re1 = re.compile(r"Step query-.* from node (\d+),")
+  re2 = re.compile(r"Number of nodes with attribute '.*': (\d+)")
+  re3 = re.compile(r"Number of values of attribute '.*': (\d+)")
+  re4 = re.compile(r"Number of nodes in subtree: (\d+)")
   with open(args["<captured_output>"]) as f:
     rootnode = None
     subtree_size = None
@@ -36,7 +38,6 @@ def main(args):
       m = re1.search(line)
       if m:
         rootnode = m.group(1)
-        subtree_size = m.group(2)
       else:
         m = re2.search(line)
         if m:
@@ -45,10 +46,14 @@ def main(args):
           m = re3.search(line)
           if m:
             attr_values = m.group(1)
-            if rootnode not in skip_output:
-              print(f"{rootnode}\t{subtree_size}\t"+\
-                    f"{nodes_with_attrs}\t{attr_values}")
-            skip_output.add(rootnode)
+          else:
+            m = re4.search(line)
+            if m:
+              subtree_size = m.group(1)
+              if rootnode not in skip_output:
+                print(f"{rootnode}\t{subtree_size}\t"+\
+                      f"{nodes_with_attrs}\t{attr_values}")
+              skip_output.add(rootnode)
 
 if __name__ == "__main__":
   args = docopt(__doc__)

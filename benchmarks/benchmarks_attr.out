@@ -1,294 +1,225 @@
-2022-10-07 09:30:44 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:30:44 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:44 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:30:47 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.genome_size.attr'
-2022-10-07 09:30:47 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:30:47 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:47 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:30:50 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.genome_size.attr'
-2022-10-07 09:30:50 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:30:50 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:50 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:30:52 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.genome_size.attr'
+2022-10-17 11:03:28 SUCCESS: Module loaded, function attribute_values() found
+2022-10-17 11:03:30 SUCCESS: Module loaded, function attribute_values() found
+2022-10-17 11:03:33 SUCCESS: Module loaded, function attribute_values() found
 Step query-genome_size from node 511145, iteration 0...
-2022-10-07 09:30:53 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:53 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:30:53 INFO: Number of nodes with attributes: 1
-2022-10-07 09:30:53 INFO: Number of attribute values: 9
+2022-10-17 11:03:37 INFO: Number of nodes with attribute 'genome_size': 1
+2022-10-17 11:03:37 INFO: Number of values of attribute 'genome_size': 9
+2022-10-17 11:03:37 INFO: Number of nodes in subtree: 1
 Step query-genome_size from node 83333, iteration 0...
-2022-10-07 09:30:53 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:53 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:30:53 INFO: Number of nodes with attributes: 8
-2022-10-07 09:30:53 INFO: Number of attribute values: 38
+2022-10-17 11:03:37 INFO: Number of nodes with attribute 'genome_size': 8
+2022-10-17 11:03:37 INFO: Number of values of attribute 'genome_size': 38
+2022-10-17 11:03:37 INFO: Number of nodes in subtree: 36
 Step query-genome_size from node 562, iteration 0...
-2022-10-07 09:30:53 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:53 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:30:53 INFO: Number of nodes with attributes: 165
-2022-10-07 09:30:53 INFO: Number of attribute values: 2160
+2022-10-17 11:03:38 INFO: Number of nodes with attribute 'genome_size': 165
+2022-10-17 11:03:38 INFO: Number of values of attribute 'genome_size': 2160
+2022-10-17 11:03:38 INFO: Number of nodes in subtree: 3381
 Step query-genome_size from node 561, iteration 0...
-2022-10-07 09:30:53 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:53 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:30:53 INFO: Number of nodes with attributes: 174
-2022-10-07 09:30:53 INFO: Number of attribute values: 2246
+2022-10-17 11:03:38 INFO: Number of nodes with attribute 'genome_size': 174
+2022-10-17 11:03:38 INFO: Number of values of attribute 'genome_size': 2246
+2022-10-17 11:03:38 INFO: Number of nodes in subtree: 4436
 Step query-genome_size from node 543, iteration 0...
-2022-10-07 09:30:53 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:53 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:30:54 INFO: Number of nodes with attributes: 839
-2022-10-07 09:30:54 INFO: Number of attribute values: 5774
+2022-10-17 11:03:39 INFO: Number of nodes with attribute 'genome_size': 839
+2022-10-17 11:03:39 INFO: Number of values of attribute 'genome_size': 5774
+2022-10-17 11:03:39 INFO: Number of nodes in subtree: 22750
 Step query-genome_size from node 91347, iteration 0...
-2022-10-07 09:30:54 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:54 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:30:54 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:30:54 INFO: Number of attribute values: 6709
+2022-10-17 11:03:39 INFO: Number of nodes with attribute 'genome_size': 1150
+2022-10-17 11:03:39 INFO: Number of values of attribute 'genome_size': 6709
+2022-10-17 11:03:39 INFO: Number of nodes in subtree: 31609
 Step query-genome_size from node 1236, iteration 0...
-2022-10-07 09:30:54 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:54 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:30:54 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:30:54 INFO: Number of attribute values: 11178
+2022-10-17 11:03:40 INFO: Number of nodes with attribute 'genome_size': 2830
+2022-10-17 11:03:40 INFO: Number of values of attribute 'genome_size': 11178
+2022-10-17 11:03:40 INFO: Number of nodes in subtree: 123300
 Step query-genome_size from node 1224, iteration 0...
-2022-10-07 09:30:54 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:54 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:30:55 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:30:55 INFO: Number of attribute values: 16072
+2022-10-17 11:03:41 INFO: Number of nodes with attribute 'genome_size': 5099
+2022-10-17 11:03:41 INFO: Number of values of attribute 'genome_size': 16072
+2022-10-17 11:03:41 INFO: Number of nodes in subtree: 228153
 Step query-genome_size from node 2, iteration 0...
-2022-10-07 09:30:55 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:55 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:30:55 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:30:55 INFO: Number of attribute values: 27515
+2022-10-17 11:03:42 INFO: Number of nodes with attribute 'genome_size': 10043
+2022-10-17 11:03:42 INFO: Number of values of attribute 'genome_size': 27515
+2022-10-17 11:03:42 INFO: Number of nodes in subtree: 535272
 Step query-genome_size from node 511145, iteration 1...
-2022-10-07 09:30:55 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:55 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:30:55 INFO: Number of nodes with attributes: 1
-2022-10-07 09:30:55 INFO: Number of attribute values: 9
+2022-10-17 11:03:42 INFO: Number of nodes with attribute 'genome_size': 1
+2022-10-17 11:03:42 INFO: Number of values of attribute 'genome_size': 9
+2022-10-17 11:03:42 INFO: Number of nodes in subtree: 1
 Step query-genome_size from node 83333, iteration 1...
-2022-10-07 09:30:56 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:56 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:30:56 INFO: Number of nodes with attributes: 8
-2022-10-07 09:30:56 INFO: Number of attribute values: 38
+2022-10-17 11:03:43 INFO: Number of nodes with attribute 'genome_size': 8
+2022-10-17 11:03:43 INFO: Number of values of attribute 'genome_size': 38
+2022-10-17 11:03:43 INFO: Number of nodes in subtree: 36
 Step query-genome_size from node 562, iteration 1...
-2022-10-07 09:30:56 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:56 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:30:56 INFO: Number of nodes with attributes: 165
-2022-10-07 09:30:56 INFO: Number of attribute values: 2160
+2022-10-17 11:03:43 INFO: Number of nodes with attribute 'genome_size': 165
+2022-10-17 11:03:43 INFO: Number of values of attribute 'genome_size': 2160
+2022-10-17 11:03:43 INFO: Number of nodes in subtree: 3381
 Step query-genome_size from node 561, iteration 1...
-2022-10-07 09:30:56 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:56 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:30:56 INFO: Number of nodes with attributes: 174
-2022-10-07 09:30:56 INFO: Number of attribute values: 2246
+2022-10-17 11:03:44 INFO: Number of nodes with attribute 'genome_size': 174
+2022-10-17 11:03:44 INFO: Number of values of attribute 'genome_size': 2246
+2022-10-17 11:03:44 INFO: Number of nodes in subtree: 4436
 Step query-genome_size from node 543, iteration 1...
-2022-10-07 09:30:56 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:56 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:30:56 INFO: Number of nodes with attributes: 839
-2022-10-07 09:30:56 INFO: Number of attribute values: 5774
+2022-10-17 11:03:45 INFO: Number of nodes with attribute 'genome_size': 839
+2022-10-17 11:03:45 INFO: Number of values of attribute 'genome_size': 5774
+2022-10-17 11:03:45 INFO: Number of nodes in subtree: 22750
 Step query-genome_size from node 91347, iteration 1...
-2022-10-07 09:30:57 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:57 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:30:57 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:30:57 INFO: Number of attribute values: 6709
+2022-10-17 11:03:45 INFO: Number of nodes with attribute 'genome_size': 1150
+2022-10-17 11:03:45 INFO: Number of values of attribute 'genome_size': 6709
+2022-10-17 11:03:45 INFO: Number of nodes in subtree: 31609
 Step query-genome_size from node 1236, iteration 1...
-2022-10-07 09:30:57 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:57 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:30:57 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:30:57 INFO: Number of attribute values: 11178
+2022-10-17 11:03:46 INFO: Number of nodes with attribute 'genome_size': 2830
+2022-10-17 11:03:46 INFO: Number of values of attribute 'genome_size': 11178
+2022-10-17 11:03:46 INFO: Number of nodes in subtree: 123300
 Step query-genome_size from node 1224, iteration 1...
-2022-10-07 09:30:57 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:57 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:30:57 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:30:57 INFO: Number of attribute values: 16072
+2022-10-17 11:03:47 INFO: Number of nodes with attribute 'genome_size': 5099
+2022-10-17 11:03:47 INFO: Number of values of attribute 'genome_size': 16072
+2022-10-17 11:03:47 INFO: Number of nodes in subtree: 228153
 Step query-genome_size from node 2, iteration 1...
-2022-10-07 09:30:58 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:58 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:30:58 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:30:58 INFO: Number of attribute values: 27515
+2022-10-17 11:03:48 INFO: Number of nodes with attribute 'genome_size': 10043
+2022-10-17 11:03:48 INFO: Number of values of attribute 'genome_size': 27515
+2022-10-17 11:03:48 INFO: Number of nodes in subtree: 535272
 Step query-genome_size from node 511145, iteration 2...
-2022-10-07 09:30:58 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:58 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:30:58 INFO: Number of nodes with attributes: 1
-2022-10-07 09:30:58 INFO: Number of attribute values: 9
+2022-10-17 11:03:48 INFO: Number of nodes with attribute 'genome_size': 1
+2022-10-17 11:03:48 INFO: Number of values of attribute 'genome_size': 9
+2022-10-17 11:03:48 INFO: Number of nodes in subtree: 1
 Step query-genome_size from node 83333, iteration 2...
-2022-10-07 09:30:59 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:59 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:30:59 INFO: Number of nodes with attributes: 8
-2022-10-07 09:30:59 INFO: Number of attribute values: 38
+2022-10-17 11:03:49 INFO: Number of nodes with attribute 'genome_size': 8
+2022-10-17 11:03:49 INFO: Number of values of attribute 'genome_size': 38
+2022-10-17 11:03:49 INFO: Number of nodes in subtree: 36
 Step query-genome_size from node 562, iteration 2...
-2022-10-07 09:30:59 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:59 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:30:59 INFO: Number of nodes with attributes: 165
-2022-10-07 09:30:59 INFO: Number of attribute values: 2160
+2022-10-17 11:03:49 INFO: Number of nodes with attribute 'genome_size': 165
+2022-10-17 11:03:49 INFO: Number of values of attribute 'genome_size': 2160
+2022-10-17 11:03:49 INFO: Number of nodes in subtree: 3381
 Step query-genome_size from node 561, iteration 2...
-2022-10-07 09:30:59 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:59 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:30:59 INFO: Number of nodes with attributes: 174
-2022-10-07 09:30:59 INFO: Number of attribute values: 2246
+2022-10-17 11:03:50 INFO: Number of nodes with attribute 'genome_size': 174
+2022-10-17 11:03:50 INFO: Number of values of attribute 'genome_size': 2246
+2022-10-17 11:03:50 INFO: Number of nodes in subtree: 4436
 Step query-genome_size from node 543, iteration 2...
-2022-10-07 09:30:59 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:59 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:30:59 INFO: Number of nodes with attributes: 839
-2022-10-07 09:30:59 INFO: Number of attribute values: 5774
+2022-10-17 11:03:50 INFO: Number of nodes with attribute 'genome_size': 839
+2022-10-17 11:03:50 INFO: Number of values of attribute 'genome_size': 5774
+2022-10-17 11:03:50 INFO: Number of nodes in subtree: 22750
 Step query-genome_size from node 91347, iteration 2...
-2022-10-07 09:30:59 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:30:59 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:31:00 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:31:00 INFO: Number of attribute values: 6709
+2022-10-17 11:03:51 INFO: Number of nodes with attribute 'genome_size': 1150
+2022-10-17 11:03:51 INFO: Number of values of attribute 'genome_size': 6709
+2022-10-17 11:03:51 INFO: Number of nodes in subtree: 31609
 Step query-genome_size from node 1236, iteration 2...
-2022-10-07 09:31:00 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:00 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:31:00 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:31:00 INFO: Number of attribute values: 11178
+2022-10-17 11:03:52 INFO: Number of nodes with attribute 'genome_size': 2830
+2022-10-17 11:03:52 INFO: Number of values of attribute 'genome_size': 11178
+2022-10-17 11:03:52 INFO: Number of nodes in subtree: 123300
 Step query-genome_size from node 1224, iteration 2...
-2022-10-07 09:31:00 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:00 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:31:00 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:31:00 INFO: Number of attribute values: 16072
+2022-10-17 11:03:52 INFO: Number of nodes with attribute 'genome_size': 5099
+2022-10-17 11:03:52 INFO: Number of values of attribute 'genome_size': 16072
+2022-10-17 11:03:52 INFO: Number of nodes in subtree: 228153
 Step query-genome_size from node 2, iteration 2...
-2022-10-07 09:31:00 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:00 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:31:01 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:31:01 INFO: Number of attribute values: 27515
-2022-10-07 09:31:01 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:31:01 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:01 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:31:04 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.GC_content.attr'
-2022-10-07 09:31:04 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:31:04 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:04 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:31:07 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.GC_content.attr'
-2022-10-07 09:31:07 SUCCESS: Module loaded, function attribute_values() found
-2022-10-07 09:31:07 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:07 INFO: Subtree of node 1 has size 2447574
-2022-10-07 09:31:10 SUCCESS: Attribute values successfully written to file '/ncbi-taxonomy.tree.GC_content.attr'
+2022-10-17 11:03:53 INFO: Number of nodes with attribute 'genome_size': 10043
+2022-10-17 11:03:53 INFO: Number of values of attribute 'genome_size': 27515
+2022-10-17 11:03:54 INFO: Number of nodes in subtree: 535272
+2022-10-17 11:03:54 SUCCESS: Module loaded, function attribute_values() found
+2022-10-17 11:03:57 SUCCESS: Module loaded, function attribute_values() found
+2022-10-17 11:03:59 SUCCESS: Module loaded, function attribute_values() found
 Step query-GC_content from node 511145, iteration 0...
-2022-10-07 09:31:10 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:10 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:31:10 INFO: Number of nodes with attributes: 1
-2022-10-07 09:31:10 INFO: Number of attribute values: 9
+2022-10-17 11:04:03 INFO: Number of nodes with attribute 'GC_content': 1
+2022-10-17 11:04:03 INFO: Number of values of attribute 'GC_content': 9
+2022-10-17 11:04:03 INFO: Number of nodes in subtree: 1
 Step query-GC_content from node 83333, iteration 0...
-2022-10-07 09:31:10 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:10 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:31:10 INFO: Number of nodes with attributes: 8
-2022-10-07 09:31:10 INFO: Number of attribute values: 38
+2022-10-17 11:04:03 INFO: Number of nodes with attribute 'GC_content': 8
+2022-10-17 11:04:03 INFO: Number of values of attribute 'GC_content': 38
+2022-10-17 11:04:03 INFO: Number of nodes in subtree: 36
 Step query-GC_content from node 562, iteration 0...
-2022-10-07 09:31:10 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:10 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:31:11 INFO: Number of nodes with attributes: 165
-2022-10-07 09:31:11 INFO: Number of attribute values: 2160
+2022-10-17 11:04:04 INFO: Number of nodes with attribute 'GC_content': 165
+2022-10-17 11:04:04 INFO: Number of values of attribute 'GC_content': 2160
+2022-10-17 11:04:04 INFO: Number of nodes in subtree: 3381
 Step query-GC_content from node 561, iteration 0...
-2022-10-07 09:31:11 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:11 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:31:11 INFO: Number of nodes with attributes: 174
-2022-10-07 09:31:11 INFO: Number of attribute values: 2246
+2022-10-17 11:04:04 INFO: Number of nodes with attribute 'GC_content': 174
+2022-10-17 11:04:04 INFO: Number of values of attribute 'GC_content': 2246
+2022-10-17 11:04:04 INFO: Number of nodes in subtree: 4436
 Step query-GC_content from node 543, iteration 0...
-2022-10-07 09:31:11 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:11 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:31:11 INFO: Number of nodes with attributes: 839
-2022-10-07 09:31:11 INFO: Number of attribute values: 5774
+2022-10-17 11:04:05 INFO: Number of nodes with attribute 'GC_content': 839
+2022-10-17 11:04:05 INFO: Number of values of attribute 'GC_content': 5774
+2022-10-17 11:04:05 INFO: Number of nodes in subtree: 22750
 Step query-GC_content from node 91347, iteration 0...
-2022-10-07 09:31:11 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:11 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:31:11 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:31:11 INFO: Number of attribute values: 6709
+2022-10-17 11:04:05 INFO: Number of nodes with attribute 'GC_content': 1150
+2022-10-17 11:04:05 INFO: Number of values of attribute 'GC_content': 6709
+2022-10-17 11:04:05 INFO: Number of nodes in subtree: 31609
 Step query-GC_content from node 1236, iteration 0...
-2022-10-07 09:31:11 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:11 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:31:12 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:31:12 INFO: Number of attribute values: 11178
+2022-10-17 11:04:06 INFO: Number of nodes with attribute 'GC_content': 2830
+2022-10-17 11:04:06 INFO: Number of values of attribute 'GC_content': 11178
+2022-10-17 11:04:06 INFO: Number of nodes in subtree: 123300
 Step query-GC_content from node 1224, iteration 0...
-2022-10-07 09:31:12 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:12 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:31:12 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:31:12 INFO: Number of attribute values: 16072
+2022-10-17 11:04:07 INFO: Number of nodes with attribute 'GC_content': 5099
+2022-10-17 11:04:07 INFO: Number of values of attribute 'GC_content': 16072
+2022-10-17 11:04:07 INFO: Number of nodes in subtree: 228153
 Step query-GC_content from node 2, iteration 0...
-2022-10-07 09:31:12 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:12 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:31:13 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:31:13 INFO: Number of attribute values: 27515
+2022-10-17 11:04:08 INFO: Number of nodes with attribute 'GC_content': 10043
+2022-10-17 11:04:08 INFO: Number of values of attribute 'GC_content': 27515
+2022-10-17 11:04:08 INFO: Number of nodes in subtree: 535272
 Step query-GC_content from node 511145, iteration 1...
-2022-10-07 09:31:13 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:13 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:31:13 INFO: Number of nodes with attributes: 1
-2022-10-07 09:31:13 INFO: Number of attribute values: 9
+2022-10-17 11:04:08 INFO: Number of nodes with attribute 'GC_content': 1
+2022-10-17 11:04:08 INFO: Number of values of attribute 'GC_content': 9
+2022-10-17 11:04:08 INFO: Number of nodes in subtree: 1
 Step query-GC_content from node 83333, iteration 1...
-2022-10-07 09:31:13 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:13 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:31:13 INFO: Number of nodes with attributes: 8
-2022-10-07 09:31:13 INFO: Number of attribute values: 38
+2022-10-17 11:04:09 INFO: Number of nodes with attribute 'GC_content': 8
+2022-10-17 11:04:09 INFO: Number of values of attribute 'GC_content': 38
+2022-10-17 11:04:09 INFO: Number of nodes in subtree: 36
 Step query-GC_content from node 562, iteration 1...
-2022-10-07 09:31:13 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:13 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:31:14 INFO: Number of nodes with attributes: 165
-2022-10-07 09:31:14 INFO: Number of attribute values: 2160
+2022-10-17 11:04:10 INFO: Number of nodes with attribute 'GC_content': 165
+2022-10-17 11:04:10 INFO: Number of values of attribute 'GC_content': 2160
+2022-10-17 11:04:10 INFO: Number of nodes in subtree: 3381
 Step query-GC_content from node 561, iteration 1...
-2022-10-07 09:31:14 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:14 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:31:14 INFO: Number of nodes with attributes: 174
-2022-10-07 09:31:14 INFO: Number of attribute values: 2246
+2022-10-17 11:04:10 INFO: Number of nodes with attribute 'GC_content': 174
+2022-10-17 11:04:10 INFO: Number of values of attribute 'GC_content': 2246
+2022-10-17 11:04:10 INFO: Number of nodes in subtree: 4436
 Step query-GC_content from node 543, iteration 1...
-2022-10-07 09:31:14 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:14 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:31:14 INFO: Number of nodes with attributes: 839
-2022-10-07 09:31:14 INFO: Number of attribute values: 5774
+2022-10-17 11:04:11 INFO: Number of nodes with attribute 'GC_content': 839
+2022-10-17 11:04:11 INFO: Number of values of attribute 'GC_content': 5774
+2022-10-17 11:04:11 INFO: Number of nodes in subtree: 22750
 Step query-GC_content from node 91347, iteration 1...
-2022-10-07 09:31:14 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:14 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:31:14 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:31:14 INFO: Number of attribute values: 6709
+2022-10-17 11:04:11 INFO: Number of nodes with attribute 'GC_content': 1150
+2022-10-17 11:04:11 INFO: Number of values of attribute 'GC_content': 6709
+2022-10-17 11:04:11 INFO: Number of nodes in subtree: 31609
 Step query-GC_content from node 1236, iteration 1...
-2022-10-07 09:31:14 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:14 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:31:15 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:31:15 INFO: Number of attribute values: 11178
+2022-10-17 11:04:12 INFO: Number of nodes with attribute 'GC_content': 2830
+2022-10-17 11:04:12 INFO: Number of values of attribute 'GC_content': 11178
+2022-10-17 11:04:12 INFO: Number of nodes in subtree: 123300
 Step query-GC_content from node 1224, iteration 1...
-2022-10-07 09:31:15 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:15 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:31:15 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:31:15 INFO: Number of attribute values: 16072
+2022-10-17 11:04:13 INFO: Number of nodes with attribute 'GC_content': 5099
+2022-10-17 11:04:13 INFO: Number of values of attribute 'GC_content': 16072
+2022-10-17 11:04:13 INFO: Number of nodes in subtree: 228153
 Step query-GC_content from node 2, iteration 1...
-2022-10-07 09:31:15 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:15 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:31:16 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:31:16 INFO: Number of attribute values: 27515
+2022-10-17 11:04:14 INFO: Number of nodes with attribute 'GC_content': 10043
+2022-10-17 11:04:14 INFO: Number of values of attribute 'GC_content': 27515
+2022-10-17 11:04:14 INFO: Number of nodes in subtree: 535272
 Step query-GC_content from node 511145, iteration 2...
-2022-10-07 09:31:16 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:16 INFO: Subtree of node 511145 has size 1
-2022-10-07 09:31:16 INFO: Number of nodes with attributes: 1
-2022-10-07 09:31:16 INFO: Number of attribute values: 9
+2022-10-17 11:04:14 INFO: Number of nodes with attribute 'GC_content': 1
+2022-10-17 11:04:14 INFO: Number of values of attribute 'GC_content': 9
+2022-10-17 11:04:14 INFO: Number of nodes in subtree: 1
 Step query-GC_content from node 83333, iteration 2...
-2022-10-07 09:31:16 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:16 INFO: Subtree of node 83333 has size 36
-2022-10-07 09:31:16 INFO: Number of nodes with attributes: 8
-2022-10-07 09:31:16 INFO: Number of attribute values: 38
+2022-10-17 11:04:15 INFO: Number of nodes with attribute 'GC_content': 8
+2022-10-17 11:04:15 INFO: Number of values of attribute 'GC_content': 38
+2022-10-17 11:04:15 INFO: Number of nodes in subtree: 36
 Step query-GC_content from node 562, iteration 2...
-2022-10-07 09:31:16 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:16 INFO: Subtree of node 562 has size 3380
-2022-10-07 09:31:16 INFO: Number of nodes with attributes: 165
-2022-10-07 09:31:16 INFO: Number of attribute values: 2160
+2022-10-17 11:04:15 INFO: Number of nodes with attribute 'GC_content': 165
+2022-10-17 11:04:15 INFO: Number of values of attribute 'GC_content': 2160
+2022-10-17 11:04:15 INFO: Number of nodes in subtree: 3381
 Step query-GC_content from node 561, iteration 2...
-2022-10-07 09:31:17 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:17 INFO: Subtree of node 561 has size 4435
-2022-10-07 09:31:17 INFO: Number of nodes with attributes: 174
-2022-10-07 09:31:17 INFO: Number of attribute values: 2246
+2022-10-17 11:04:16 INFO: Number of nodes with attribute 'GC_content': 174
+2022-10-17 11:04:16 INFO: Number of values of attribute 'GC_content': 2246
+2022-10-17 11:04:16 INFO: Number of nodes in subtree: 4436
 Step query-GC_content from node 543, iteration 2...
-2022-10-07 09:31:17 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:17 INFO: Subtree of node 543 has size 22747
-2022-10-07 09:31:17 INFO: Number of nodes with attributes: 839
-2022-10-07 09:31:17 INFO: Number of attribute values: 5774
+2022-10-17 11:04:16 INFO: Number of nodes with attribute 'GC_content': 839
+2022-10-17 11:04:16 INFO: Number of values of attribute 'GC_content': 5774
+2022-10-17 11:04:16 INFO: Number of nodes in subtree: 22750
 Step query-GC_content from node 91347, iteration 2...
-2022-10-07 09:31:17 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:17 INFO: Subtree of node 91347 has size 31606
-2022-10-07 09:31:17 INFO: Number of nodes with attributes: 1150
-2022-10-07 09:31:17 INFO: Number of attribute values: 6709
+2022-10-17 11:04:17 INFO: Number of nodes with attribute 'GC_content': 1150
+2022-10-17 11:04:17 INFO: Number of values of attribute 'GC_content': 6709
+2022-10-17 11:04:17 INFO: Number of nodes in subtree: 31609
 Step query-GC_content from node 1236, iteration 2...
-2022-10-07 09:31:17 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:17 INFO: Subtree of node 1236 has size 123293
-2022-10-07 09:31:17 INFO: Number of nodes with attributes: 2830
-2022-10-07 09:31:17 INFO: Number of attribute values: 11178
+2022-10-17 11:04:18 INFO: Number of nodes with attribute 'GC_content': 2830
+2022-10-17 11:04:18 INFO: Number of values of attribute 'GC_content': 11178
+2022-10-17 11:04:18 INFO: Number of nodes in subtree: 123300
 Step query-GC_content from node 1224, iteration 2...
-2022-10-07 09:31:18 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:18 INFO: Subtree of node 1224 has size 228115
-2022-10-07 09:31:18 INFO: Number of nodes with attributes: 5099
-2022-10-07 09:31:18 INFO: Number of attribute values: 16072
+2022-10-17 11:04:18 INFO: Number of nodes with attribute 'GC_content': 5099
+2022-10-17 11:04:18 INFO: Number of values of attribute 'GC_content': 16072
+2022-10-17 11:04:19 INFO: Number of nodes in subtree: 228153
 Step query-GC_content from node 2, iteration 2...
-2022-10-07 09:31:18 SUCCESS: Tree loaded from file "/ncbi-taxonomy.tree"
-2022-10-07 09:31:18 INFO: Subtree of node 2 has size 535205
-2022-10-07 09:31:19 INFO: Number of nodes with attributes: 10043
-2022-10-07 09:31:19 INFO: Number of attribute values: 27515
+2022-10-17 11:04:19 INFO: Number of nodes with attribute 'GC_content': 10043
+2022-10-17 11:04:19 INFO: Number of values of attribute 'GC_content': 27515
+2022-10-17 11:04:20 INFO: Number of nodes in subtree: 535272
+# Done. The results are in /fastsubtrees/benchmarks_attr.tsv
+# To copy out of the container use:
+# docker cp e2f86f7d7d30:/fastsubtrees/benchmarks_attr.tsv /fastsubtrees/benchmarks_attr.tsv

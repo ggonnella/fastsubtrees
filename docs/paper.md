@@ -108,7 +108,7 @@ Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU
 and 32 Gb RAM. Running times were measured as an average of 3 runs using
 GNU time version 1.9 [@GNUtime].
 For the tests Python version 3.10.2 was used.
-The tested version of fastsubtrees was 1.7.
+The tested version of fastsubtrees was 2.0.
 
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
@@ -141,15 +141,15 @@ hierarchical SQL queries in Table 1.
 
 | Subtree root ID | Subtree size | SQL CPU time (s) | fastsubtrees CPU time (s) | SQL real time (s) | fastsubtrees real time (s) | SQL memory peak (MB) | fastsubtrees memory peak (MB) |
 |-----------------|--------------|------------------|---------------------------|-------------------|----------------------------|----------------------|-------------------------------|
-| 511145 | 1 | 0.15 | 0.13 | 1.39 | 0.13 | 33.8 | 146.3 |
-| 83333 | 36 | 0.15 | 0.12 | 2.62 | 0.12 | 33.9 | 146.3 |
-| 562 | 3380 | 0.17 | 0.12 | 4.84 | 0.12 | 40.8 | 146.2 |
-| 561 | 4435 | 0.17 | 0.12 | 6.15 | 0.12 | 42.6 | 146.3 |
-| 543 | 22747 | 0.37 | 0.12 | 36.80 | 0.13 | 81.0 | 146.2 |
-| 91347 | 31606 | 0.44 | 0.13 | 36.89 | 0.13 | 98.8 | 146.2 |
-| 1236 | 123293 | 1.50 | 0.15 | 60.85 | 0.15 | 289.0 | 146.3 |
-| 1224 | 228115 | 2.57 | 0.18 | 90.96 | 0.18 | 507.2 | 146.3 |
-| 2 | 535205 | 5.87 | 0.24 | 131.03 | 0.24 | 1140.4 | 146.3 |
+| 511145 | 1 | 0.29 | 0.18 | 1.58 | 0.19 | 41.3 | 153.6 |
+| 83333 | 36 | 0.30 | 0.17 | 2.75 | 0.18 | 41.4 | 153.1 |
+| 562 | 3381 | 0.30 | 0.18 | 4.86 | 0.18 | 48.1 | 153.1 |
+| 561 | 4436 | 0.32 | 0.17 | 5.88 | 0.18 | 50.4 | 153.1 |
+| 543 | 22750 | 0.48 | 0.19 | 35.43 | 0.19 | 89.1 | 153.1 |
+| 91347 | 31609 | 0.60 | 0.19 | 37.16 | 0.19 | 106.3 | 153.1 |
+| 1236 | 123300 | 1.56 | 0.23 | 60.22 | 0.23 | 294.8 | 153.1 |
+| 1224 | 228153 | 2.67 | 0.27 | 89.33 | 0.28 | 511.8 | 153.1 |
+| 2 | 535272 | 5.85 | 0.41 | 132.54 | 0.42 | 1142.0 | 153.1 |
 
 As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
@@ -161,15 +161,15 @@ of the genome size attribute values for different subtrees.
 
 | Subtree root ID | Subtree size | CPU time (s) | Real time (s) | Memory peak (MB) | N. nodes with values | N. values |
 |-----------------|--------------|--------------|---------------|------------------|----------------------|-----------|
-| 511145 | 1 | 0.21 | 0.22 | 305.7 | 1 | 9 |
-| 83333 | 36 | 0.21 | 0.22 | 305.7 | 8 | 38 |
-| 562 | 3380 | 0.22 | 0.22 | 306.0 | 165 | 2160 |
-| 561 | 4435 | 0.22 | 0.22 | 305.9 | 174 | 2246 |
-| 543 | 22747 | 0.24 | 0.25 | 306.0 | 839 | 5774 |
-| 91347 | 31606 | 0.25 | 0.25 | 306.0 | 1150 | 6709 |
-| 1236 | 123293 | 0.34 | 0.34 | 306.5 | 2830 | 11178 |
-| 1224 | 228115 | 0.41 | 0.42 | 306.9 | 5099 | 16072 |
-| 2 | 535205 | 0.66 | 0.66 | 307.5 | 10043 | 27515 |
+| 511145 | 1 | 0.49 | 0.50 | 153.1 | 1 | 9 |
+| 83333 | 36 | 0.49 | 0.50 | 153.1 | 8 | 38 |
+| 562 | 3381 | 0.54 | 0.55 | 153.4 | 165 | 2160 |
+| 561 | 4436 | 0.53 | 0.53 | 153.5 | 174 | 2246 |
+| 543 | 22750 | 0.54 | 0.55 | 153.5 | 839 | 5774 |
+| 91347 | 31609 | 0.56 | 0.57 | 153.7 | 1150 | 6709 |
+| 1236 | 123300 | 0.67 | 0.68 | 154.0 | 2830 | 11178 |
+| 1224 | 228153 | 0.78 | 0.79 | 154.2 | 5099 | 16072 |
+| 2 | 535272 | 1.11 | 1.12 | 155.3 | 10043 | 27515 |
 
 Finally, to provide an example of usage of fastsubtrees we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
