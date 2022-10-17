@@ -70,7 +70,7 @@ Here we present the  _fastsubtrees_ Python package [@FastsubtreesRepo], which wa
 for storing tree information using a compact representation,
 suitable for fast extraction of any subtree.
 This package can be applied to any tree in which the nodes
-are labeled by positive integers. I.e., although it was designed and
+are labeled by non-negative integers. I.e., although it was designed and
 tested mainly for the NCBI taxonomy tree, it is not limited to it.
 
 It can be installed using ``pip install fastsubtrees``.
@@ -86,7 +86,7 @@ The first step when using _fastsubtrees_ is constructing its tree
 representation and storing it to file. Any source can be used as input (e.g. tabular files, or
 database tables) by defining a generation function (example are provided).
 Besides the NCBI taxonomy tree, other trees can be represented using
-_fastsubtrees_. For this, each node must be labeled by a unique positive ID.
+_fastsubtrees_. For this, each node must be labeled by a unique non-negative integer ID.
 Furthermore, the IDs space
 must be compact, i.e. the numbers must not be necessarily all consecutive, but the
 largest node ID (_idmax_) should not be much larger than the total number of

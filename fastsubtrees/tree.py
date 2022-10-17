@@ -28,36 +28,33 @@ class Tree():
 
     # coords contains:
     #
-    #  at 0: pointing to a UNDEF value in treedata
-    #  |  pos in treedata of i-th node
-    #  |  |    pos of root in treedata is ROOT_COORD == 1
-    #  |  |    |       i-th node not contained in the tree, points to UNDEF
-    #  |  |    |       |       deleted nodes: not changed, but point to UNDEFs
-    #  |  |    |       |       |
-    # [0, pos, 1, ..., 0, ..., pos, ...]
+    #  pos (>0) in treedata of i-th node
+    #  |    pos (>0) of root in treedata is ROOT_COORD == 1
+    #  |    |       i-th node not contained in the tree, points to UNDEF
+    #  |    |       |       deleted nodes: not changed, but now point to UNDEFs
+    #  |    |       |       |
+    # [pos, 1, ..., 0, ..., pos, ...]
     self.coords = array.array("Q")
 
     # subtree_sizes contains:
     #
-    #  at 0: 0, as node 0 does not exist
-    #  |  size of i-th subtree, including node itself
-    #  |  |     rootID is handled as every other
-    #  |  |     |                    i-th node not contained in the tree
-    #  |  |     |                    |       deleted nodes: not changed (*)
-    #  |  |     |                    |       |
-    # [0, size, treesize, size, ..., 0, ..., size, ]
+    #  size of i-th subtree, including node itself
+    #  |     rootID is handled as every other
+    #  |     |                    i-th node not contained in the tree
+    #  |     |                    |       deleted nodes: not changed (*)
+    #  |     |                    |       |
+    # [size, treesize, size, ..., 0, ..., size, ]
     # (*) not changed because the corresponding data is still in treedata
     self.subtree_sizes = None
 
     # parents contains:
     #
-    #  at 0: 0, as node 0 does not exist
-    #  |  parent of i-th node
-    #  |  |       rootID: rootID itself, special case
-    #  |  |       |                  i-th node not contained in the tree
-    #  |  |       |                  |           deleted nodes: not changed (*)
-    #  |  |       |                  |           |
-    # [0, parent, rootID, size, ..., UNDEF, ..., size, ]
+    #  parent of i-th node
+    #  |       rootID: rootID itself, special case
+    #  |       |                  i-th node not contained in the tree
+    #  |       |                  |           deleted nodes: not changed (*)
+    #  |       |                  |           |
+    # [parent, rootID, size, ..., UNDEF, ..., size, ]
     # (*) not changed because the corresponding data is still in treedata
     self.parents = None
 
@@ -76,12 +73,12 @@ class Tree():
     self.parents = array.array("Q")
     assert (self.root_id is None)
     for elem, parent in generator:
-      if elem <= 0:
+      if elem < 0:
         raise error.ConstructionError( \
-          f"The node IDs must be > 0, found: {elem}")
-      if parent <= 0:
+          f"The node IDs must be >= 0, found: {elem}")
+      if parent < 0:
         raise error.ConstructionError( \
-          f"The node IDs must be > 0, found: {parent}")
+          f"The node IDs must be >= 0, found: {parent}")
       if elem == self.root_id:
         raise error.ConstructionError( \
           f"Node {elem} had already been added as root, cannot " + \
@@ -238,7 +235,7 @@ class Tree():
     return self
 
   def __check_node_number(self, node):
-    if node <= 0 or node > len(self.coords) - 1:
+    if node < 0 or node > len(self.coords) - 1:
       raise error.NodeNotFoundError(f"Node ID '{node}' does not exist.")
 
   def get_parent(self, node: int) -> int:
@@ -318,12 +315,12 @@ class Tree():
     for node_number, parent in tqdm(generator, total=total):
       if rm_existing_set is not None:
         rm_existing_set.discard(node_number)
-      if node_number <= 0:
+      if node_number < 0:
         raise error.ConstructionError(\
-            f"The node IDs must be > 0, found: {node_number}")
-      elif parent <= 0:
+            f"The node IDs must be >= 0, found: {node_number}")
+      elif parent < 0:
         raise error.ConstructionError(\
-            f"The node parent IDs must be > 0, found: {parent}")
+            f"The node parent IDs must be >= 0, found: {parent}")
       if node_number < len(self.parents):
         if node_number == self.root_id:
           if skip_existing:

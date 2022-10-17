@@ -41,11 +41,20 @@ def test_add_subtree_err_parent_not_exists(testdata):
   with pytest.raises(error.ConstructionError):
     tree.add_nodes(add_generator)
 
-def test_add_subtree_err_node0(testdata):
+def test_add_subtree_negative_parent(testdata):
   construction_infname = testdata('small_tree.tsv')
   construction_generator = element_parent_ids(construction_infname)
   tree = Tree.construct(construction_generator)
-  add_infname = testdata('construction_node0.tsv')
+  add_infname = testdata('negative_parent.tsv')
+  add_generator = element_parent_ids(add_infname)
+  with pytest.raises(error.ConstructionError):
+    tree.add_nodes(add_generator)
+
+def test_add_subtree_negative_node(testdata):
+  construction_infname = testdata('small_tree.tsv')
+  construction_generator = element_parent_ids(construction_infname)
+  tree = Tree.construct(construction_generator)
+  add_infname = testdata('negative_node.tsv')
   add_generator = element_parent_ids(add_infname)
   with pytest.raises(error.ConstructionError):
     tree.add_nodes(add_generator)

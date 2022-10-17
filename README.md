@@ -25,7 +25,7 @@ node attributes.
 
 ## Node identifiers
 
-Each node must be represented by a unique positive ID. The IDs must not
+Each node must be represented by a unique non-negative ID. The IDs must not
 necessarily be all consecutive (i.e. some "holes" may be present), but the
 largest node ID (_idmax_) should not be much larger than the total number of
 nodes, because the memory consumption is in _O(idmax)_.
@@ -33,7 +33,7 @@ nodes, because the memory consumption is in _O(idmax)_.
 The NCBI taxonomy tree, for example, fullfills the conditions stated above.
 
 However, the library can be used on any other tree. For this, if the IDs are
-non-numerical, contain zero or negative numbers, or the ID space is not compact,
+non-numerical, contain negative numbers, or the ID space is not compact,
 they must be first mapped to different IDs.
 
 ## Attributes

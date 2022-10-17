@@ -92,11 +92,10 @@ def test_construction_medium(testdata, prebuilt):
   prebuilt_subtree_ids = prebuilt_tree.subtree_ids(1)
   assert constructed_subtree_ids == prebuilt_subtree_ids
 
-def test_construction_err_node0(testdata):
+def test_construction_node0(testdata):
   infname = testdata('construction_node0.tsv')
-  generator = element_parent_ids(infname)
-  with pytest.raises(error.ConstructionError):
-    Tree.construct(generator)
+  tree = Tree.construct_from_tabular(infname)
+  assert list(tree.subtree_ids(tree.root_id)) == [0, 1]
 
 def test_construction_err_repeated_ids(testdata):
   infname = testdata('repeated_nodes.tsv')
@@ -122,8 +121,12 @@ def test_construction_err_same_node_root_and_not(testdata):
   with pytest.raises(error.ConstructionError):
     Tree.construct(generator)
 
-def test_construction_err_negative_parent(testdata):
+def test_construction_err_negative(testdata):
   infname = testdata('negative_parent.tsv')
+  generator = element_parent_ids(infname)
+  with pytest.raises(error.ConstructionError):
+    Tree.construct(generator)
+  infname = testdata('negative_node.tsv')
   generator = element_parent_ids(infname)
   with pytest.raises(error.ConstructionError):
     Tree.construct(generator)
