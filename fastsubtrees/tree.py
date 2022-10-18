@@ -70,6 +70,7 @@ class Tree():
     - parent_ID < 0 or parent_ID > max_node_ID
     - parent_ID is a "missing" node
     """
+    logger.info("Constructing temporary parents table...")
     self.parents = array.array("Q")
     assert (self.root_id is None)
     for elem, parent in generator:
@@ -113,6 +114,7 @@ class Tree():
     return len(self.parents) - 1
 
   def __compute_subtree_sizes(self):
+    logger.info("Constructing subtree sizes table...")
     self.subtree_sizes = array.array('Q', [0] * (self.max_node_id()+1))
     for elem, parent in tqdm(enumerate(self.parents), \
                              total=self.max_node_id()+1):
@@ -146,7 +148,7 @@ class Tree():
     self.coords = array.array("Q", [0] * (self.max_node_id() + 1))
     self.treedata[self.ROOT_COORD] = self.root_id
     self.coords[self.root_id] = self.ROOT_COORD
-    already_added = array.array("Q", [0] * (self.max_node_id() + 1))
+    logger.info("Computing depth-first tree traversal order...")
     for elem in tqdm(range(self.max_node_id() + 1)):
       if elem == self.root_id:
         continue
@@ -158,10 +160,15 @@ class Tree():
         elem = self.parents[elem]
       while stack:
         elem = stack.pop()
-        pos = self.coords[self.parents[elem]] + 1 + already_added[self.parents[elem]]
+        pos = self.coords[self.parents[elem]] + 1
         self.coords[elem] = pos
         self.treedata[pos] = elem
-        already_added[self.parents[elem]] += self.subtree_sizes[elem]
+        self.coords[self.parents[elem]] += self.subtree_sizes[elem]
+    logger.info("Finalize index of nodes positions in depth-first traversal...")
+    for elem in tqdm(range(self.max_node_id() + 1)):
+      if self.parents[elem] == Tree.UNDEF:
+        continue
+      self.coords[elem] -= (self.subtree_sizes[elem] - 1)
 
   @classmethod
   def construct(cls, generator: Iterator[Tuple[int, int]]):
@@ -170,11 +177,8 @@ class Tree():
     (node, parent).
     """
     self = cls()
-    logger.info("Constructing temporary parents table...")
     self.__compute_parents(generator)
-    logger.info("Constructing subtree sizes table...")
     self.__compute_subtree_sizes()
-    logger.info("Constructing tree data and index...")
     self.__compute_treedata_and_coords()
     logger.success("Tree data structure constructed")
     return self
