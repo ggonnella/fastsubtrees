@@ -117,10 +117,19 @@ strings to another datatype.
 
 ### Modifying attributes
 
-For modifying an attribute, a dictionary of the form
-``{node_id: attribute values}``
-(nodes as keys and the associated values of the attribute as values)
-is obtained using the method
+To delete the value of an attribute for a list of nodes, the method
+``tree.delete_attribute_values(attribute_name, nodes_list)`` is used.
+To append new values to some nodes, the new values must
+be passed as a dict in the form ``{node_id: attr_values_list}`` to
+the method ``tree.append_attribute_values(attribute_name, new_values)``.
+This does not touch the existing values. To replace them, instead
+use ``tree.replace_attribute_values(attribute_name, new_values)``.
+This replaces all values for the nodes in the dictionary and leaves
+the rest of the values intact.
+
+It is also possible to directly edit the list of attribute values for
+some nodes. To this purpose a dictionary of the form
+``{node_id: attr_values_list}`` is obtained using the method
 ``attrvalues = tree.load_attribute_values(attribute_name)``.
 After loading, the dictionary entries are changed, by deleting, adding or
 modifying some values and finally passed to the method

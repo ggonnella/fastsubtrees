@@ -827,3 +827,56 @@ class Tree():
         existing[all_ids[i]] = data
         i += 1
     return existing
+
+  def delete_attribute_values(self, attribute, node_ids, strict=False):
+    """
+    Delete the values of an attribute for a list of nodes.
+
+    If strict is True, the node ids must be in the tree.
+    Otherwise, nodes which do not exists are ignored.
+    """
+    values = self.load_attribute_values(attribute)
+    for k in node_ids:
+      k = int(k)
+      if k in values:
+        del values[k]
+      elif strict:
+        raise error.NodeNotFoundError(f"Node '{k}' not found in the tree")
+    self.save_attribute_values(attribute, values)
+
+  def append_attribute_values(self, attribute, newvalues, strict=False):
+    """
+    Append new values to an attribute.
+
+    Given a dict of {node_id: [value,...]}, the values are appended to
+    the existing values for the nodes. If strict is True, the node ids
+    must be in the tree. Otherwise, nodes which do not exists are ignored.
+    """
+    values = self.load_attribute_values(attribute)
+    for k in newvalues:
+      if k in values:
+        if values[k] is None:
+          values[k] = newvalues[k]
+        else:
+          values[k].extend(newvalues[k])
+      elif strict:
+        raise error.NodeNotFoundError(f"Node '{k}' not found in the tree")
+    self.save_attribute_values(attribute, values)
+
+  def replace_attribute_values(self, attribute, newvalues, strict=False):
+    """
+    Replace the values of an attribute.
+
+    Given a dict of {node_id: [value,...]}, the values replace the existing
+    values for the nodes. If strict is True, the node ids must be in the tree.
+    Otherwise, nodes which do not exists are ignored.
+    The values for nodes not contained in newvalues are unchanged.
+    """
+    values = self.load_attribute_values(attribute)
+    for k in newvalues:
+      if k in values:
+        values[k] = newvalues[k]
+      elif strict:
+        raise error.NodeNotFoundError(f"Node '{k}' not found in the tree")
+    self.save_attribute_values(attribute, values)
+

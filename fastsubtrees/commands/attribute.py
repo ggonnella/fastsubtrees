@@ -102,34 +102,6 @@ def get_action(args, attrfname):
       exit(1)
   return action
 
-def delete_from_existing(node_ids, existing, strict):
-  for k in node_ids:
-    k = int(k)
-    if k in existing:
-      del existing[k]
-    elif strict:
-      logger.error(f"Node '{k}' not found in the tree")
-      exit(1)
-
-def add_to_existing(new_attrvalues, existing, strict):
-  for k in new_attrvalues:
-    if k in existing:
-      if existing[k] is None:
-        existing[k] = new_attrvalues[k]
-      else:
-        existing[k].extend(new_attrvalues[k])
-    elif strict:
-      logger.error(f"Node '{k}' not found in the tree")
-      exit(1)
-
-def replace_in_existing(new_attrvalues, existing, strict):
-  for k in new_attrvalues:
-    if k in existing:
-      existing[k] = new_attrvalues[k]
-    elif strict:
-      logger.error(f"Node '{k}' not found in the tree")
-      exit(1)
-
 def main(args):
   if not Path(args["<treefile>"]).exists():
     msg = "Tree file {} does not exist".format(args["<treefile>"])
@@ -148,13 +120,14 @@ def main(args):
     new_attrvalues = Tree.prepare_attribute_values(generator, casting_fn)
   logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
   tree = Tree.from_file(args["<treefile>"])
-  if action != "new":
-    existing = tree.load_attribute_values(args["<attribute>"])
-    if action == "delete":
-      delete_from_existing(args["<node_id>"], existing, args["--strict"])
-    elif action == "add":
-      add_to_existing(new_attrvalues, existing, args["--strict"])
-    elif action == "replace":
-      replace_in_existing(new_attrvalues, existing, args["--strict"])
-    new_attrvalues = existing
-  tree.save_attribute_values(args["<attribute>"], new_attrvalues)
+  if action == "new":
+    tree.save_attribute_values(args["<attribute>"], new_attrvalues)
+  elif action == "add":
+    tree.append_attribute_values(args["<attribute>"], new_attrvalues,
+                                 args["--strict"])
+  elif action == "replace":
+    tree.replace_attribute_values(args["<attribute>"], new_attrvalues,
+                                  args["--strict"])
+  elif action == "delete":
+    tree.delete_attribute_values(args["<attribute>"], args["<node_id>"],
+                                 args["--strict"])
