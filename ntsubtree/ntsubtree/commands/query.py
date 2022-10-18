@@ -11,6 +11,8 @@ Arguments:
   attribute    Attributes to be printed for each node
 
 Options:
+  -n, --by-name          search for the subtree root by name
+  -T, --no-taxname       do not print taxnames
   -s, --stats            show subtree statistics
   -a, --attributes-only  do not print taxa IDs (only attributes)
   -m, --missing          print None for missing attributes in -a mode
@@ -27,12 +29,22 @@ Options:
 """
 
 from pathlib import Path
+from fastsubtrees import logger
 from fastsubtrees.commands.query import run_query
-from ntsubtree import get_tree, constants, setup
+from ntsubtree import get_tree, setup
+import ntsubtree.constants
 
 def main(args):
   treefile = ntsubtree.constants.TREEFILE
   if not Path(treefile).exists():
     ntsubtree.setup()
+  if args['--by-name']:
+    args['<subtreeroot>'] = ntsubtree.search_name(args['<subtreeroot>'])
+    if args['<subtreeroot>'] is None:
+      logger.error("No node found with name '{}'".format(args['<subtreeroot>']))
+      exit(1)
   tree = ntsubtree.get_tree()
+  if not args['--no-taxname']:
+    if "taxname" not in args["<attribute>"]:
+      args["<attribute>"].insert(0, "taxname")
   run_query(args, tree)

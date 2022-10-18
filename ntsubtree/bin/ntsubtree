@@ -15,7 +15,7 @@ See 'ntsubtree <command> --help' for more information on a specific command.
 """
 from docopt import docopt
 from ntsubtree import __version__
-from fastsubtrees import _support, error, logger
+from fastsubtrees import error, logger
 from fastsubtrees.commands import _support
 
 if __name__ == '__main__':

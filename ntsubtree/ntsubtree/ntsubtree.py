@@ -34,6 +34,12 @@ def n_lines(filename):
       n += 1
   return n
 
+def search_name(query):
+  for taxid, name in yield_names():
+    if name == query:
+      return taxid
+  return None
+
 def update(force_download=False, force_construct=False):
   """
   Download updated NCBI taxonomy data using _ntdownload_, if any.
@@ -55,8 +61,7 @@ def update(force_download=False, force_construct=False):
     filename = str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME)
     n_node_lines = n_lines(filename)
     fastsubtrees.logger.info("Number of nodes: {}".format(n_node_lines))
-    n_added, n_deleted, n_moved = \
-        tree.update_from_ncbi_dump(filename, total=n_node_lines)
+    tree.reset_from_ncbi_dump(filename, total=n_node_lines)
     fastsubtrees.logger.info("Updating taxonomy names...")
     tree.to_file(TREEFILE)
     if tree.has_attribute("taxname"):
