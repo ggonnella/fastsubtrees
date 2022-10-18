@@ -78,22 +78,23 @@ and ``ids_from_tabular_file.py`` from a tabular input file.
 Existing tree representations can be modified using ``fastsubtrees tree``
 with the options ``--update``, ``--add``  or ``--delete``.
 
-### Updating a tree
+### Updating or resetting a tree
 
-If the option ``--update`` is provided, the tree is modified so to reflect the
-given source of IDs of elements and their parents (tabular file or Python
-function). The result is a tree,
-which is functionally equivalent to a new tree, constructed with the same
-data source.
+If the option ``--update`` or ``--reset`` is provided, the tree is modified so
+to reflect the given source of IDs of elements and their parents (tabular file
+or Python function). The result is a tree, which is functionally equivalent to
+a new tree, constructed with the same data source.
 
-The advantages of this operation, compared to creating a new tree, are two.
-First, this operation can be faster than creating a new tree from scratch.
-Second, the attribute files are edited, so that they do not have to be
-reconstructed from scratch.
+The difference between the two is that ``--update`` edits the existing tree and
+attribute data, while ``--reset`` recomputes the tree data from scratch, after
+dumping the attribute values and reconstructing the attribute files with the
+dumped values afterwards.
 
-The disadvantage is that moved or deleted nodes are simply marked and
-not really removed, thus the resulting tree file is larger. Furthermore,
-moving the tree root is not allowed.
+The common advantage of using ``--update`` or ``--reset`` is that the attribute
+files are not lost.
+Generally the reset operation performs better, since tree creation is fast.
+The update operation can be faster, if the tree is large and is only slightly
+modified.
 
 ### Adding leaf nodes or new subtrees
 

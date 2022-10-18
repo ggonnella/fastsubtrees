@@ -180,7 +180,7 @@ def test_reset_tree(testdata, testout):
   assert_identical_attributes(tree, t2)
   # reset_from_ncbi_dump
   tree = Tree.construct_from_ncbi_dump(testdata('small_ncbi.tsv'))
-  tree.to_file(testout('small_ncbi.tree'))
+  tree.set_filename(testout('small_ncbi.tree'))
   tree.destroy_all_attributes()
   tree.create_attribute_from_tabular("attrX", testdata("small_tree_attrX.tsv"))
   tree.create_attribute_from_tabular("attrX2", testdata("small_tree_attrX.tsv"))

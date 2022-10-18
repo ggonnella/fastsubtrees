@@ -65,6 +65,10 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     self.filename = None
 
   def _reset_data(self):
+    """
+    This method prepares for the reset operation.
+    It does not change the associated filename, if any.
+    """
     self.treedata = array.array("Q")
     self.coords = array.array("Q")
     self.subtree_sizes = None
@@ -256,18 +260,6 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     """
     self._check_node_number(node)
     return self.parents[node]
-
-  def set_filename(self, filename: Union[str, Path]):
-    """
-    Sets the filename of the tree.
-
-    The filename is used to compute the name of the files where
-    attribute values are stored.
-
-    The filename is automatically set when the tree is loaded from a file
-    or saved to a file.
-    """
-    self.filename = Path(filename)
 
   def set_filename(self, filename: Union[str, Path]):
     """

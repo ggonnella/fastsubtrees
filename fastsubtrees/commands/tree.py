@@ -3,14 +3,16 @@
 Create or edit a tree representation
 
 Usage:
-  fastsubtrees tree <treefile> [--new|--update|--add] <tabfile> [options]
-  fastsubtrees tree <treefile> [--new|--update|--add] --module M [<args>...] [options]
+  fastsubtrees tree <treefile> [--new|--update|--reset|--add] <tabfile> [options]
+  fastsubtrees tree <treefile> [--new|--update|--reset|--add] --module M [<args>...] [options]
   fastsubtrees tree <treefile> --delete <subtree_root>... [options]
 
 Actions:
   -N, --new      (default) create a new tree from the given IDs source
   -U, --update   update an existing tree to reflect the given IDs source;
-                 the root cannot be changed
+                 the tree and the attribute files are edited
+  -R, --reset    reset an existing tree to reflect the given IDs source;
+                 the tree is created from scratch; attributes are dumped and reloaded
   -A, --add      add new nodes to an existing tree
   -D, --delete   remove leaves or subtrees from an existing tree
 
@@ -85,16 +87,13 @@ def get_generator(args):
 DEFAULT_ACTION = "new"
 
 def get_action(args):
-  actions = [a for a in ["new", "update", "add", "delete"] if args["--" + a]]
+  actions = \
+      [a for a in ["new", "update", "reset", "add", "delete"] if args["--" + a]]
   assert(len(actions) <= 1)
   if len(actions) == 0:
     return DEFAULT_ACTION
   elif len(actions) == 1:
     return actions[0]
-  #else:
-  #  msg = "Only one of the actions --new, --update, --add, --delete can be used"
-  #  logger.error(msg)
-  #  exit(1)
 
 def report_changes(n_changes, changes, report=[]):
   for c in report:
@@ -142,4 +141,6 @@ def main(args):
               list_added=changes["added"], list_deleted=changes["deleted"],
               list_moved=changes["moved"])
       report_changes(n_changes, changes, ["added", "deleted", "moved"])
+    elif action == "reset":
+      tree.reset(generator)
   tree.to_file(args["<treefile>"])
