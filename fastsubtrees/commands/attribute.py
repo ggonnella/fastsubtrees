@@ -44,7 +44,7 @@ Further options:
 """
 
 from docopt import docopt
-from fastsubtrees import _support, logger, Tree, __version__
+from fastsubtrees import logger, Tree, __version__
 from fastsubtrees.commands import _support
 from collections import defaultdict
 from pathlib import Path
