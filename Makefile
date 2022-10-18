@@ -26,9 +26,7 @@ default:
 	@echo "  make docker-clean    remove Docker image and container"
 	@echo "  make docker-shell    interactive shell in Docker container"
 	@echo "  make docker-benchmarks"
-	@echo "                       run benchmarks except very slow ones, in Docker"
-	@echo "  make docker-benchmarks-all"
-	@echo "                       run all benchmarks (in Docker container)"
+	@echo "                       run benchmarks, in Docker"
 	@echo "  make docker-start-example-app"
 	@echo "                       start example app web server, in Docker"
 	@echo "  make docker-tests    run the test suite in the Docker container"
@@ -112,15 +110,23 @@ docker-start-example-app:
 docker-tests:
 	docker exec -it ${CONTAINER_NAME} tests
 
-docker-benchmarks:
-	docker exec -it ${CONTAINER_NAME} benchmarks
+docker-benchmarks-sql:
+	docker exec -it ${CONTAINER_NAME} benchmarks sql
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_sql.tsv .
+
+docker-benchmarks-construct:
+	docker exec -it ${CONTAINER_NAME} benchmarks construct
+	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_construct.tsv .
+
+docker-benchmarks-fst:
+	docker exec -it ${CONTAINER_NAME} benchmarks fst
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_fst.tsv .
+
+docker-benchmarks-attr:
+	docker exec -it ${CONTAINER_NAME} benchmarks attr
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.tsv .
 
-docker-benchmarks-all:
-	docker exec -it ${CONTAINER_NAME} benchmarks --all
-	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_sql.tsv .
-	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_construct.tsv .
-	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_fst.tsv .
-	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.tsv .
+docker-benchmarks: docker-benchmarks-sql \
+	                 docker-benchmarks-construct \
+	                 docker-benchmarks-fst \
+									 docker-benchmarks-attr

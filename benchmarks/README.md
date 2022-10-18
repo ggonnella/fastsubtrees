@@ -2,8 +2,7 @@ The benchmark scripts in this directory allow to reproduce the benchmarks
 presented in the paper.
 
 The easiest way to run the scripts is by installing the
-Docker image of fastsubtrees and running ``make benchmarks`` (all benchmarks
-except tree file construction) or ``make benchmarks_all`` (all benchmarks).
+Docker image of fastsubtrees and running ``make benchmarks``.
 
 # Scripts
 

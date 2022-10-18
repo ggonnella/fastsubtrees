@@ -104,11 +104,11 @@ dynamic, i.e. it is possible to add and remove subtrees.
 
 # Subtree extraction benchmarks
 
-Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU
-and 32 Gb RAM. Running times were measured as an average of 3 runs using
-GNU time version 1.9 [@GNUtime].
-For the tests Python version 3.10.2 was used.
-The tested version of fastsubtrees was 2.0.
+Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU and 32 Gb
+RAM. Running times were measured as an average of 3 runs using GNU time version
+1.9 [@GNUtime]. Thereby, CPU time was computed as the sum of user and system
+time. For the tests Python version 3.10.2 was used. The tested version of
+fastsubtrees was 2.0.
 
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
@@ -119,16 +119,17 @@ of the source code repository, version 1.4)
 The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees construct_ command required
-9 minutes and 23 seconds (average of 3 runs).
+12.5 seconds (average of 3 runs).
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
-this solution in a package _ntmirror_: the dump data downloaded by _ntdownload_
-is loaded into a MariaDB database (version 10.6.10)
-and the script _ntmirror-extract-subtree_, based on
-SQLAlchemy allows to extract a subtree using SQL.
-The installation of _ntmirror_ using ``pip`` requires the installation
-of MariaDB and its Python connector (_mariadb_ package).
+this solution in a package _ntmirror_. First, the dump data downloaded by
+_ntdownload_ is loaded into a MariaDB database (version 10.6.10) using the
+script _ntmirror-dbload_, requiring 28.8 seconds (average of 3 runs).
+Thereafter, subtrees are extracted using the script _ntmirror-extract-subtree_,
+based on SQLAlchemy, implementing a hierarchical SQL query. The installation of
+_ntmirror_ using ``pip`` requires the installation of MariaDB and its Python
+connector (_mariadb_ package).
 
 To select subtrees of different sizes for the benchmarks, we started from the
 taxonomy ID of _Escherichia coli_ K12 MG1655 (511145) and climbed up the
@@ -137,19 +138,22 @@ node (TaxID 2), i.e. nodes 83333 (_Escherichia coli_ K12),
 562 (_Escherichia coli_), 561 (_Escherichia_ genus), 543 (Enterobacteriaceae),
 91347 (Enterobacterales), 1236 (Gammaproteobacteria) and 1224 (Proteobacteria).
 The running time and memory usage of _fastsubtree_ are compared with those for
-hierarchical SQL queries in Table 1.
+hierarchical SQL queries in Table 1, and show that _fastsubtrees_ better scales
+to the extraction of large subtrees, both in terms of memory consumption (which
+does not change) and running time.
 
 | Subtree root ID | Subtree size | SQL CPU time (s) | fastsubtrees CPU time (s) | SQL real time (s) | fastsubtrees real time (s) | SQL memory peak (MB) | fastsubtrees memory peak (MB) |
 |-----------------|--------------|------------------|---------------------------|-------------------|----------------------------|----------------------|-------------------------------|
-| 511145 | 1 | 0.29 | 0.18 | 1.58 | 0.19 | 41.3 | 153.6 |
-| 83333 | 36 | 0.30 | 0.17 | 2.75 | 0.18 | 41.4 | 153.1 |
-| 562 | 3381 | 0.30 | 0.18 | 4.86 | 0.18 | 48.1 | 153.1 |
-| 561 | 4436 | 0.32 | 0.17 | 5.88 | 0.18 | 50.4 | 153.1 |
-| 543 | 22750 | 0.48 | 0.19 | 35.43 | 0.19 | 89.1 | 153.1 |
-| 91347 | 31609 | 0.60 | 0.19 | 37.16 | 0.19 | 106.3 | 153.1 |
-| 1236 | 123300 | 1.56 | 0.23 | 60.22 | 0.23 | 294.8 | 153.1 |
-| 1224 | 228153 | 2.67 | 0.27 | 89.33 | 0.28 | 511.8 | 153.1 |
-| 2 | 535272 | 5.85 | 0.41 | 132.54 | 0.42 | 1142.0 | 153.1 |
+| _setup_  |   | 0.57 | 12.47 | 28.83 | 12.48 | 40.7 | 153.7 |
+| 511145 | 1 | 0.26 | 0.16 | 1.58 | 0.16 | 41.4 | 153.1 |
+| 83333 | 36 | 0.27 | 0.16 | 2.55 | 0.16 | 41.4 | 153.1 |
+| 562 | 3381 | 0.29 | 0.15 | 4.64 | 0.16 | 48.1 | 153.1 |
+| 561 | 4436 | 0.29 | 0.15 | 5.73 | 0.16 | 50.4 | 153.1 |
+| 543 | 22750 | 0.46 | 0.16 | 34.26 | 0.17 | 89.1 | 153.1 |
+| 91347 | 31609 | 0.54 | 0.17 | 35.14 | 0.18 | 106.3 | 153.1 |
+| 1236 | 123300 | 1.49 | 0.21 | 58.23 | 0.21 | 294.8 | 153.1 |
+| 1224 | 228153 | 2.55 | 0.26 | 86.53 | 0.26 | 511.8 | 153.1 |
+| 2 | 535272 | 5.59 | 0.39 | 126.48 | 0.40 | 1142.0 | 153.1 |
 
 As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
@@ -161,15 +165,15 @@ of the genome size attribute values for different subtrees.
 
 | Subtree root ID | Subtree size | CPU time (s) | Real time (s) | Memory peak (MB) | N. nodes with values | N. values |
 |-----------------|--------------|--------------|---------------|------------------|----------------------|-----------|
-| 511145 | 1 | 0.49 | 0.50 | 153.1 | 1 | 9 |
-| 83333 | 36 | 0.49 | 0.50 | 153.1 | 8 | 38 |
-| 562 | 3381 | 0.54 | 0.55 | 153.4 | 165 | 2160 |
-| 561 | 4436 | 0.53 | 0.53 | 153.5 | 174 | 2246 |
-| 543 | 22750 | 0.54 | 0.55 | 153.5 | 839 | 5774 |
-| 91347 | 31609 | 0.56 | 0.57 | 153.7 | 1150 | 6709 |
-| 1236 | 123300 | 0.67 | 0.68 | 154.0 | 2830 | 11178 |
-| 1224 | 228153 | 0.78 | 0.79 | 154.2 | 5099 | 16072 |
-| 2 | 535272 | 1.11 | 1.12 | 155.3 | 10043 | 27515 |
+| 511145 | 1 | 0.47 | 0.47 | 153.1 | 1 | 9 |
+| 83333 | 36 | 0.47 | 0.47 | 153.1 | 8 | 38 |
+| 562 | 3381 | 0.52 | 0.52 | 153.5 | 165 | 2160 |
+| 561 | 4436 | 0.50 | 0.50 | 153.5 | 174 | 2246 |
+| 543 | 22750 | 0.52 | 0.52 | 153.6 | 839 | 5774 |
+| 91347 | 31609 | 0.52 | 0.53 | 153.7 | 1150 | 6709 |
+| 1236 | 123300 | 0.63 | 0.64 | 154.0 | 2830 | 11178 |
+| 1224 | 228153 | 0.75 | 0.75 | 154.2 | 5099 | 16072 |
+| 2 | 535272 | 1.08 | 1.08 | 155.2 | 10043 | 27515 |
 
 Finally, to provide an example of usage of fastsubtrees we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]

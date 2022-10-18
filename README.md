@@ -90,8 +90,8 @@ docker exec fastsubtreesC tests
 # run the benchmarks, skipping repeating tree creation
 docker exec fastsubtreesC benchmarks
 
-# run all benchmarks, including tree creation
-docker exec fastsubtreesC benchmarks --all
+# run benchmarks
+docker exec fastsubtreesC benchmarks
 
 # run the example application
 docker exec fastsubtreesC start-example-app
@@ -118,10 +118,6 @@ some pre-computed example data which is provided in the ``data`` subdirectory
 
 The benchmarks can be convienently run from the Docker container, without
 requiring a database installation and setup, see above the _Docker_ section.
-
-The ```_all``` version also benchmarks the construction of the representation
-of the NCBI taxonomy tree and requires about 40-70 minutes to complete,
-depending on the system.
 
 ### Command line interface
 
@@ -244,7 +240,7 @@ repository.
 
 To start the application, use the ``genomes-attributes-viewer``.
 The first time this command is run, the application data are downloaded and
-prepared, taking about 20 minutes to complete. Startup on subsequent
+prepared, taking a few seconds. Startup on subsequent
 starts does not require these operations and is thus very fast.
 
 ## Community guidelines

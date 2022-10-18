@@ -1,60 +1,60 @@
-construct-genome_size		0	2.67	0.08	2.76	160040
-construct-genome_size		1	2.73	0.09	2.83	159952
-construct-genome_size		2	2.76	0.09	2.86	159956
-query-genome_size	511145	0	0.41	0.09	0.50	156816
-query-genome_size	83333	0	0.42	0.09	0.51	156800
-query-genome_size	562	0	0.45	0.09	0.55	157120
-query-genome_size	561	0	0.44	0.09	0.53	157136
-query-genome_size	543	0	0.45	0.09	0.55	157128
-query-genome_size	91347	0	0.47	0.08	0.56	157396
-query-genome_size	1236	0	0.58	0.09	0.68	157660
-query-genome_size	1224	0	0.71	0.08	0.79	157932
-query-genome_size	2	0	1.01	0.09	1.11	158980
-query-genome_size	511145	1	0.41	0.09	0.51	156812
-query-genome_size	83333	1	0.39	0.09	0.49	156796
-query-genome_size	562	1	0.47	0.08	0.56	157124
-query-genome_size	561	1	0.45	0.08	0.54	157128
-query-genome_size	543	1	0.46	0.09	0.56	157396
-query-genome_size	91347	1	0.47	0.10	0.58	157396
-query-genome_size	1236	1	0.58	0.09	0.68	157660
-query-genome_size	1224	1	0.67	0.09	0.77	157928
-query-genome_size	2	1	1.03	0.09	1.12	158988
-query-genome_size	511145	2	0.40	0.08	0.49	156812
-query-genome_size	83333	2	0.41	0.08	0.49	156812
-query-genome_size	562	2	0.46	0.08	0.55	157116
-query-genome_size	561	2	0.44	0.09	0.53	157136
-query-genome_size	543	2	0.46	0.08	0.55	157124
-query-genome_size	91347	2	0.48	0.09	0.58	157396
-query-genome_size	1236	2	0.58	0.09	0.67	157672
-query-genome_size	1224	2	0.71	0.09	0.81	157920
-query-genome_size	2	2	1.03	0.09	1.13	158972
-construct-GC_content		0	2.73	0.10	2.83	159960
-construct-GC_content		1	2.76	0.10	2.86	159956
-construct-GC_content		2	2.72	0.11	2.83	159960
-query-GC_content	511145	0	0.40	0.09	0.49	156812
-query-GC_content	83333	0	0.42	0.08	0.50	156812
-query-GC_content	562	0	0.46	0.09	0.55	157132
-query-GC_content	561	0	0.45	0.08	0.54	157128
-query-GC_content	543	0	0.48	0.09	0.57	157136
-query-GC_content	91347	0	0.48	0.09	0.57	157400
-query-GC_content	1236	0	0.58	0.09	0.68	157652
-query-GC_content	1224	0	0.68	0.09	0.78	157912
-query-GC_content	2	0	1.04	0.08	1.13	158964
-query-GC_content	511145	1	0.40	0.08	0.49	156812
-query-GC_content	83333	1	0.41	0.09	0.50	156812
-query-GC_content	562	1	0.46	0.08	0.54	157132
-query-GC_content	561	1	0.46	0.08	0.54	157132
-query-GC_content	543	1	0.47	0.09	0.56	157132
-query-GC_content	91347	1	0.49	0.08	0.58	157400
-query-GC_content	1236	1	0.57	0.09	0.66	157656
-query-GC_content	1224	1	0.68	0.10	0.78	157932
-query-GC_content	2	1	1.02	0.09	1.12	158980
-query-GC_content	511145	2	0.41	0.08	0.50	156808
-query-GC_content	83333	2	0.41	0.08	0.50	156812
-query-GC_content	562	2	0.45	0.08	0.53	157136
-query-GC_content	561	2	0.45	0.08	0.54	157164
-query-GC_content	543	2	0.48	0.08	0.56	157116
-query-GC_content	91347	2	0.48	0.09	0.57	157428
-query-GC_content	1236	2	0.60	0.09	0.70	157664
-query-GC_content	1224	2	0.68	0.09	0.77	157904
-query-GC_content	2	2	1.02	0.09	1.11	158976
+construct-genome_size		0	2.73	0.06	2.79	159960
+construct-genome_size		1	2.66	0.07	2.74	159952
+construct-genome_size		2	2.69	0.06	2.76	159960
+query-genome_size	511145	0	0.40	0.07	0.47	156812
+query-genome_size	83333	0	0.39	0.06	0.46	156808
+query-genome_size	562	0	0.46	0.07	0.53	157124
+query-genome_size	561	0	0.44	0.06	0.50	157132
+query-genome_size	543	0	0.45	0.07	0.52	157120
+query-genome_size	91347	0	0.45	0.07	0.53	157392
+query-genome_size	1236	0	0.56	0.06	0.63	157656
+query-genome_size	1224	0	0.68	0.06	0.75	157924
+query-genome_size	2	0	1.02	0.06	1.08	158984
+query-genome_size	511145	1	0.41	0.06	0.48	156812
+query-genome_size	83333	1	0.41	0.06	0.47	156812
+query-genome_size	562	1	0.45	0.07	0.52	157140
+query-genome_size	561	1	0.43	0.06	0.50	157132
+query-genome_size	543	1	0.46	0.07	0.53	157396
+query-genome_size	91347	1	0.46	0.06	0.53	157388
+query-genome_size	1236	1	0.56	0.07	0.63	157644
+query-genome_size	1224	1	0.69	0.06	0.76	157924
+query-genome_size	2	1	1.03	0.06	1.09	158976
+query-genome_size	511145	2	0.39	0.07	0.47	156808
+query-genome_size	83333	2	0.41	0.07	0.49	156800
+query-genome_size	562	2	0.46	0.06	0.52	157136
+query-genome_size	561	2	0.43	0.07	0.50	157136
+query-genome_size	543	2	0.46	0.06	0.52	157392
+query-genome_size	91347	2	0.46	0.07	0.53	157408
+query-genome_size	1236	2	0.58	0.06	0.65	157664
+query-genome_size	1224	2	0.68	0.07	0.75	157920
+query-genome_size	2	2	1.02	0.06	1.08	158964
+construct-GC_content		0	2.73	0.07	2.81	159960
+construct-GC_content		1	2.79	0.08	2.87	159960
+construct-GC_content		2	2.68	0.08	2.76	159960
+query-GC_content	511145	0	0.41	0.07	0.48	156816
+query-GC_content	83333	0	0.40	0.07	0.48	156808
+query-GC_content	562	0	0.45	0.07	0.52	157136
+query-GC_content	561	0	0.46	0.06	0.53	157136
+query-GC_content	543	0	0.47	0.06	0.54	157132
+query-GC_content	91347	0	0.49	0.06	0.55	157396
+query-GC_content	1236	0	0.57	0.07	0.64	157668
+query-GC_content	1224	0	0.69	0.07	0.76	157928
+query-GC_content	2	0	1.01	0.07	1.08	158976
+query-GC_content	511145	1	0.40	0.07	0.47	156812
+query-GC_content	83333	1	0.40	0.06	0.46	156808
+query-GC_content	562	1	0.44	0.06	0.51	157140
+query-GC_content	561	1	0.49	0.07	0.57	157132
+query-GC_content	543	1	0.46	0.06	0.53	157136
+query-GC_content	91347	1	0.47	0.06	0.54	157400
+query-GC_content	1236	1	0.58	0.06	0.64	157652
+query-GC_content	1224	1	0.68	0.07	0.76	157904
+query-GC_content	2	1	1.03	0.06	1.10	159008
+query-GC_content	511145	2	0.41	0.07	0.48	156844
+query-GC_content	83333	2	0.40	0.06	0.47	156812
+query-GC_content	562	2	0.45	0.07	0.52	157132
+query-GC_content	561	2	0.45	0.07	0.52	157136
+query-GC_content	543	2	0.48	0.06	0.54	157132
+query-GC_content	91347	2	0.48	0.07	0.55	157384
+query-GC_content	1236	2	0.58	0.06	0.65	157652
+query-GC_content	1224	2	0.68	0.07	0.75	157924
+query-GC_content	2	2	1.04	0.07	1.11	158980

@@ -13,7 +13,7 @@ The example application can be installed using ``pip install genome_attribute_vi
 
 To start the web application use the `genomes-attribute-viewer` script.
 
-On first run, preparation steps are run, which take about 20 minutes
+On first run, preparation steps are run, which take about 13 seconds
 (the NCBI Taxonomy dump files are downloaded from NCBI,
 a tree file for fastsubtrees is generated, along files which
 contains the scientific names of organisms and

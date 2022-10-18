@@ -9,7 +9,8 @@ if [ $# -ne 2 ]; then
     echo "dump files to be used for the tree construction"
     exit 1
 fi
-NTDUMPSDIR=$1
+TREE=$1
+NTDUMPSDIR=$2
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FST_DIR=$SCRIPT_DIR/..

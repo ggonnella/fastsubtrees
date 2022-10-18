@@ -1,5 +1,4 @@
 #!/bin/bash
-create-tree-file
 CONTAINER=$(hostname)
 function benchmark_done {
   echo "# Done. The results are in $FILENAME"
@@ -9,21 +8,29 @@ function benchmark_done {
 }
 TREE=/fastsubtrees/nt.tree
 NTDUMPSDIR=/fastsubtrees/ntdumps
-if [ "$1" == "--all" ]; then
-  echo "# Running the fastsubtrees construction benchmarks..."
+if [ "$1" == "" ]; then all=1; else all=0; fi
+if [ "$1" == "construct" -o "$all" == "1" ]; then
+  echo "# Running the fastsubtrees tree construction benchmarks..."
   /fastsubtrees/benchmarks/benchmarks_construct.sh $TREE $NTDUMPSDIR
   FILENAME="/fastsubtrees/benchmarks_construct.tsv"
   benchmark_done
+elif [ "$1" == "fst" -o "$all" == "1" ]; then
+  create-tree-file
+  echo "# Running the fastsubtrees subtree query benchmarks..."
+  /fastsubtrees/benchmarks/benchmarks_fst.sh $TREE
+  FILENAME="/fastsubtrees/benchmarks_fst.tsv"
+  benchmark_done
+elif [ "$1" == "attribute" -o "$all" == "1" ]; then
+  create-tree-file
+  echo "# Running the fastsubtrees attribute benchmarks..."
+  /fastsubtrees/benchmarks/benchmarks_attr.sh $TREE $NTDUMPSDIR
+  FILENAME="/fastsubtrees/benchmarks_attr.tsv"
+  benchmark_done
+elif [ "$1" == "sql" -o "$all" == "1" ]; then
+  start-and-init-db
+  echo "# Running the hierarchical SQL benchmarks..."
+  /fastsubtrees/benchmarks/benchmarks_sql.sh myuser mypass ntmirror_test \
+    /run/mysqld/mysqld.sock $NTDUMPSDIR
+  FILENAME="/fastsubtrees/benchmarks_sql.tsv"
+  benchmark_done
 fi
-echo "# Running the fastsubtrees query benchmarks..."
-/fastsubtrees/benchmarks/benchmarks_fst.sh $TREE
-FILENAME="/fastsubtrees/benchmarks_fst.tsv"
-benchmark_done
-/fastsubtrees/benchmarks/benchmarks_attr.sh $TREE
-FILENAME="/fastsubtrees/benchmarks_attr.tsv"
-benchmark_done
-start-and-init-db
-/fastsubtrees/benchmarks/benchmarks_sql.sh myuser mypass ntmirror_test \
-  /run/mysqld/mysqld.sock $NTDUMPSDIR
-FILENAME="/fastsubtrees/benchmarks_sql.tsv"
-benchmark_done
