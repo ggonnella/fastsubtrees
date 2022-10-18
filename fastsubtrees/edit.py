@@ -317,3 +317,39 @@ class TreeEditor():
     return self.update(generator, list_added=list_added,
         list_deleted=list_deleted, list_moved=list_moved, total=total)
 
+  def reset(self, generator: Iterator[Tuple[int, int]],
+            total: Union[None, int] = None):
+    """
+    Resets the tree with the nodes in the generator.
+    The generator must yield tuples of the form (node_number, parent_number).
+
+    If the tree filename is set and attributes exist, then the attribute
+    values are updated for the corresponding nodes.
+
+    If total is provided, then it is used to display a progress bar.
+    It should be set to the total number of tuples yielded by the generator.
+    """
+    self._check_filename_set()
+    attrnames = self.list_attributes()
+    for attrname in attrnames:
+      self.dump_attribute_values(attrname)
+    self._reset_data()
+    self._compute_parents(generator)
+    self._compute_subtree_sizes()
+    self._compute_treedata_and_coords()
+    for attrname in attrnames:
+      self.create_attribute_from_dump(attrname)
+
+  def reset_from_tabular(self, filename: Union[str, Path],
+                         separator: str = "\t", elem_field_num: int = 0,
+                         parent_field_num: int = 1,
+                         total: Union[None, int] = None):
+    generator = ids_from_tabular_file.element_parent_ids(filename, separator,
+        elem_field_num, parent_field_num)
+    self.reset(generator, total=total)
+
+  def reset_from_ncbi_dump(self, filename: Union[str, Path],
+                           total: Union[None, int] = None):
+    generator = ids_from_tabular_file.element_parent_ids(filename,
+        ncbi_preset=True)
+    self.reset(generator, total=total)

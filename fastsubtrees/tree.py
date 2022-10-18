@@ -64,9 +64,16 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     self.root_id = None
     self.filename = None
 
+  def _reset_data(self):
+    self.treedata = array.array("Q")
+    self.coords = array.array("Q")
+    self.subtree_sizes = None
+    self.parents = None
+    self.root_id = None
+
   UNDEF = sys.maxsize
 
-  def __compute_parents(self, generator):
+  def _compute_parents(self, generator):
     """
     Copy the parents ID from the generator, after some checks;
     parent IDs can still be invalid in two ways:
@@ -116,7 +123,7 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     assert (self.parents is not None)
     return len(self.parents) - 1
 
-  def __compute_subtree_sizes(self):
+  def _compute_subtree_sizes(self):
     logger.info("Constructing subtree sizes table...")
     self.subtree_sizes = array.array('Q', [0] * (self.max_node_id()+1))
     for elem, parent in tqdm(enumerate(self.parents), \
@@ -146,7 +153,7 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
 
   ROOT_COORD=1
 
-  def __compute_treedata_and_coords(self):
+  def _compute_treedata_and_coords(self):
     self.treedata = array.array("Q", [Tree.UNDEF] * (self.get_treesize() + 1))
     self.coords = array.array("Q", [0] * (self.max_node_id() + 1))
     self.treedata[self.ROOT_COORD] = self.root_id
@@ -180,9 +187,9 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     (node, parent).
     """
     self = cls()
-    self.__compute_parents(generator)
-    self.__compute_subtree_sizes()
-    self.__compute_treedata_and_coords()
+    self._compute_parents(generator)
+    self._compute_subtree_sizes()
+    self._compute_treedata_and_coords()
     logger.success("Tree data structure constructed")
     return self
 
@@ -273,4 +280,8 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     or saved to a file.
     """
     self.filename = Path(filename)
+
+  def _check_filename_set(self):
+    if self.filename is None:
+      raise error.FilenameNotSetError("The tree filename is not set")
 

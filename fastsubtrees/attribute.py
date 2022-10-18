@@ -28,7 +28,7 @@ class TreeAttributes():
         if op[0] == "insert":
           lines.insert(op[1]-1, self.NONELINE)
         elif op[0] == "copy":
-          lines[op[1]-1] = lines[op[2]-1]
+          lines[op[2]-1] = lines[op[1]-1]
         elif op[0] == "delete":
           lines[op[1]-1] = self.NONELINE
       with open(attrfilename, 'w') as f:
@@ -53,27 +53,23 @@ class TreeAttributes():
     """
     Destroys all attribute values associated with the tree.
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     for filename in self.existing_attribute_filenames(self.filename).values():
       logger.info("Removing obsolete attribute file {}".format(filename))
       filename.unlink()
-
-  def __check_filename_set(self):
-    if self.filename is None:
-      raise error.FilenameNotSetError("The tree filename is not set")
 
   def attribute_filename(self, attribute) -> Path:
     """
     Returns the filename where the attribute values are stored.
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     return self.compute_attribute_filename(self.filename, attribute)
 
   def list_attributes(self) -> List[str]:
     """
     Returns a list of the attribute names.
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     return list(self.existing_attribute_filenames(self.filename).keys())
 
   def has_attribute(self, attribute):
@@ -91,14 +87,14 @@ class TreeAttributes():
     """
     Destroys the attribute values associated with the given attribute.
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     self.__check_has_attribute(attribute)
     filename = self.attribute_filename(attribute)
     logger.info("Removing obsolete attribute file {}".format(filename))
     filename.unlink()
 
   def subtree_attribute_data(self, subtree_root, attribute):
-    self.__check_filename_set()
+    self._check_filename_set()
     self.__check_has_attribute(attribute)
     subtree_size = self.get_subtree_size(subtree_root)
     coord = self.get_treedata_coord(subtree_root) - 1
@@ -135,7 +131,7 @@ class TreeAttributes():
     The attribute values are given by the generator. The generator
     should yield pairs of the form (element_id, attribute_value).
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     if self.has_attribute(attribute) and not force:
       raise error.AttributeCreationError(\
           f"Attribute '{attribute}' already exists")
@@ -150,7 +146,7 @@ class TreeAttributes():
 
     The attribute values are given in the tabular file.
     """
-    self.__check_filename_set()
+    self._check_filename_set()
     if self.has_attribute(attribute) and not force:
       raise error.AttributeCreationError(\
           f"Attribute '{attribute}' already exists")
@@ -159,7 +155,7 @@ class TreeAttributes():
     self.save_attribute_values(attribute, attribute_values)
 
   def save_attribute_values(self, attribute, attrvalues):
-    self.__check_filename_set()
+    self._check_filename_set()
     attrfilename = self.attribute_filename(attribute)
     logger.debug("Creating attribute file '{}'...".format(attrfilename))
     with open(attrfilename, "w") as outfile:
@@ -171,7 +167,7 @@ class TreeAttributes():
         outfile.write(json.dumps(attribute) + "\n")
 
   def check_has_attributes(self, attributes):
-    self.__check_filename_set()
+    self._check_filename_set()
     for attribute in attributes:
       attrfilename = self.attribute_filename(attribute)
       if not attrfilename.exists():
@@ -199,7 +195,7 @@ class TreeAttributes():
     return result
 
   def load_attribute_values(self, attribute):
-    self.__check_filename_set()
+    self._check_filename_set()
     self.__check_has_attribute(attribute)
     i = 0
     fname = self.attribute_filename(attribute)
@@ -208,9 +204,28 @@ class TreeAttributes():
     with open(fname, "r") as f:
       for line in f:
         data = json.loads(line.rstrip())
-        existing[all_ids[i]] = data
+        if all_ids[i] != self.UNDEF:
+          existing[all_ids[i]] = data
         i += 1
     return existing
+
+  def dump_attribute_values(self, attribute):
+    self._check_filename_set()
+    self.__check_has_attribute(attribute)
+    values = self.load_attribute_values(attribute)
+    dump_fname = str(self.attribute_filename(attribute)) + ".json"
+    with open(dump_fname, "w") as f:
+      json.dump(values, f)
+
+  def create_attribute_from_dump(self, attribute):
+    self._check_filename_set()
+    dump_fname = str(self.attribute_filename(attribute)) + ".json"
+    with open(dump_fname, "r") as f:
+      values = json.load(f)
+    for k in list(values.keys()):
+      values[int(k)] = values.pop(k)
+    self.save_attribute_values(attribute, values)
+    Path(dump_fname).unlink()
 
   def delete_attribute_values(self, attribute, node_ids, strict=False):
     """
