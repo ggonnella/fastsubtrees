@@ -1,50 +1,39 @@
 #!/usr/bin/env python3
 """
-Fast subtree queries from the NCBI tanomomy tree.
+Fast subtree queries on the NCBI taxonomy tree
 
 Usage:
   ntsubtree [attr] <command> [<args>...]
 
 Available commands:
-  update            Update the NCBI taxonomy data
-  query             List IDs/attributes of the subtree under a given node
+  update       Update the NCBI taxonomy data
+  query        List IDs/attributes of the subtree under a given node
+  attribute    Add/edit/remove attributes
 
 See 'ntsubtree <command> --help' for more information on a specific command.
 
 """
 from docopt import docopt
 from ntsubtree import __version__
-from ntdownload import Downloader
-from platformdirs import PlatformDirs
 from fastsubtrees import _scripts_support
-from pathlib import Path
-import fastsubtrees
 
 if __name__ == '__main__':
   args = docopt(__doc__, version=__version__, options_first=True)
   command = args['<command>']
-  # TODO: implement update
-  # TODO: automatically set the tree name
   if command == 'update':
-    if args['attr']:
-      import fastsubtrees.commands.attr_construct as cmd
-    else:
-      import ntsubtree.commands.update as cmd
+    import ntsubtree.commands.update as cmd
   elif command == 'query':
-    if args['attr']:
-      import fastsubtrees.commands.attr_query as cmd
-    else:
-      import fastsubtrees.commands.query as cmd
-  elif args['attr'] and command == 'add':
-    import fastsubtrees.commands.attr_add as cmd
-  elif args['attr'] and command == 'delete':
-    import fastsubtrees.commands.attr_delete as cmd
+    import ntsubtree.commands.query as cmd
+  elif command == 'attribute':
+    import ntsubtree.commands.attribute as cmd
   else:
-    exit(f"'{command}' is not a fastsubtrees command.\n"+\
-        "See fastsubtrees --help.")
-  argv = ['attr'] if args['attr'] else []
-  argv.append(command)
-  argv.extend(args['<args>'])
-  cmd_args = docopt(cmd.__doc__, version=VERSION, argv=argv)
+    exit(f"'{command}' is not a ntsubtree command.\n"+\
+        "See ntsubtree --help.")
+  argv = [command] + args["<args>"]
+  cmd_args = docopt(cmd.__doc__, version=__version__, argv=argv)
   _scripts_support.setup_verbosity(cmd_args)
-  cmd.main(cmd_args)
+  try:
+    cmd.main(cmd_args)
+  except error.FastsubtreesError as e:
+    logger.error(f"Error: {e}")
+    exit(1)

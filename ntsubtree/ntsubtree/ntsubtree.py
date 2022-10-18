@@ -4,24 +4,27 @@ from ntdownload import Downloader
 from pathlib import Path
 
 from .constants import \
-   NCBI_NODES_DUMP_TAXID_COL, NCBI_NODES_DUMP_PARENT_COL, \
    NCBI_NAMES_DUMP_TAXID_COL, NCBI_NAMES_DUMP_NAME_COL, \
    NCBI_NAMES_DUMP_CLASS_COL, NCBI_NAMES_DUMP_CLASS_SCIENTIFIC, \
    NCBI_NAMES_DUMP_FILENAME, NCBI_NODES_DUMP_FILENAME, \
    NTDUMPSDIR, TREEFILE, NCBI_DUMP_SEP, APPDATADIR
 
-def read_names():
+def yield_names():
   names_dump = NTDUMPSDIR / NCBI_NAMES_DUMP_FILENAME
-  fastsubtrees.logger.info("Extracting taxonomic names")
-  names = {}
+  fastsubtrees.logger.info("Source of scientific names: {}".format(names_dump))
   with open(names_dump, 'r') as f:
     for line in f:
       fields = line.split(NCBI_DUMP_SEP)
       if fields[NCBI_NAMES_DUMP_CLASS_COL].\
           startswith(NCBI_NAMES_DUMP_CLASS_SCIENTIFIC):
-        names[int(fields[NCBI_NAMES_DUMP_TAXID_COL])] = \
+        yield int(fields[NCBI_NAMES_DUMP_TAXID_COL]), \
                                   fields[NCBI_NAMES_DUMP_NAME_COL]
-  return names
+
+def read_names():
+  result = {}
+  for taxid, name in yield_names():
+    result[taxid] = name
+  return result
 
 def n_lines(filename):
   n = 0
@@ -30,44 +33,67 @@ def n_lines(filename):
       n += 1
   return n
 
-def update(redownload=False, force=False):
+def update(force_download=False, force_construct=False):
+  """
+  Download updated NCBI taxonomy data using _ntdownload_, if any.
+  If the new data was found, update the taxonomy tree using _fastsubtrees_.
+  """
   fastsubtrees.PROGRESS_ENABLED = True
   fastsubtrees.enable_logger("INFO")
-  fastsubtrees.logger.info("Updating ntsubtree data (this may take a while)")
+  fastsubtrees.logger.info("Updating ntsubtree data...")
   fastsubtrees.logger.info("Data directory: {}".format(APPDATADIR))
-  fastsubtrees.logger.info("Downloading NCBI taxonomy data...")
+  fastsubtrees.logger.info("Looking for updated NCBI taxonomy data...")
   NTDUMPSDIR.mkdir(parents=True, exist_ok=True)
-  if redownload:
+  if force_download:
     for f in NTDUMPSDIR.glob("*"):
       f.unlink()
   updated = Downloader(str(NTDUMPSDIR)).run()
-  if updated or force:
+  if updated or force_construct:
     fastsubtrees.logger.info("Updating taxonomy tree...")
     tree = fastsubtrees.Tree.from_file(TREEFILE)
     filename = str(NTDUMPDIR / NCBI_NODES_DUMP_FILENAME)
     n_node_lines = n_lines(filename)
     fastsubtrees.logger.info("Number of nodes: {}".format(n_node_lines))
-    if tree.has_attribute("taxname"):
-      tree.destroy_attribute("taxname")
     n_added, n_deleted, n_moved = \
         tree.update_from_ncbi_dump(filename, total=n_node_lines)
-    tree.to_file(TREEFILE)
-    tree.save_attribute_values(tree, "taxname", read_names())
+    fastsubtrees.logger.info("Updating taxonomy names...")
+    tree.replace_attribute_values("taxname", read_names())
+  else:
+    fastsubtrees.logger.info("No tree update needed.")
 
-def __auto_init():
+def setup():
+  """
+  Download the NCBI taxonomy data using _ntdownload_ and construct
+  the taxonomy tree using _fastsubtrees_.
+  """
+  fastsubtrees.PROGRESS_ENABLED = True
+  fastsubtrees.enable_logger("INFO")
+  fastsubtrees.logger.info("Initializing ntsubtree data...")
+  fastsubtrees.logger.info("Data directory: {}".format(APPDATADIR))
+  fastsubtrees.logger.info("Downloading NCBI taxonomy data...")
+  if NTDUMPSDIR.exists():
+    for f in NTDUMPSDIR.glob("*"):
+      f.unlink()
+  else:
+    NTDUMPSDIR.mkdir(parents=True)
+  Downloader(str(NTDUMPSDIR)).run()
+  inputfn = str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME)
+  tree = fastsubtrees.Tree.construct_from_ncbi_dump(inputfn)
+  tree.to_file(TREEFILE)
+  fastsubtrees.logger.info("Loading taxonomy names...")
+  tree.create_attribute("taxname", yield_names())
+
+def __auto_setup():
+  """
+  Automatically download NCBI taxonomy data and construct the taxonomy tree
+  if not found at the expected location.
+  """
   if not NTDUMPSDIR.exists():
-    fastsubtrees.PROGRESS_ENABLED = True
-    fastsubtrees.enable_logger("INFO")
-    fastsubtrees.logger.info("Initializing ntsubtree data (this may take a while)")
-    fastsubtrees.logger.info("Data directory: {}".format(APPDATADIR))
-    fastsubtrees.logger.info("Downloading NCBI taxonomy data...")
-    NTDUMPSDIR.mkdir(parents=True, exist_ok=True)
-    Downloader(str(NTDUMPSDIR)).run()
-    tree = fastsubtrees.Tree.construct_from_ncbi_dump(\
-        str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME))
-    tree.to_file(TREEFILE)
-    ### tree = fastsubtrees.Tree.from_file(TREEFILE)
-    names = read_names()
-    outfname = tree.attrfilename("taxname")
-    with open(outfname, "w") as outfile:
-      attribute.write_attribute_values(tree, names, outfile)
+    setup()
+
+def get_tree():
+  """
+  Return the taxonomy tree.
+  """
+  __auto_setup()
+  return fastsubtrees.Tree.from_file(TREEFILE)
