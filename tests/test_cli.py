@@ -376,6 +376,11 @@ def test_attribute_edit_and_query(testout, testdata, script,
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert ret.stdout.strip() == "990.0"
+  # list attributes
+  args = ["attribute", small_tree_file, "--list"]
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert set(ret.stdout.strip().split()) == set(["attrI", "attrJ", "attrX"])
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_edit(testout, testdata, ids_modules, script, script_runner,

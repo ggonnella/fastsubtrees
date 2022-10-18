@@ -177,6 +177,11 @@ attribute_values("k1=v1", "k2=v=2", "x")
 An example module implementing the described interface is provided
 under ``fastsubtrees/ids_modules/attrs_from_tabular_file.py``.
 
+### Listing defined attributes
+
+To list the attributes that have been created, use ``fastsubtrees attribute``
+with the option ``--list``.
+
 ### Editing attribute values
 
 To add new values for an attribute, ``fastsubtrees attribute`` with the option

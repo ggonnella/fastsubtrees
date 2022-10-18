@@ -6,12 +6,14 @@ Usage:
   fastsubtrees attribute <treefile> [--new|--add|--replace] <attribute> <tabfile> [options]
   fastsubtrees attribute <treefile> [--new|--add|--replace] <attribute> --module M [<args>...] [options]
   fastsubtrees attribute <treefile> --delete <attribute> [<node_id>...] [options]
+  fastsubtrees attribute <treefile> --list [options]
 
 Actions:
   -N, --new        (default) create a new attribute
   -A, --add        add further values to an existing attribute
   -R, --replace    replace some values of an existing attribute
   -D, --delete     delete an attribute or attribute values
+  -L, --list       list defined attributes
 
 Tabular file input:
   <tabfile>        tabular file with node IDs and attribute values
@@ -85,7 +87,8 @@ def get_generator_and_casting_fn(args):
 DEFAULT_ACTION = "new"
 
 def get_action(args):
-  actions = [a for a in ["new", "add", "replace", "delete"] if args["--" + a]]
+  actions = \
+      [a for a in ["new", "add", "replace", "delete", "list"] if args["--" + a]]
   assert(len(actions) <= 1)
   if len(actions) == 0:
     action = DEFAULT_ACTION
@@ -95,7 +98,7 @@ def get_action(args):
 
 def manage_attribute(args, tree):
   action = get_action(args)
-  if action != "delete":
+  if action in ["new", "add", "replace"]:
     generator, casting_fn = get_generator_and_casting_fn(args)
     new_attrvalues = Tree.prepare_attribute_values(generator, casting_fn)
   if action == "new":
@@ -112,6 +115,9 @@ def manage_attribute(args, tree):
     else:
       tree.delete_attribute_values(args["<attribute>"], args["<node_id>"],
                                  args["--strict"])
+  elif action == "list":
+    for attr in tree.list_attributes():
+      print(attr)
 
 def main(args):
   logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
