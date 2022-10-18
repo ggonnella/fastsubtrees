@@ -91,9 +91,7 @@ def show_data(args, subtree_info, attrnames):
   if args["--stats"]:
     logger.info("Number of nodes in subtree: {}".format(n_nodes))
 
-def main(args):
-  logger.debug("Loading tree from file '{}'".format(args['<tree>']))
-  tree = Tree.from_file(args["<tree>"])
+def run_query(args, tree):
   if args["<subtreeroot>"] == "root":
     subtree_root = tree.root_id
   else:
@@ -106,3 +104,8 @@ def main(args):
       args["--subtree-sizes"], args["--parents"], args["--stats"])
   show_header(args, attrnames)
   show_data(args, subtree_info, attrnames)
+
+def main(args):
+  logger.debug("Loading tree from file '{}'".format(args['<tree>']))
+  tree = Tree.from_file(args["<tree>"])
+  run_query(args, tree)

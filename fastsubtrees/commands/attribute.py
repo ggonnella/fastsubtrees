@@ -84,42 +84,20 @@ def get_generator_and_casting_fn(args):
 
 DEFAULT_ACTION = "new"
 
-def get_action(args, attrfname):
+def get_action(args):
   actions = [a for a in ["new", "add", "replace", "delete"] if args["--" + a]]
   assert(len(actions) <= 1)
   if len(actions) == 0:
     action = DEFAULT_ACTION
   elif len(actions) == 1:
     action = actions[0]
-  # else:
-  #   msg = "Only one of actions --new, --add, --replace, --delete can be used"
-  #   logger.error(msg)
-  #   exit(1)
-  if not attrfname.exists():
-    if action != "new":
-      msg = "Attribute file {} does not exist".format(attrfname)
-      logger.error(msg)
-      exit(1)
   return action
 
-def main(args):
-  if not Path(args["<treefile>"]).exists():
-    msg = "Tree file {} does not exist".format(args["<treefile>"])
-    logger.error(msg)
-    exit(1)
-  attrfname = \
-        Path(Tree.compute_attribute_filename(args["<treefile>"], args["<attribute>"]))
-  action = get_action(args, attrfname)
-  if action == "delete":
-    if not args["<node_id>"]:
-      attrfname.unlink(missing_ok=True)
-      logger.info(f"Deleted attribute file {attrfname}")
-      exit(0)
-  else:
+def manage_attribute(args, tree):
+  action = get_action(args)
+  if action != "delete":
     generator, casting_fn = get_generator_and_casting_fn(args)
     new_attrvalues = Tree.prepare_attribute_values(generator, casting_fn)
-  logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
-  tree = Tree.from_file(args["<treefile>"])
   if action == "new":
     tree.save_attribute_values(args["<attribute>"], new_attrvalues)
   elif action == "add":
@@ -129,5 +107,13 @@ def main(args):
     tree.replace_attribute_values(args["<attribute>"], new_attrvalues,
                                   args["--strict"])
   elif action == "delete":
-    tree.delete_attribute_values(args["<attribute>"], args["<node_id>"],
+    if not args["<node_id>"]:
+      tree.destroy_attribute(args["<attribute>"])
+    else:
+      tree.delete_attribute_values(args["<attribute>"], args["<node_id>"],
                                  args["--strict"])
+
+def main(args):
+  logger.debug("Loading tree from file '{}'".format(args['<treefile>']))
+  tree = Tree.from_file(args["<treefile>"])
+  manage_attribute(args, tree)
