@@ -6,14 +6,21 @@ Usage:
   ntsubtree update [options]
 
 Further options:
-  -f, --force      force update even if the tree is up-to-date
+  -c, --cleanup    cleanup all files and recostruct from scratch
+                   (it also eliminates all existing attribute data!)
+  -f, --force      force downlading and updating even if the tree is up-to-date
+  -r, --rebuild    force rebuilding tree (implicing in --force)
   -q, --quiet      disable log messages
   -d, --debug      print debug information
   -h, --help       show this help message and exit
   -V, --version    show program's version number and exit
 """
 
-from ntsubtree import update
+from ntsubtree import update, setup
 
 def main(args):
-  ntsubtree.update(force_download=args["--force"])
+  if args["--cleanup"]:
+    setup()
+  else:
+    update(force_download=args["--force"],
+           force_construct=args["--rebuild"])

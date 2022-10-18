@@ -15,7 +15,7 @@ See 'ntsubtree <command> --help' for more information on a specific command.
 """
 from docopt import docopt
 from ntsubtree import __version__
-from fastsubtrees import _scripts_support
+from fastsubtrees import _scripts_support, error, logger
 
 if __name__ == '__main__':
   args = docopt(__doc__, version=__version__, options_first=True)
@@ -34,6 +34,6 @@ if __name__ == '__main__':
   _scripts_support.setup_verbosity(cmd_args)
   try:
     cmd.main(cmd_args)
-  except error.FastsubtreesError as e:
-    logger.error(f"Error: {e}")
+  except (error.FastsubtreesError, FileNotFoundError) as e:
+    logger.error(e)
     exit(1)

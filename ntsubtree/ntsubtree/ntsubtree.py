@@ -2,6 +2,7 @@ import fastsubtrees
 import fastsubtrees.ids_modules.ids_from_tabular_file as ids_from_tabular_file
 from ntdownload import Downloader
 from pathlib import Path
+from shutil import rmtree
 
 from .constants import \
    NCBI_NAMES_DUMP_TAXID_COL, NCBI_NAMES_DUMP_NAME_COL, \
@@ -51,15 +52,27 @@ def update(force_download=False, force_construct=False):
   if updated or force_construct:
     fastsubtrees.logger.info("Updating taxonomy tree...")
     tree = fastsubtrees.Tree.from_file(TREEFILE)
-    filename = str(NTDUMPDIR / NCBI_NODES_DUMP_FILENAME)
+    filename = str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME)
     n_node_lines = n_lines(filename)
     fastsubtrees.logger.info("Number of nodes: {}".format(n_node_lines))
     n_added, n_deleted, n_moved = \
         tree.update_from_ncbi_dump(filename, total=n_node_lines)
     fastsubtrees.logger.info("Updating taxonomy names...")
-    tree.replace_attribute_values("taxname", read_names())
+    tree.to_file(TREEFILE)
+    if tree.has_attribute("taxname"):
+      tree.replace_attribute_values("taxname", read_names())
+    else:
+      tree.create_attribute("taxname", yield_names())
   else:
     fastsubtrees.logger.info("No tree update needed.")
+
+def cleanup():
+  if APPDATADIR.exists():
+    for path in Path(APPDATADIR).glob("**/*"):
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            rmtree(path)
 
 def setup():
   """
@@ -71,11 +84,8 @@ def setup():
   fastsubtrees.logger.info("Initializing ntsubtree data...")
   fastsubtrees.logger.info("Data directory: {}".format(APPDATADIR))
   fastsubtrees.logger.info("Downloading NCBI taxonomy data...")
-  if NTDUMPSDIR.exists():
-    for f in NTDUMPSDIR.glob("*"):
-      f.unlink()
-  else:
-    NTDUMPSDIR.mkdir(parents=True)
+  cleanup()
+  NTDUMPSDIR.mkdir(parents=True)
   Downloader(str(NTDUMPSDIR)).run()
   inputfn = str(NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME)
   tree = fastsubtrees.Tree.construct_from_ncbi_dump(inputfn)

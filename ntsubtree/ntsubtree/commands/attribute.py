@@ -6,12 +6,14 @@ Usage:
   ntsubtree attribute [--new|--add|--replace] <attribute> <tabfile> [options]
   ntsubtree attribute [--new|--add|--replace] <attribute> --module M [<args>...] [options]
   ntsubtree attribute --delete <attribute> [<node_id>...] [options]
+  ntsubtree attribute --list [options]
 
 Actions:
   -N, --new        (default) create a new attribute
   -A, --add        add further values to an existing attribute
   -R, --replace    replace some values of an existing attribute
   -D, --delete     delete an attribute or attribute values
+  -L, --list       list defined attributes
 
 Tabular file input:
   <tabfile>        tabular file with node IDs and attribute values
@@ -43,7 +45,8 @@ Further options:
 
 from fastsubtrees.commands.attribute import manage_attribute
 from pathlib import Path
-from ntsubtree import get_tree, constants, setup
+from ntsubtree import get_tree, setup
+import ntsubtree.constants
 
 def main(args):
   treefile = ntsubtree.constants.TREEFILE
