@@ -207,30 +207,57 @@ the API, which is documented in the
 
 ## Subpackages
 
-### ntmirror
+### NtSubtree
 
-When working with the NCBI taxonomy database, a local copy of the NCBI taxonomy
-dump can be obtained and kept up-to-date using the _ntmirror_ package, which
-is located in the directory ``ntmirror``. It is a Python package, which can
-be installed using ``pip``, separately from _fastsubtrees_.
+NtSubtree is a library which automatically downloads the NCBI taxonomy
+dump and constructs the ``fastsubtrees`` data for it. It allows to easily
+keep the data up-to-date.
+It is a separate Python package, which can
+be installed using ``pip``, and depends on _fastsubtrees_.
 
-Besides downloading the dump, when needed, the package also allows to load
-the NCBI taxonomy database in a local SQL database, and to extract subtrees
-from it using hierarchical SQL queries.
+The ``query`` command of the NtSubtree CLI tool automatically
+display also taxonomic names, alongside the IDs in query and allow to
+perform queries by taxonomic name.
 
-Please refer to the user manual of _ntmirror_ located under ``ntmirror/docs``
-for more information.
+For more information see also the ``ntsubtree/README.md`` file.
 
 ### Genomes Attributes Viewer
 
 An interactive web application based on ``fastsubtrees`` was developed using
 _dash_. It allows to graphically display the distribution of values of
 attributes in subtrees of the NCBI taxonomic tree.
+It is a separate Python package, which can
+be installed using ``pip``, and depends on _fastsubtrees_.
 
-It can be installed and started locally (see below) or using the Docker image of
+It can also be installed using the Docker image of
 _fastsubtrees_ (see above in the _Docker_ section).
 
 For more information see also the ``genomes-attributes-viewer/README.md`` file.
+
+### ntdownload
+
+When working with the NCBI taxonomy database, a local copy of the NCBI taxonomy
+dump can be obtained and kept up-to-date using the _ntdownload_ package, which
+is located in the directory ``ntdownload``. It is a separate
+Python package, which can be installed using ``pip``, independently
+from _fastsubtrees_.
+
+Please refer to the user manual of _ntdownload_ located under ``ntdownload/README.md``
+for more information.
+
+### ntmirror
+
+A downloaded NCBI taxonomy database dump can be loaded to
+a local SQL database, using the package _ntmirror_, which is located
+in the directory ``ntmirror``.
+It is a separate Python package, which can
+be installed using ``pip``, independently from _fastsubtrees_.
+
+It contains also a script to extract subtrees
+from the local database mirror using hierarchical SQL queries.
+
+Please refer to the user manual of _ntmirror_ located under ``ntmirror/README.md``
+for more information.
 
 #### Local installation and startup
 
