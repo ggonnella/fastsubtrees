@@ -146,24 +146,22 @@ class Tree():
     self.coords = array.array("Q", [0] * (self.max_node_id() + 1))
     self.treedata[self.ROOT_COORD] = self.root_id
     self.coords[self.root_id] = self.ROOT_COORD
-    for i in tqdm(range(self.max_node_id() + 1)):
-      if i != self.root_id and self.parents[i] != Tree.UNDEF:
-        path = [i]
-        parent = self.parents[i]
-        while parent != self.root_id:
-          path.append(parent)
-          parent = self.parents[parent]
-        for node in reversed(path):
-          if not self.coords[node]:
-            pos = self.coords[self.parents[node]] + 1
-            while True:
-              treedatanode = self.treedata[pos]
-              if treedatanode == Tree.UNDEF:
-                break
-              else:
-                pos += (self.subtree_sizes[treedatanode])
-            self.coords[node] = pos
-            self.treedata[pos] = node
+    already_added = array.array("Q", [0] * (self.max_node_id() + 1))
+    for elem in tqdm(range(self.max_node_id() + 1)):
+      if elem == self.root_id:
+        continue
+      if self.parents[elem] == Tree.UNDEF:
+        continue
+      stack = []
+      while elem != self.root_id and not self.coords[elem]:
+        stack.append(elem)
+        elem = self.parents[elem]
+      while stack:
+        elem = stack.pop()
+        pos = self.coords[self.parents[elem]] + 1 + already_added[self.parents[elem]]
+        self.coords[elem] = pos
+        self.treedata[pos] = elem
+        already_added[self.parents[elem]] += self.subtree_sizes[elem]
 
   @classmethod
   def construct(cls, generator: Iterator[Tuple[int, int]]):
