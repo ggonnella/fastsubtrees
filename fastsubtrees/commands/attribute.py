@@ -44,7 +44,8 @@ Further options:
 """
 
 from docopt import docopt
-from fastsubtrees import _scripts_support, logger, Tree, __version__
+from fastsubtrees import _support, logger, Tree, __version__
+from fastsubtrees.commands import _support
 from collections import defaultdict
 from pathlib import Path
 
@@ -56,11 +57,11 @@ def get_generator_and_casting_fn(args):
     logger.debug("Using function "+\
         "{} from module {} as a source of attribute values".format(\
           fn, args["--module"]))
-    m = _scripts_support.get_module(args["--module"], fn)
-    posargs, keyargs = _scripts_support.get_fn_args(not args["--nokeys"],
-                                                    args["<args>"])
-    casting_fn = _scripts_support.get_datatype_casting_fn(args["--type"], \
-                                                          m, args["--module"])
+    m = _support.get_module(args["--module"], fn)
+    posargs, keyargs = \
+        _support.get_fn_args(not args["--nokeys"], args["<args>"])
+    casting_fn = \
+        _support.get_datatype_casting_fn(args["--type"], m, args["--module"])
   else:
     if args["--fn"]:
       logger.warning("Argument --fn ignored when not using --module")
@@ -80,8 +81,7 @@ def get_generator_and_casting_fn(args):
       keyargs["attr_col"] = int(args["--valuescol"]) - 1
     if args["--commentchar"]:
       keyargs["comment_pfx"] = args["--commentchar"]
-    casting_fn = _scripts_support.get_datatype_casting_fn(args["--type"], \
-                                                          None, None)
+    casting_fn = _support.get_datatype_casting_fn(args["--type"], None, None)
   return getattr(m, fn)(*posargs, **keyargs), casting_fn
 
 DEFAULT_ACTION = "new"

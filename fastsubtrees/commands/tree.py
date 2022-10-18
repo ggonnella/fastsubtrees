@@ -41,7 +41,8 @@ Further options:
 
 from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, logger, _scripts_support, __version__, error
+from fastsubtrees import Tree, logger, __version__, error
+from fastsubtrees.commands import _support
 
 def get_generator(args):
   fn = "element_parent_ids"
@@ -52,9 +53,9 @@ def get_generator(args):
       fn = args["--fn"]
     logger.debug("Using function {} from module {} as a source of IDs".\
         format(fn, args["--module"]))
-    m = _scripts_support.get_module(args["--module"], fn)
-    posargs, keyargs = _scripts_support.get_fn_args(not args["--nokeys"],
-                                                    args["<args>"])
+    m = _support.get_module(args["--module"], fn)
+    posargs, keyargs = \
+        _support.get_fn_args(not args["--nokeys"], args["<args>"])
   else:
     if args["--fn"]:
       logger.warning("Argument --fn ignored when not using --module")
@@ -67,13 +68,10 @@ def get_generator(args):
           or args["--parentscol"] or args["--commentchar"]:
         logger.warning("The --ncbi option overrides the following options: " +
             "--separator, --elementscol, --parentscol, --commentchar")
-      keyargs = {"ncbi_preset": True,
-                 "comment_pfx": "#"}
+      keyargs = {"ncbi_preset": True, "comment_pfx": "#"}
     else:
-      keyargs = {"separator": "\t",
-                 "element_id_column": 0,
-                 "parent_id_column": 1,
-                 "comment_pfx": "#"}
+      keyargs = {"separator": "\t", "element_id_column": 0,
+                 "parent_id_column": 1, "comment_pfx": "#"}
       if args["--separator"]:
         keyargs["separator"] = args["--separator"]
       if args["--elementscol"]:
