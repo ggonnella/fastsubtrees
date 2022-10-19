@@ -10,13 +10,12 @@ ATTR_COLUMN["GC_content"] = 3
 ATTR_INPUTFILE="accession_taxid_attribute.tsv.gz"
 
 def generate_attribute_files(workdir, force):
-  logger.info(f"Looking for attribute files...")
-  file_not_found = False
+  logger.info("Looking for attribute files...")
   tree = fastsubtrees.Tree.from_file(f'{workdir}/{gav.TREEFILE}')
   parentdir = os.path.dirname(__file__)
   attr_inputfile = os.path.join(parentdir, 'data', ATTR_INPUTFILE)
   if force:
-    logger.info(f"Force updating, since upstream data was updated")
+    logger.info("Force updating, since upstream data was updated")
   for attribute in gav.ATTRIBUTES:
     if tree.has_attribute(attribute) and not force:
       logger.info(f"Attribute '{attribute}' found")

@@ -15,27 +15,27 @@ ELEM_COLUMN = 0
 PARENT_COLUMN = 1
 
 def prepare_ncbi_dumps(workdir, force):
-  logger.info(f"Looking for NCBI taxonomy data...")
+  logger.info("Looking for NCBI taxonomy data...")
   ntdumps = os.path.join(workdir, gav.NTDUMPSDIR)
   if force:
-    logger.info(f"Force updating")
+    logger.info("Force updating")
   else:
     logger.info(f"Expected location: {ntdumps}")
   if not os.path.exists(ntdumps) or force:
     d = Downloader(ntdumps)
     has_dwn = d.run()
-    assert(has_dwn)
+    assert has_dwn
     return True
   else:
-    logger.success(f"NCBI taxonomy data found")
+    logger.success("NCBI taxonomy data found")
     return False
 
 def prepare_tree(workdir, force):
-  logger.info(f"Looking for fastsubtrees tree file...")
+  logger.info("Looking for fastsubtrees tree file...")
   treefile = os.path.join(workdir, gav.TREEFILE)
   ntdumps = os.path.join(workdir, gav.NTDUMPSDIR)
   if force:
-    logger.info(f"Force updating, since upstream data was updated")
+    logger.info("Force updating, since upstream data was updated")
   else:
     logger.info(f"Expected location: {treefile}")
   if not os.path.exists(treefile) or force:
@@ -46,7 +46,7 @@ def prepare_tree(workdir, force):
     tree.to_file(treefile)
     return True
   else:
-    logger.success(f"Tree file found")
+    logger.success("Tree file found")
     return False
 
 def prepare_first_run(workdir, force=False):

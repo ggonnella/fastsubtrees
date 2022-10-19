@@ -15,16 +15,16 @@ def ids_modules():
 @pytest.fixture
 def testdata():
   return lambda fn: os.path.join(\
-      os.path.join(os.path.dirname(__file__),"testdata/"), fn)
+      os.path.join(os.path.dirname(__file__), "testdata/"), fn)
 
 @pytest.fixture
 def prebuilt():
   return lambda fn: os.path.join(\
-      os.path.join(os.path.dirname(__file__),"prebuilt/"), fn)
+      os.path.join(os.path.dirname(__file__), "prebuilt/"), fn)
 
 @pytest.fixture
 def testout():
-  testoutdir = os.path.join(os.path.dirname(__file__),"testout/")
+  testoutdir = os.path.join(os.path.dirname(__file__), "testout/")
   if not os.path.exists(testoutdir):
     os.mkdir(testoutdir)
   return lambda fn: os.path.join(testoutdir, fn)
@@ -48,16 +48,16 @@ def results_query_small_tree_id_8():
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX():
-   return "\n".join(['H', 'C, c', 'G', 'I', 'D', 'E'])
+  return "\n".join(['H', 'C, c', 'G', 'I', 'D', 'E'])
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX_after_add():
-   return "\n".join(['H', 'None', 'C, c', 'G', 'None', 'None', 'None', \
+  return "\n".join(['H', 'None', 'C, c', 'G', 'None', 'None', 'None', \
           'None', 'None', 'None', 'I', 'D', 'E'])
 
 @pytest.fixture
 def results_query_small_tree_id_8_attrX_after_add2():
-   return "\n".join(['H', 'F, X', 'C, c', 'G', 'TEN', 'TWELVE', 'None', \
+  return "\n".join(['H', 'F, X', 'C, c', 'G', 'TEN', 'TWELVE', 'None', \
            'ELEVEN', 'None', '13, 10+3', 'I', 'D', 'E'])
 
 @pytest.fixture

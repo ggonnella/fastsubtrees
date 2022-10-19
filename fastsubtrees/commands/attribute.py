@@ -86,7 +86,7 @@ DEFAULT_ACTION = "new"
 def get_action(args):
   actions = \
       [a for a in ["new", "add", "replace", "delete", "list"] if args["--" + a]]
-  assert(len(actions) <= 1)
+  assert len(actions) <= 1
   if len(actions) == 0:
     action = DEFAULT_ACTION
   elif len(actions) == 1:

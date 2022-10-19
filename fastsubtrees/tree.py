@@ -148,7 +148,7 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     """
     Returns the number of nodes in the tree.
     """
-    assert(self.subtree_sizes is not None)
+    assert self.subtree_sizes is not None
     return self.subtree_sizes[self.root_id]
 
   ROOT_COORD=1

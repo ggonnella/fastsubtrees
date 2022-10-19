@@ -67,7 +67,7 @@ def get_generator(args):
     if args["--ncbi"]:
       if args["--separator"] or args["--elementscol"] \
           or args["--parentscol"] or args["--commentchar"]:
-        logger.warning("The --ncbi option overrides the following options: " +
+        logger.warning("The --ncbi option overrides the following options: " +\
             "--separator, --elementscol, --parentscol, --commentchar")
       keyargs = {"ncbi_preset": True, "comment_pfx": "#"}
     else:
@@ -88,7 +88,7 @@ DEFAULT_ACTION = "new"
 def get_action(args):
   actions = \
       [a for a in ["new", "update", "reset", "add", "delete"] if args["--" + a]]
-  assert(len(actions) <= 1)
+  assert len(actions) <= 1
   if len(actions) == 0:
     return DEFAULT_ACTION
   elif len(actions) == 1:

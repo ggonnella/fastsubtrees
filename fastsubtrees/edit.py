@@ -36,7 +36,7 @@ class TreeEditor():
             else:
               raise error.ConstructionError(\
                   f'Node {node_number} / parent {parent} already exists '+\
-                  f'as the root node')
+                  'as the root node')
           else:
             raise error.ConstructionError(\
                 f"The root node {node_number} already exists")
@@ -96,7 +96,7 @@ class TreeEditor():
     # - the parents/coords/subtree_sizes values for the node must be set
     #   (to parent/inspos/0)
     # - subtree_sizes must be updated, adding 1 to all ancestors of node_number
-    assert(self.coords[parent] > 0)
+    assert self.coords[parent] > 0
     inspos = self.coords[parent] + 1
     n_existing = len(self.coords)
     for i in range(n_existing):
@@ -116,15 +116,15 @@ class TreeEditor():
       list_added.append(node_number)
     p = self.parents[node_number]
     while p != node_number:
-      assert(p != self.UNDEF)
+      assert p != self.UNDEF
       self.subtree_sizes[p] += 1
       node_number = p
       p = self.parents[node_number]
-    #logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
+    # logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
 
   def __move_subtree(self, subtree_root, new_parent, edit_script):
     subtree_size = self.subtree_sizes[subtree_root]
-    assert(self.coords[new_parent] > 0)
+    assert self.coords[new_parent] > 0
     inspos = self.coords[new_parent] + 1
     for i in range(subtree_size):
       self.treedata.insert(inspos, self.UNDEF)
@@ -171,7 +171,7 @@ class TreeEditor():
         n_deleted += 1
         if list_deleted is not None:
           list_deleted.append(deleted)
-        #logger.info(f"Deleted node {deleted} at position {delpos}")
+        # logger.info(f"Deleted node {deleted} at position {delpos}")
     self._edit_attribute_values(edit_script, attrfilenames)
     return n_deleted
 

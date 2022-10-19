@@ -98,13 +98,13 @@ def update_dropdown_values(search_value):
     raise PreventUpdate
   else:
     i = 1
-    l = []
+    lst = []
     for o in options:
       if i <= 10:
         if search_value in o['label']:
           i += 1
-          l.append(o)
-    return l
+          lst.append(o)
+    return lst
 
 @app.callback(
   Output('compare', 'disabled'),
@@ -127,7 +127,6 @@ def enable_compare_button(clicks):
   Input(component_id={'type': 'dynamic-dropdown', 'index': ALL},
         component_property='value'),
 )
-
 def update_figure(clicks, attribute, taxid):
   attribute = attribute.replace(' ', '_')
   attribute = attribute

@@ -23,7 +23,7 @@ def main(args):
   if n < 1:
     sys.stderr.write("Error: n must be an integer > 0\n")
     exit(1)
-  print(f"1\t1")
+  print("1\t1")
   for i in range(1, n):
     parent = random.randint(1, i)
     child = i+1

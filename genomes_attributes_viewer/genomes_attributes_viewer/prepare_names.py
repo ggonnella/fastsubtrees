@@ -10,14 +10,14 @@ NAME_COLUMN = 1
 NAMETYPE_COLUMN = 3
 
 def scientific_names(workdir, force):
-  logger.info(f"Looking for scientific names list...")
+  logger.info("Looking for scientific names list...")
   outfilename = os.path.join(workdir, gav.SCIENTIFIC_NAMES)
   if force:
-    logger.info(f"Force updating, since upstream data was updated")
+    logger.info("Force updating, since upstream data was updated")
   else:
     logger.info(f"Expected location: {outfilename}")
   if not os.path.exists(outfilename) or force:
-    logger.info(f"Generating scientific names list...")
+    logger.info("Generating scientific names list...")
     names = []
     ntdumps = os.path.join(workdir, gav.NTDUMPSDIR)
     infilename = os.path.join(ntdumps, NAMESFILE)
@@ -35,6 +35,6 @@ def scientific_names(workdir, force):
       file.write(json.dumps(names))
     return True
   else:
-    logger.info(f"Scientific names list found")
+    logger.info("Scientific names list found")
     return False
 

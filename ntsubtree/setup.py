@@ -10,12 +10,12 @@ def readme():
 
 setup(name='ntsubtree',
       version='1.0',
-      #description='Tree representation for fast queries of '+\
-      #            'the subtree of a taxon in the NCBI taxonomy tree',
+      description='Tree representation for fast queries of '+\
+                   'the subtree of a taxon in the NCBI taxonomy tree',
       description='preliminary version',
       long_description=readme(),
       long_description_content_type="text/markdown",
-      #url="htts://github.com/ggonnella/fastsubtrees/tree/main/ntsubtree",
+      url="htts://github.com/ggonnella/fastsubtrees/tree/main/ntsubtree",
       keywords="bioinformatics genomics taxonomy trees",
       author='Giorgio Gonnella and and others (see CONTRIBUTORS)',
       author_email='gonnella@zbh.uni-hamburg.de',
