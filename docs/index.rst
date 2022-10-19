@@ -4,6 +4,6 @@ FastSubtrees
 .. toctree::
    :glob:
 
-   ../README.md
+   README.md
    CLI.md
    API.md
