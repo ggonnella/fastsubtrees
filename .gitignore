@@ -13,3 +13,7 @@ ntdumps
 .coverage*
 names.tsv
 scientific_names.tsv
+benchmarks.treesizes.tsv
+benchmarks_attr.out
+table1.md
+table2.md

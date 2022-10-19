@@ -5,31 +5,29 @@ VERSION=$(shell grep -P -o "(?<=__version__=\")[^\"]*" fastsubtrees/__init__.py)
 
 default:
 	@echo "Python package:"
-	@echo "  make install         install as user editable package"
-	@echo "  make sdist           create source distribution"
-	@echo "  make wheel           create wheel distribution"
-	@echo "  make clean           remove build artifacts"
-	@echo "  make upload          create distribution and upload to PyPI"
+	@echo "  make install            install as user editable package"
+	@echo "  make sdist              create source distribution"
+	@echo "  make wheel              create wheel distribution"
+	@echo "  make clean              remove build artifacts"
+	@echo "  make upload             create distribution and upload to PyPI"
 	@echo ""
 	@echo "Test suite:"
-	@echo "  make tests           run tests using pytest, locally"
-	@echo "  make testcov         pytest-cov coverage report"
+	@echo "  make tests              run tests using pytest, locally"
+	@echo "  make testcov            pytest-cov coverage report"
 	@echo ""
 	@echo "Create Docker image/container:"
-	@echo "  make image           build Docker image from the Dockerfile"
-	@echo "  make image-no-cache  build Docker image, disabling the cache"
-	@echo "  make download-image  download Docker image from the Dockerhub"
-	@echo "  make container       create and run Docker container from the image"
-	@echo "  make docker-push     push Docker image to the Dockerhub"
+	@echo "  make image              build Docker image from the Dockerfile"
+	@echo "  make image-no-cache     build Docker image, disabling the cache"
+	@echo "  make download-image     download Docker image from the Dockerhub"
+	@echo "  make container          create and run Docker container from the image"
+	@echo "  make docker-push        push Docker image to the Dockerhub"
 	@echo ""
 	@echo "Use Docker container:"
-	@echo "  make docker-clean    remove Docker image and container"
-	@echo "  make docker-shell    interactive shell in Docker container"
-	@echo "  make docker-benchmarks"
-	@echo "                       run benchmarks, in Docker"
-	@echo "  make docker-start-example-app"
-	@echo "                       start example app web server, in Docker"
-	@echo "  make docker-tests    run the test suite in the Docker container"
+	@echo "  make docker-clean       remove Docker image and container"
+	@echo "  make docker-shell       interactive shell in Docker container"
+	@echo "  make docker-benchmarks  run benchmarks in Docker container"
+	@echo "  make docker-app         start example app web server in Docker container"
+	@echo "  make docker-tests       run the test suite in the Docker container"
 
 .PHONY: install sdist wheel clean upload \
 	      image image-no-cache download-image container docker-push \
@@ -91,42 +89,65 @@ docker-download:
 	docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION}
 	docker tag ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}
 
-container:
+ensure_container_running:
 	@if [ -z "$$(docker ps -a | grep ${CONTAINER_NAME})" ]; then \
 		docker run -p 8050:8050 --detach --name ${CONTAINER_NAME} ${IMAGE_NAME}; \
 	else \
 		docker start ${CONTAINER_NAME}; \
-	fi || echo "\n\nImage not available\n"  \
-	   "use 'make image' to build the image"
+	fi
+
+container:
+	make ensure_container_running || \
+		(make image && make ensure_container_running)
 
 docker-shell:
-	@docker exec -it ${CONTAINER_NAME} bash || \
-		echo "\n\nContainer not running\n"  \
-		"use 'make container' to start the container"
+	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} bash
 
 docker-start-example-app:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} start-example-app
 
 docker-tests:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} tests
 
 docker-benchmarks-sql:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} benchmarks sql
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_sql.tsv .
 
 docker-benchmarks-construct:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} benchmarks construct
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_construct.tsv .
 
 docker-benchmarks-fst:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} benchmarks fst
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_fst.tsv .
 
 docker-benchmarks-attr:
+	docker exec -it ${CONTAINER_NAME} true || make container
 	docker exec -it ${CONTAINER_NAME} benchmarks attr
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.tsv .
+	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.out .
 
 docker-benchmarks: docker-benchmarks-sql \
 	                 docker-benchmarks-construct \
 	                 docker-benchmarks-fst \
 									 docker-benchmarks-attr
+	@echo "============================="
+	@benchmarks/treesizes_from_output.py benchmarks_attr.out > \
+		                                  benchmarks.treesizes.tsv
+	@echo ""
+	@echo "Table 1:"
+	@echo ""
+	@benchmarks/make_table1.py benchmarks_sql.tsv benchmarks_fst.tsv \
+		                         benchmarks.treesizes.tsv | tee table1.md
+	@echo ""
+	@echo "Table 2:"
+	@echo ""
+	@benchmarks/make_table2.py benchmarks_attr.tsv benchmarks.treesizes.tsv \
+	 													 genome_size | tee table2.md
+

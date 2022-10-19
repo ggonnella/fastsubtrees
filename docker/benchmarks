@@ -8,6 +8,7 @@ function benchmark_done {
 }
 TREE=/fastsubtrees/nt.tree
 NTDUMPSDIR=/fastsubtrees/ntdumps
+create-tree-file
 if [ "$1" == "" ]; then all=1; else all=0; fi
 if [ "$1" == "construct" -o "$all" == "1" ]; then
   echo "# Running the fastsubtrees tree construction benchmarks..."
@@ -15,15 +16,14 @@ if [ "$1" == "construct" -o "$all" == "1" ]; then
   FILENAME="/fastsubtrees/benchmarks_construct.tsv"
   benchmark_done
 elif [ "$1" == "fst" -o "$all" == "1" ]; then
-  create-tree-file
   echo "# Running the fastsubtrees subtree query benchmarks..."
   /fastsubtrees/benchmarks/benchmarks_fst.sh $TREE
   FILENAME="/fastsubtrees/benchmarks_fst.tsv"
   benchmark_done
-elif [ "$1" == "attribute" -o "$all" == "1" ]; then
-  create-tree-file
+elif [ "$1" == "attr" -o "$all" == "1" ]; then
   echo "# Running the fastsubtrees attribute benchmarks..."
-  /fastsubtrees/benchmarks/benchmarks_attr.sh $TREE $NTDUMPSDIR
+  (2>&1 /fastsubtrees/benchmarks/benchmarks_attr.sh $TREE) | \
+    tee /fastsubtrees/benchmarks_attr.out
   FILENAME="/fastsubtrees/benchmarks_attr.tsv"
   benchmark_done
 elif [ "$1" == "sql" -o "$all" == "1" ]; then
