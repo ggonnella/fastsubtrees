@@ -14,6 +14,7 @@ default:
 	@echo "Test suite:"
 	@echo "  make tests              run tests using pytest, locally"
 	@echo "  make testcov            pytest-cov coverage report"
+	@echo "  make testcov-html       pytest-cov coverage HTML report"
 	@echo ""
 	@echo "Create Docker image/container:"
 	@echo "  make docker-image       build Docker image from the Dockerfile"
@@ -57,9 +58,13 @@ clean:
 tests:
 	pytest
 
+testcov-html:
+	pip install pytest-cov -qqq
+	pytest --cov=fastsubtrees --cov=bin --cov-report html -v tests/
+
 testcov:
-	pip install pytest-cov
-	pytest --cov=fastsubtrees --cov-report html -v tests/
+	pip install pytest-cov -qqq
+	pytest --cov=fastsubtrees --cov=bin -v tests/
 
 upload: tests clean sdist wheel
 	cd dist; \
