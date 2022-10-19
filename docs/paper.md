@@ -42,7 +42,7 @@ with the NCBI taxonomy tree.
 # Statement of need
 
 Tree data structures are commonly used in different fields of computer science
-to represent hierarchical information [@Black:1999]. In
+to represent hierarchical information [@Knuth:1997]. In
 phylogenetics, trees are used to represent the common ancestry of
 organisms or macromolecules. Based on phylogenetics is the hierarchical
 biological classification of organisms, which is also representable
