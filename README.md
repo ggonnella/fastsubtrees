@@ -184,6 +184,33 @@ fastsubtrees attribute nt.tree taxname names.tsv
 fastsubtrees query nt.tree 562 taxname genome_size
 ```
 
+#### Using NtSubtree
+
+The package ``ntsubtree`` simplifies all the tasks described above, for the use
+with the NCBI taxonomy, by automatically obtaining a copy of the NCBI taxonomy
+dump using the library ``ntdownload`` and creating the fastsubtrees tree from
+it, as well as a table of taxonomic names.
+
+```
+pip install ntsubtree
+ntsubtree query 562 # the first run automatically downloads the dumps and
+                    # constructs the tree; then performs the query.
+                    # Both taxa IDs and names are displayed.
+ntsubtree query -n "Escherichia"  # Query by taxonomic name
+
+# create some attributes
+ATTR_INFILE="data/accession_taxid_attribute.tsv.gz"
+ntsubtree attribute genome_size $ATTR_INFILE -e 2 -v 3
+ntsubtree attribute GC_content $ATTR_INFILE -e 2 -v 4
+
+ntsubtree update    # update to the latest available version of the tree;
+                    # the attribute values of non-deleted nodes remain intact
+
+ntsubtree query -n "Escherichia" genome_size GC_content --parents
+# displays: tax ID, parent tax IDs, tax name, genome_size and GC_content
+# for the subtree under Escherichia
+```
+
 #### CLI example with generic data
 
 Fastsubtrees is not only usable with the NCBI taxonomy tree. The following
