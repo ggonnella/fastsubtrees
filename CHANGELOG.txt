@@ -1,10 +1,15 @@
 === 2.0 ===
-- multiple attributes can be queried at once
-- explain how to load taxa names as attributes in README
-- implement tree update operation
-- enable new edit operations, such as moving a subtree
-- simplification of the CLI: only 'tree', 'attribute' and 'query'
-- all operations of the CLI are now available in the API
+- tree construction: removed performance bottleneck
+- tree update/subtree move and reset operations
+- CLI: simplified to 'tree', 'attribute' and 'query' commands
+- API: aligned to the CLI, by moving code from the commands to the API
+- test suite: expanded to complete code coverage
+- README: reorganized and made examples with working with tax names and using NtSubtree
+- node 0 is now allowed
+- subpackage 'ntsubtree' automatically downloads and constructs the NCBI taxonomy tree
+- ntsubtree simplifies working with taxonomic names and keeping the data up-to-date
+- Github CI Action linting and testing
+- documentation is now available at ReadTheDocs
 
 === 1.7 ===
 - genomes_attributes_viewer is now a Python package, installable by pip

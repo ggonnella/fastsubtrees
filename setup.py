@@ -9,9 +9,8 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='fastsubtrees',
-      version='1.7',
-      description='Tree representation for fast queries of '+\
-                  'the list of IDs of any subtree',
+      version='2.0',
+      description='Tree representation for fast subtree queries',
       long_description=readme(),
       long_description_content_type="text/markdown",
       url='https://github.com/ggonnella/fastsubtrees',
