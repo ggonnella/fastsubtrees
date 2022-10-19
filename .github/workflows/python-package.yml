@@ -37,4 +37,4 @@ jobs:
                 --exclude "__init__.py"
     - name: Test with pytest
       run: |
-        pytest
+        pytest tests ntdownload/tests
