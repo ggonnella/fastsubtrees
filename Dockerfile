@@ -29,12 +29,13 @@ ADD . /fastsubtrees/
 RUN cd /fastsubtrees && pip install -e .
 RUN cd /fastsubtrees/ntdownload && pip install -e .
 RUN cd /fastsubtrees/ntmirror && pip install -e .
+RUN cd /fastsubtrees/genomes_attributes_viewer && pip install -e .
+RUN cd /fastsubtrees/ntsubtree && pip install -e .
 EXPOSE 8050
-#WORKDIR /fastsubtrees
 #
 # install packages for testing
 #
-RUN pip install pytest pytest-console-scripts
+RUN pip install pytest pytest-console-scripts pytest-cov
 COPY docker/ntmirror.config.yaml /fastsubtrees/ntmirror/tests/config.yaml
 
 # start MariaDB server

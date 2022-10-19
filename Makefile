@@ -16,11 +16,11 @@ default:
 	@echo "  make testcov            pytest-cov coverage report"
 	@echo ""
 	@echo "Create Docker image/container:"
-	@echo "  make image              build Docker image from the Dockerfile"
-	@echo "  make image-no-cache     build Docker image, disabling the cache"
-	@echo "  make download-image     download Docker image from the Dockerhub"
-	@echo "  make container          create and run Docker container from the image"
+	@echo "  make docker-image       build Docker image from the Dockerfile"
+	@echo "  make docker-image-no-cache         (same, disabling the cache)"
+	@echo "  make docker-pull        download Docker image from the Dockerhub"
 	@echo "  make docker-push        push Docker image to the Dockerhub"
+	@echo "  make docker-container   create and run Docker container from the image"
 	@echo ""
 	@echo "Use Docker container:"
 	@echo "  make docker-clean       remove Docker image and container"
@@ -30,9 +30,10 @@ default:
 	@echo "  make docker-tests       run the test suite in the Docker container"
 
 .PHONY: install sdist wheel clean upload \
-	      image image-no-cache download-image container docker-push \
+	      docker-image docker-image-no-cache docker-pull docker-container \
+				docker-push ensure_container_running \
 				docker-clean docker-shell docker-benchmarks docker-benchmarks-all \
-				docker-start-example-app tests docker-tests testcov
+				docker-app tests docker-tests testcov
 
 PYTHON?=python3
 PIP?=pip3
@@ -71,10 +72,10 @@ docker-clean:
 	docker container rm -f ${CONTAINER_NAME} || true
 	docker image rm -f ${IMAGE_NAME} || true
 
-image:
+docker-image:
 	docker build --tag ${IMAGE_NAME} . --build-arg CACHEBUST=$$(date +%s)
 
-image-no-cache:
+docker-image-no-cache:
 	docker build --tag ${IMAGE_NAME} . --no-cache
 
 version:
@@ -85,7 +86,7 @@ docker-push:
 	docker tag ${IMAGE_NAME} ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION}
 	docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION}
 
-docker-download:
+docker-pull:
 	docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION}
 	docker tag ${DOCKERHUB_USER}/${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}
 
@@ -96,47 +97,45 @@ ensure_container_running:
 		docker start ${CONTAINER_NAME}; \
 	fi
 
-container:
+docker-container:
 	make ensure_container_running || \
-		(make image && make ensure_container_running)
+		(make docker-image && make ensure_container_running)
 
 docker-shell:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} bash
 
-docker-start-example-app:
-	docker exec -it ${CONTAINER_NAME} true || make container
+docker-app:
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} start-example-app
 
 docker-tests:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} tests
 
 docker-benchmarks-sql:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} benchmarks sql
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_sql.tsv .
 
 docker-benchmarks-construct:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} benchmarks construct
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_construct.tsv .
 
 docker-benchmarks-fst:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} benchmarks fst
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_fst.tsv .
 
 docker-benchmarks-attr:
-	docker exec -it ${CONTAINER_NAME} true || make container
+	docker exec -it ${CONTAINER_NAME} true || make docker-container
 	docker exec -it ${CONTAINER_NAME} benchmarks attr
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.tsv .
 	docker cp ${CONTAINER_NAME}:/fastsubtrees/benchmarks_attr.out .
 
-docker-benchmarks: docker-benchmarks-sql \
-	                 docker-benchmarks-construct \
-	                 docker-benchmarks-fst \
-									 docker-benchmarks-attr
+tables: benchmarks_sql.tsv benchmarks_construct.tsv benchmarks_fst.tsv \
+	      benchmarks_attr.tsv benchmarks_attr.out
 	@echo "============================="
 	@benchmarks/treesizes_from_output.py benchmarks_attr.out > \
 		                                  benchmarks.treesizes.tsv
@@ -151,3 +150,8 @@ docker-benchmarks: docker-benchmarks-sql \
 	@benchmarks/make_table2.py benchmarks_attr.tsv benchmarks.treesizes.tsv \
 	 													 genome_size | tee table2.md
 
+docker-benchmarks: docker-benchmarks-sql \
+	                 docker-benchmarks-construct \
+	                 docker-benchmarks-fst \
+									 docker-benchmarks-attr
+	make tables
