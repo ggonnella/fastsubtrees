@@ -45,7 +45,6 @@ Further options:
 
 from fastsubtrees.commands.attribute import manage_attribute
 from pathlib import Path
-from ntsubtree import get_tree, setup
 import ntsubtree.constants
 
 def main(args):

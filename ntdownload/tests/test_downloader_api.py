@@ -1,7 +1,6 @@
 #
 # (c) 2022 Giorgio Gonnella, University of Goettingen, Germany
 #
-import pytest
 import sh
 import time
 import os

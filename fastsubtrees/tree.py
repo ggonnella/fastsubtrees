@@ -5,14 +5,10 @@ Computation of the information necessary for the subtree query
 import struct
 import array
 import sys
-from collections import defaultdict
-from typing import List, Union, Iterator, Tuple, Dict, Any
-import json
-import glob
+from typing import Union, Iterator, Tuple
 from pathlib import Path
 from fastsubtrees import logger, tqdm, error
-from fastsubtrees.ids_modules import ids_from_tabular_file, \
-                                     attr_from_tabular_file
+from fastsubtrees.ids_modules import ids_from_tabular_file
 from .attribute import TreeAttributes
 from .query import SubtreeQuery
 from .edit import TreeEditor

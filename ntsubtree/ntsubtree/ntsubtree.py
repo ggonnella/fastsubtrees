@@ -1,5 +1,4 @@
 import fastsubtrees
-import fastsubtrees.ids_modules.ids_from_tabular_file as ids_from_tabular_file
 from ntdownload import Downloader
 from pathlib import Path
 from shutil import rmtree

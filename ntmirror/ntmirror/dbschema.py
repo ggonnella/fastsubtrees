@@ -7,9 +7,8 @@ Defines the local database schema
 
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Sequence, Column, Integer, String, \
-                       Index, DateTime, Text, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, \
+                       DateTime, Text, Boolean
 from sqlalchemy_repr import PrettyRepresentableBase
 
 # Nt = NCBI Taxonomy

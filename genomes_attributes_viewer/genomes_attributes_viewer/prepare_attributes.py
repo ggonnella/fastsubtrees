@@ -1,10 +1,6 @@
 from loguru import logger
 import os
-import json
-import gzip
 import fastsubtrees
-from collections import defaultdict
-import importlib.resources
 import genomes_attributes_viewer as gav
 
 TAXID_COLUMN = 1

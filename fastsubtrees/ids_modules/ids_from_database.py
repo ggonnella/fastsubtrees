@@ -1,4 +1,3 @@
-import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker

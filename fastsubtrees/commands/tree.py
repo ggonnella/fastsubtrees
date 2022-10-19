@@ -41,9 +41,8 @@ Further options:
   -V, --version    show program's version number and exit
 """
 
-from docopt import docopt
 from pathlib import Path
-from fastsubtrees import Tree, logger, __version__, error
+from fastsubtrees import Tree, logger
 from fastsubtrees.commands import _support
 
 def get_generator(args):

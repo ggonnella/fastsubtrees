@@ -7,7 +7,6 @@ import dash_bootstrap_components as dbc
 import json
 import pandas as pd
 import fastsubtrees
-import os
 import genomes_attributes_viewer as gav
 
 fastsubtrees.PROGRESS_ENABLED = True

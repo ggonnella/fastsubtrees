@@ -2,12 +2,12 @@
 # (c) 2022 Giorgio Gonnella, University of Goettingen, Germany
 #
 from setuptools import setup, find_packages
+import sys
 
 def readme():
   with open('README.md') as f:
     return f.read()
 
-import sys
 if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 

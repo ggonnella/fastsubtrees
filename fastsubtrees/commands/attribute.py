@@ -43,11 +43,8 @@ Further options:
   -V, --version  show program's version number and exit
 """
 
-from docopt import docopt
-from fastsubtrees import logger, Tree, __version__
+from fastsubtrees import logger, Tree
 from fastsubtrees.commands import _support
-from collections import defaultdict
-from pathlib import Path
 
 def get_generator_and_casting_fn(args):
   fn = "attribute_values"

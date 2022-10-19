@@ -2,17 +2,13 @@
 Attribute operations for fastsubtrees.Tree objects.
 """
 
-import struct
-import array
-import sys
 from collections import defaultdict
-from typing import List, Union, Iterator, Tuple, Dict, Any
+from typing import List, Union, Dict, Any
 import json
 import glob
 from pathlib import Path
-from fastsubtrees import logger, tqdm, error
-from fastsubtrees.ids_modules import ids_from_tabular_file, \
-                                     attr_from_tabular_file
+from fastsubtrees import logger, error
+from fastsubtrees.ids_modules import attr_from_tabular_file
 
 class TreeAttributes():
 

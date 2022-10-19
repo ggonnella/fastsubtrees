@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from pathlib import Path
 
 import sys
 if not sys.version_info[0] == 3:

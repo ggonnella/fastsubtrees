@@ -2,7 +2,6 @@
 # (c) 2022 Giorgio Gonnella, University of Goettingen, Germany
 #
 import pytest
-import os
 from pathlib import Path
 
 @pytest.fixture

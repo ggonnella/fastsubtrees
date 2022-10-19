@@ -5,7 +5,6 @@
 Loads the data into the database using the mysql module
 """
 
-import os
 import MySQLdb
 from pathlib import Path
 from .dbloader_sqlwriter import _load_data_sql

@@ -1,4 +1,3 @@
-import os
 import sys
 import fastsubtrees
 from pathlib import Path

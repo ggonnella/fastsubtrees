@@ -31,7 +31,6 @@ Options:
 from pathlib import Path
 from fastsubtrees import logger
 from fastsubtrees.commands.query import run_query
-from ntsubtree import get_tree, setup
 import ntsubtree.constants
 
 def main(args):

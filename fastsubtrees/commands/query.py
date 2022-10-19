@@ -28,9 +28,7 @@ Options:
   -V, --version          show program's version number and exit
 """
 
-import os
-from docopt import docopt
-from fastsubtrees import Tree, logger, __version__
+from fastsubtrees import Tree, logger
 
 def check_attribute_args(args):
   attrnames = args["<attribute>"]

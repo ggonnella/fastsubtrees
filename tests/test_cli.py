@@ -2,10 +2,13 @@
 # (c) 2022 Giorgio Gonnella, University of Goettingen, Germany
 #
 import pytest
-import sh
-import time
 import os
 from pathlib import Path
+
+@pytest.mark.script_launch_mode('subprocess')
+def test_not_existing_subcommand(script, script_runner):
+  ret = script_runner.run(script("fastsubtrees"), "not-existing")
+  assert ret.returncode == 1
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_new_from_tabular(testout, testdata, script, script_runner):

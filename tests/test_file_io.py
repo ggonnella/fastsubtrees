@@ -1,6 +1,6 @@
 import pytest
 from fastsubtrees.ids_modules.ids_from_tabular_file import element_parent_ids
-from fastsubtrees import Tree, error
+from fastsubtrees import Tree
 
 def test_save_reload_small(testdata, testout):
   infname = testdata('small_tree.tsv')
