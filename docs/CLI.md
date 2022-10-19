@@ -67,11 +67,9 @@ myfn("x", k1="v1", k2="v=2")
 element_parent_ids("k1=v1", "k2=v=2", "x")
 ```
 
-
-Some modules implementing the described interface are provided
-under ``fastsubtrees/ids_modules``. In particular, ``ids_from_database.py``
-provides an interface for reading the tree data from a database table,
-and ``ids_from_tabular_file.py`` from a tabular input file.
+A module implementing the described interface for reading
+from a tabular file is provided
+under ``fastsubtrees/ids_modules/ids_from_tabular_file.py``.
 
 ## Modifying an existing tree representation
 
