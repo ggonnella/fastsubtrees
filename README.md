@@ -1,67 +1,43 @@
 # Fastsubtrees
 
-Fastsubtrees is a Python library and a command line script, for handling fairly
+_Fastsubtrees_ is a Python library and a command line script, for handling fairly
 large trees (in the order of magnitude of millions nodes), in particular
 allowing the fast extraction of any subtree.
-
-The main application domain of fastsubtrees is working with the NCBI taxonomy
+The main application domain of _fastsubtrees_ is working with the NCBI taxonomy
 tree, however the code is implemented in a generic way, so that other
 applications are possible.
 
-For achieving an efficient running time and memory use, the nodes of the tree
-are represented compactly in deep-first traversal order.
-Subtrees are then extracted in O(s) time, where s is the size of the extracted
-subtree (i.e. not depending on the size of the whole tree).
+The library functionality can be accessed both from inside Python code
+and from the provided command line tool ``fastsubtrees``.
 
-The tree representation can be saved to file, so that it must be not be
-re-computed each time. It is dynamical, i.e. after a tree has been created,
-it can be modified, by adding a new leaf node,
-or an entire subtree under an existing node. Also, existing leaf nodes or
-entire subtrees can be deleted.
+## Introduction
 
-Along with numerical node identifiers, additional
-information can be stored for each node, by defining any number of optional
-node attributes.
+For the use of _fastsubtrees_, nodes must be uniquely identified by non-negative IDs.
+Furthermore, the space of the IDs must be compact (i.e. the maximum ID should not be
+much larger than the number of IDs).
 
-## Node identifiers
+The first step when using _fastsubtrees_ is to construct a tree representation.
+The operation requires a source of IDs of elements and their parents, which can be
+a tabular file, or any Python function yielding the IDs.
 
-Each node must be represented by a unique non-negative ID. The IDs must not
-necessarily be all consecutive (i.e. some "holes" may be present), but the
-largest node ID (_idmax_) should not be much larger than the total number of
-nodes, because the memory consumption is in _O(idmax)_.
+This operation just takes a few seconds, for a tree with million nodes, such as the NCBI taxonomy tree.
+It must be done only once, if a tree does not change, since the resulting data
+is stored to file.
 
-The NCBI taxonomy tree, for example, fullfills the conditions stated above.
+The IDs of the NCBI taxonomy tree fullfill the conditions stated above. However, the library
+can be used for any tree. A way to use the library with IDs which do not fullfill the conditions,
+it to map them to an ID space which does, and store the original IDs as an attribute.
 
-However, the library can be used on any other tree. For this, if the IDs are
-non-numerical, contain negative numbers, or the ID space is not compact,
-they must be first mapped to different IDs.
+Besides the IDs, a tree can contain further information, e.g. integers, floats or other
+data, here called attributes, associated to the nodes. Each node can contain zero, one or more values
+for an attribute. To add values for an attribute, a tabular file or another data
+source (a Python function) is selected.
 
-## Attributes
+The data for any subtree can then be easily and efficently queried; thereby the node IDs and/other
+selected attributes can be retrieved.
 
-Besides a numerical node identifier, for each node of the tree additional
-information can be stored in form of _attributes_.  Any number of attributes
-can be created.  Each node can contain a single value or a set of values for an
-attribute, but there is no requirement that all nodes have values for an
-attribute.
-
-For each attribute defined in a tree, a file is created, where the attribute
-values are stored. The attributes are also stored in deep-first traversal
-order, so that the list of attribute values for an entire subtree can be
-queried efficiently.
-
-## Tree construction
-
-For the construction of the tree a data source for the tree node identifiers
-must be provided. For each node, the data source must provide the ID of the node
-itself and of its parent. No particular order of the data is
-required, i.e. a child node information may be provided before or after its
-parent node.
-The data source can be e.g. a database table or a tabular file
-(or anything else).
-
-The same interface is used when adding a new subtree
-(with the difference, in the current implementation, that in this case
-child nodes must be provided after their parent node).
+The tree representation is dynamic, i.e. both the tree topology and the attribute values can be
+edited and changed.
 
 ## Working with the library
 
@@ -69,11 +45,139 @@ child nodes must be provided after their parent node).
 
 The package can be installed using ``pip install fastsubtrees``.
 
+### Command line interface
+
+The command line tool ``fastsubtrees`` allows constructing and modifying a tree
+(subcommand ``tree``), adding and editing attributes (subcommand ``attribute``)
+and performing a subtree query (subcommand ``query``).
+
+The command line interface is further described in the
+[CLI manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/cli.md).
+
+#### CLI example: working with the NCBI taxonomy tree
+
+The example below uses the ``fastsubtrees`` command, as well as the ``ntdownload`` library
+(installed as a dependency, by ``pip``) for obtaining the NCBI taxonomy data.
+
+```
+ntdownload ntdumps                                     # download NCBI taxonomy data
+fastsubtrees tree nt.tree --ncbi ntdumps/nodes.dmp     # create the tree
+faststubrees query nt.tree 562                         # query node 562
+
+# attributes
+ATTRTAB=data/accession_taxid_attribute.tsv.gz.         # data file
+TAXID=2; GENOME_SIZE=3; GC_CONTENT=4                   # column numbers, 1-based
+
+fastsubtrees attribute nt.tree genome_size $ATTRTAB -e $TAXID -v $GENOME_SIZE -t int
+fastsubtrees attribute nt.tree GC_content $ATTRTAB -e $TAXID -v $GC_CONTENT -t float
+             
+fastsubtrees query nt.tree 562 gemome_size GC_content  # query including attributes
+
+# taxonomy names
+ntnames ntdumps > names.tsv                            # prepare data from names dump
+fastsubtrees attribute nt.tree taxname names.tsv       # add names as attribute
+fastsubtrees query nt.tree 562 taxname genome_size     # query including taxa names
+```
+
+#### Using NtSubtree
+
+The package ``ntsubtree`` (installable by ``pip``) simplifies working with the NCBI taxonomy even more.
+Tree and the taxonomic names tables are automatically created and stored in a central location.
+
+```
+# first run after installing automatically downloads and constructs the tree
+
+ntsubtree query 562               # taxonomic names displayed alongside the IDs
+ntsubtree query -n "Escherichia"  # Query by taxonomic name
+
+# attributes
+ATTRTAB=data/accession_taxid_attribute.tsv.gz.         # data file
+TAXID=2; GENOME_SIZE=3; GC_CONTENT=4                   # column numbers
+
+ntsubtree attribute genome_size $ATTRTAB -e $TAXID -v $GENOME_SIZE
+ntsubtree attribute GC_content $ATTRTAB -e $TAXID -v $GENOME_SIZE
+ntsubtree query -n "Escherichia" genome_size GC_content
+
+# check if a newer version of the taxonomy data is available
+# and update the tree if necessary, keeping the attribute values:
+ntsubtree update
+```
+
+### API
+
+The library functionality can be also directly accessed in Python code using
+the API, which is documented in the
+[API manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/api.md).
+
+#### API example: working with the NCBI taxonomy tree
+
+The example below uses the ``fastsubtrees`` command, as well as the ``ntdownload`` library
+(installed as a dependency, by ``pip``) for obtaining the NCBI taxonomy data.
+
+```python
+# download the NCBI taxonomy data
+from ntdownload import Downloader
+d = Downloader("ntdumpsdir")
+has_downloaded = d.run()
+
+from fastsubtrees import Tree
+infile = "ntdumpsdir/nodes.dmp"
+tree = Tree.construct_from_ncbi_dumps(infile)     # create the tree
+results = tree.subtree_ids(562)                   # retrieve subtree IDs
+
+attrtab="data/accession_taxid_attribute.tsv.gz"         # data file
+taxid_col=1; genome_size_col=2; gc_content_col=3        # column numbers, 0-based
+
+tree.to_file("nt.tree")
+tree.create_attribute_from_tabular("genome_size", attrtab, elem_field_num=taxid_col,
+                                   attr_field_num=genome_size_col, casting_fn=int)
+tree.create_attribute_from_tabular("GC_content", attrtab, elem_field_num=taxid_col,
+                                   attr_field_num=gc_content_col, casting_fn=float)
+results = tree.subtree_info(562, ["genome_size", "GC_content"])
+
+# taxonomy names
+from ntdownload import yield_scientific_names_from_dump as generator
+tree.create_attribute("taxname", generator("ntdumpsdir"))
+results = tree.subtree_info(562, ["taxname", "genome_size"])
+```
+
+#### Using NtSubtree
+
+The package ``ntsubtree`` (installable by ``pip``) simplifies working with the NCBI taxonomy even more.
+Tree and the taxonomic names tables are automatically created and stored in a central location.
+The first time the library is included these operations are done automatically.
+
+```python
+import ntsubtree
+
+tree = ntsubtree.get_tree()
+results = tree.subtree_ids(562)
+
+taxid = ntsubtree.search_name("Escherichia")
+results = tree.subtree_info(taxid, ["taxname"])
+
+attrtab="data/accession_taxid_attribute.tsv.gz"         # data file
+taxid_col=1; genome_size_col=2; gc_content_col=3        # column numbers, 0-based
+
+tree.create_attribute_from_tabular("genome_size", attrtab, elem_field_num=taxid_col,
+                                   attr_field_num=genome_size_col, casting_fn=int)
+tree.create_attribute_from_tabular("GC_content", attrtab, elem_field_num=taxid_col,
+                                   attr_field_num=gc_content_col, casting_fn=float)
+results = tree.subtree_info(562, ["genome_size", "GC_content"])
+
+# check if a newer version of the taxonomy data is available
+# and update the tree if necessary, keeping the attribute values:
+ntsubtree.update()
+```
+
 ### Docker
 
 To try or test the package, it is possible to use ``fastsubtrees``
 by employing the Docker image defined in ``Dockerfile``.
 This does not require any external database installation and configuration.
+
+<details>
+    <summary>Example of the Docker command line:</summary>
 
 ```
 # create a Docker image
@@ -97,7 +201,8 @@ docker exec fastsubtreesC benchmarks
 docker exec fastsubtreesC start-example-app
 # now open it in the browser at https://0.0.0.0:8050
 ```
-
+</details>
+  
 ### Tests
 
 To run the test suite, you can use ``pytest`` (or ``make tests``).
@@ -119,136 +224,7 @@ some pre-computed example data which is provided in the ``data`` subdirectory
 The benchmarks can be convienently run from the Docker container, without
 requiring a database installation and setup, see above the _Docker_ section.
 
-### Command line interface
-
-The command line tool ``fastsubtrees`` allows constructing a tree, modifying it
-(by adding and deleting leaf nodes or subtrees), adding attributes,
-and performing a subtree query (listing IDs or attribute values in a subtree).
-
-The scripts are designed to be very flexible: e.g. the data source for
-tree construction, or for obtaining attribute values, can be freely
-defined by the user and passed to the scripts as Python code
-and configuration data. Modules for the most common cases (database,
-tabular file) are provided.
-
-The command line interface is further described in the
-[CLI manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/cli.md).
-
-#### CLI example: NCBI taxonomy tree
-
-This is an example of the basic operations using the NCBI taxonomy tree:
-```
-# download the NCBI taxonomy database dumps
-ntmirror-download ntdumps
-# construct the fastsubtrees tree data structure
-fastsubtrees tree nt.tree --ncbi ntdumps/nodes.dmp
-# query the IDs under node 562
-faststubrees query nt.tree 562
-```
-
-The following adds attributes
-from the example data (GC content and genome size of Bacterial genomes)
-stored in the repository:
-
-```
-# add a genome size attribute from a tabular file
-# the IDs are in column 2, the values in column 3 of the table
-fastsubtrees attribute nt.tree genome_size \
-  data/accession_taxid_attribute.tsv.gz --elementscol 2 --valuescol 3
-
-# add a GC content attribute from a tabular file
-# the IDs are in column 2, the values in column 4 of the table
-fastsubtrees attribute nt.tree GC_content \
-  data/accession_taxid_attribute.tsv.gz --elementscol 2 --valuescol 4
-```
-
-Once the attributes are created, their values in any subtree can be
-easily queried:
-```
-# query the genome size values under node 562
-fastsubtrees query nt.tree 562 genome_size GC_content
-```
-
-#### Adding the taxa names
-
-Taxa names can be displayed alongside the taxa ID, by storing them
-as an attribute. To extract the names from the NCBI taxonomy database
-dumps, the _ntdownload_ package provides a ``ntnames`` command:
-
-```
-# extract the names from the dump files
-ntnames ntdumps > names.tsv
-# create the attribute file
-fastsubtrees attribute nt.tree taxname names.tsv
-# query ID, taxa names and genome sizes in a subtree
-fastsubtrees query nt.tree 562 taxname genome_size
-```
-
-#### Using NtSubtree
-
-The package ``ntsubtree`` simplifies all the tasks described above, for the use
-with the NCBI taxonomy, by automatically obtaining a copy of the NCBI taxonomy
-dump using the library ``ntdownload`` and creating the fastsubtrees tree from
-it, as well as a table of taxonomic names.
-
-```
-pip install ntsubtree
-ntsubtree query 562 # the first run automatically downloads the dumps and
-                    # constructs the tree; then performs the query.
-                    # Both taxa IDs and names are displayed.
-ntsubtree query -n "Escherichia"  # Query by taxonomic name
-
-# create some attributes
-ATTR_INFILE="data/accession_taxid_attribute.tsv.gz"
-ntsubtree attribute genome_size $ATTR_INFILE -e 2 -v 3
-ntsubtree attribute GC_content $ATTR_INFILE -e 2 -v 4
-
-ntsubtree update    # update to the latest available version of the tree;
-                    # the attribute values of non-deleted nodes remain intact
-
-ntsubtree query -n "Escherichia" genome_size GC_content --parents
-# displays: tax ID, parent tax IDs, tax name, genome_size and GC_content
-# for the subtree under Escherichia
-```
-
-#### CLI example with generic data
-
-Fastsubtrees is not only usable with the NCBI taxonomy tree. The following
-example constructs a tree with example data included with the repository
-loading it from a tabular file.
-
-```
-# construct the tree, using a tabular file as data source
-fastsubtrees construct small.tree tests/testdata/small_tree.tsv
-```
-
-The data source can be different, for example a database table.
-For these cases, a Python module is passed, as described in the
-CLI manual.
-
-### API
-
-The library functionality can be also directly accessed in Python code using
-the API, which is documented in the
-[API manual](https://github.com/ggonnella/fastsubtrees/blob/main/docs/api.md).
-
-## Subpackages
-
-### NtSubtree
-
-NtSubtree is a library which automatically downloads the NCBI taxonomy
-dump and constructs the ``fastsubtrees`` data for it. It allows to easily
-keep the data up-to-date.
-It is a separate Python package, which can
-be installed using ``pip``, and depends on _fastsubtrees_.
-
-The ``query`` command of the NtSubtree CLI tool automatically
-display also taxonomic names, alongside the IDs in query and allow to
-perform queries by taxonomic name.
-
-For more information see also the ``ntsubtree/README.md`` file.
-
-### Genomes Attributes Viewer
+### Example application: Genome attributes viewer
 
 An interactive web application based on ``fastsubtrees`` was developed using
 _dash_. It allows to graphically display the distribution of values of
@@ -261,7 +237,33 @@ _fastsubtrees_ (see above in the _Docker_ section).
 
 For more information see also the ``genomes-attributes-viewer/README.md`` file.
 
-### ntdownload
+#### Local installation and startup
+
+To application can be installed using ``pip install genomes_attributes_viewer``
+or from the ``genomes_attributes_viewer`` directory of the _fastsubtrees_
+repository.
+
+To start the application, use the ``genomes-attributes-viewer``.
+The first time this command is run, the application data are downloaded and
+prepared, taking a few seconds. Startup on subsequent
+starts does not require these operations and is thus faster.
+
+### Other subpackages
+
+#### NtSubtree
+
+NtSubtree is a library which automatically downloads the NCBI taxonomy
+dump and constructs the ``fastsubtrees`` data for it. It allows to easily
+keep the data up-to-date. It is a separate Python package, which can
+be installed using ``pip``, and depends on _fastsubtrees_.
+
+The ``query`` command of the NtSubtree CLI tool automatically
+display also taxonomic names, alongside the IDs in query and allow to
+perform queries by taxonomic name.
+
+For more information see also the ``ntsubtree/README.md`` file.
+
+#### ntdownload
 
 When working with the NCBI taxonomy database, a local copy of the NCBI taxonomy
 dump can be obtained and kept up-to-date using the _ntdownload_ package, which
@@ -272,7 +274,7 @@ from _fastsubtrees_.
 Please refer to the user manual of _ntdownload_ located under ``ntdownload/README.md``
 for more information.
 
-### ntmirror
+#### ntmirror
 
 A downloaded NCBI taxonomy database dump can be loaded to
 a local SQL database, using the package _ntmirror_, which is located
@@ -286,16 +288,21 @@ from the local database mirror using hierarchical SQL queries.
 Please refer to the user manual of _ntmirror_ located under ``ntmirror/README.md``
 for more information.
 
-#### Local installation and startup
+### Internals
 
-To application can be installed using ``pip install genomes_attributes_viewer``
-or from the ``genomes_attributes_viewer`` directory of the _fastsubtrees_
-repository.
+For achieving an efficient running time and memory use, the nodes of the tree
+are represented compactly in deep-first traversal order.
+Subtrees are then extracted in O(s) time, where s is the size of the extracted
+subtree (i.e. not depending on the size of the whole tree).
 
-To start the application, use the ``genomes-attributes-viewer``.
-The first time this command is run, the application data are downloaded and
-prepared, taking a few seconds. Startup on subsequent
-starts does not require these operations and is thus very fast.
+The IDs must not
+necessarily be all consecutive (i.e. some "holes" may be present), but the
+largest node ID (_idmax_) should not be much larger than the total number of
+nodes, because the memory consumption is in _O(idmax)_.
+
+For each attribute defined in a tree, a file is created, where the attribute
+values are stored. The attributes are also stored in the same deep-first traversal
+order as the tree IDs.
 
 ## Community guidelines
 
