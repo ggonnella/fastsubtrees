@@ -12,7 +12,7 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='ntdownload',
-      version='1.5',
+      version='1.6',
       description="Easily updatable local NCBI taxonomy dumps file copy",
       long_description=readme(),
       long_description_content_type="text/markdown",

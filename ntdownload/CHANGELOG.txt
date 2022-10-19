@@ -1,3 +1,8 @@
+== 1.6 ==
+- __version__ instead of VERSION
+- expose function to extract scientific names to API
+- test more code and add make testcov goal
+
 == 1.5 ==
 - ntnames script to extract scientific names from the dumps
 

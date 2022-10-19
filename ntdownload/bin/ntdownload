@@ -25,7 +25,7 @@ Options:
 
 import snacli
 import sys
-from ntdownload import scripts_helper, Downloader, VERSION
+from ntdownload import scripts_helper, Downloader, __version__
 
 def main(args):
   d = Downloader(args["<outdir>"])
@@ -52,5 +52,5 @@ def validated(args):
 with snacli.args(output=["<output>"],
                  params=["--exitcode", "--verbose"],
                  docvars={"common": scripts_helper.ARGS_DOC},
-                 version=VERSION) as args:
+                 version=__version__) as args:
   if args: main(validated(args))

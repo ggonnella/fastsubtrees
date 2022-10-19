@@ -20,6 +20,9 @@ wheel:
 tests:
 	pytest
 
+testcov:
+	pytest --cov=ntdownload --cov-report html -v tests/
+
 # Remove distribution files
 cleanup:
 	rm -rf dist/ build/ *.egg-info/

@@ -1,5 +1,6 @@
 # ntdownload library
 
-from .downloader import Downloader
+__version__="1.6"
 
-VERSION="1.5"
+from .downloader import Downloader
+from .names import yield_scientific_names_from_dump

@@ -15,16 +15,12 @@ Options:
 """
 
 from docopt import docopt
-from ntdownload import VERSION
+from ntdownload import __version__, yield_scientific_names_from_dump
 
 def main(args):
-  names_file = args['<ntdumpsdir>'] + '/names.dmp'
-  with open(names_file, 'r') as f:
-    for line in f:
-      fields = line.split('\t|\t')
-      if fields[3].startswith('scientific name'):
-        print("{}\t{}".format(fields[0], fields[1]))
+  for taxid, name in yield_scientific_names_from_dump(args['<ntdumpsdir>']):
+    print("{}\t{}".format(taxid, name))
 
 if __name__ == '__main__':
-  args = docopt(__doc__, version=VERSION)
+  args = docopt(__doc__, version=__version__)
   main(args)
