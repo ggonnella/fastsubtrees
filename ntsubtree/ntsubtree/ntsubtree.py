@@ -33,11 +33,16 @@ def n_lines(filename):
       n += 1
   return n
 
-def search_name(query):
-  for taxid, name in yield_names():
-    if name == query:
-      return taxid
-  return None
+names_index = None
+
+def search_name(query, reindex=False):
+  global names_index
+  if not names_index or reindex:
+    fastsubtrees.logger.info("Building scientific names index")
+    names_index = {}
+    for taxid, name in yield_names():
+      names_index[name] = taxid
+  return names_index.get(query, None)
 
 def update(force_download=False, force_construct=False):
   """
@@ -67,6 +72,8 @@ def update(force_download=False, force_construct=False):
       tree.replace_attribute_values("taxname", read_names())
     else:
       tree.create_attribute("taxname", yield_names())
+    global names_index
+    names_index = None
   else:
     fastsubtrees.logger.info("No tree update needed.")
 

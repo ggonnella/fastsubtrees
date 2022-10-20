@@ -3,7 +3,7 @@
 from pathlib import Path
 from platformdirs import PlatformDirs
 
-__version__="1.0"
+__version__="1.1"
 __appname__="NtSubtree"
 __author__="ggonnella"
 

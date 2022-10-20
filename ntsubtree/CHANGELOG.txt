@@ -1,2 +1,5 @@
+=== 1.1 ===
+- memoize scientific names to tax ID index
+
 === 1.0 ===
 - initial release
