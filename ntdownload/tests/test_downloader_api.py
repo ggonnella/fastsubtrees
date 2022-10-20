@@ -25,7 +25,7 @@ else:
 
 def test_first_download(testout):
   outdir=testout("first_download")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   downloader = Downloader(outdir)
   if not USE_REAL_FILE:
     downloader.set_testmode()
@@ -36,8 +36,8 @@ def test_first_download(testout):
 
 def test_no_newer_version(testout):
   outdir=testout("no_newer_version")
-  sh.rm(outdir, "-rf")
-  sh.mkdir(outdir, "-p")
+  sh.rm("-rf", outdir)
+  sh.mkdir("-p", outdir)
   sh.touch(outdir/Downloader.TIMESTAMP)
   future = time.time() + 3600
   os.utime(outdir/Downloader.TIMESTAMP, (future, future))
@@ -49,7 +49,7 @@ def test_no_newer_version(testout):
 
 def test_newer_version(testout):
   outdir=testout("newer_version")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   downloader = Downloader(outdir)
   downloader.set_testmode()
   downloader.run()
@@ -66,7 +66,7 @@ def test_newer_version(testout):
 
 def test_no_unpack(testout):
   outdir=testout("no_unpack")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   downloader = Downloader(outdir)
   if not USE_REAL_FILE:
     downloader.set_testmode()
@@ -77,7 +77,7 @@ def test_no_unpack(testout):
 
 def test_force_https(testout):
   outdir=testout("force_https")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   downloader = Downloader(outdir)
   if not USE_REAL_FILE:
     downloader.set_testmode()
@@ -88,7 +88,7 @@ def test_force_https(testout):
 
 def test_fallback_https(testout):
   outdir=testout("fallback_https")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   downloader = Downloader(outdir)
   downloader.PROTOCOL1 = "fakeftp"
   if not USE_REAL_FILE:

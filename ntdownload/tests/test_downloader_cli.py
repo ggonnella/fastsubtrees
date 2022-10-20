@@ -27,7 +27,7 @@ else:
 @pytest.mark.script_launch_mode('subprocess')
 def test_first_download(testout, script, script_runner):
   outdir=testout("first_download")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   args = [outdir, "--exitcode"]
   if not USE_REAL_FILE:
     args.append("--testmode")
@@ -39,8 +39,8 @@ def test_first_download(testout, script, script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_no_newer_version(testout, script, script_runner):
   outdir=testout("no_newer_version")
-  sh.rm(outdir, "-rf")
-  sh.mkdir(outdir, "-p")
+  sh.rm("-rf", outdir)
+  sh.mkdir("-p", outdir)
   sh.touch(outdir/Downloader.TIMESTAMP)
   future = time.time() + 3600
   os.utime(outdir/Downloader.TIMESTAMP, (future, future))
@@ -52,7 +52,7 @@ def test_no_newer_version(testout, script, script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_newer_version(testout, script, script_runner):
   outdir=testout("newer_version")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   args = [outdir, "--exitcode", "--testmode"]
   ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
@@ -69,7 +69,7 @@ def test_newer_version(testout, script, script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_no_unpack(testout, script, script_runner):
   outdir=testout("no_upack")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   args = [outdir, "--exitcode", "--no-unpack"]
   if not USE_REAL_FILE:
     args.append("--testmode")
@@ -81,7 +81,7 @@ def test_no_unpack(testout, script, script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_force_https(testout, script, script_runner):
   outdir=testout("no_upack")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   args = [outdir, "--exitcode", "--force-https"]
   if not USE_REAL_FILE:
     args.append("--testmode")
@@ -93,7 +93,7 @@ def test_force_https(testout, script, script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_exception2(testout, script, script_runner):
   outdir=testout("exception2")
-  sh.rm(outdir, "-rf")
+  sh.rm("-rf", outdir)
   args = [str(outdir), "--protocol", "fake"]
   if not USE_REAL_FILE:
     args.append("--testmode")
