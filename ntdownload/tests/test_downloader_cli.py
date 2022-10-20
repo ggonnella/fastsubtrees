@@ -17,6 +17,13 @@ from ntdownload import Downloader
 #
 USE_REAL_FILE = False
 
+if USE_REAL_FILE:
+  CONTAINED_FILENAME = "README.md"
+  ARCHIVE_FILENAME = Downloader.DUMPFILENAME
+else:
+  CONTAINED_FILENAME = Downloader.TESTFILENAME
+  ARCHIVE_FILENAME = CONTAINED_FILENAME + Downloader.ARCHIVE_SUFFIX
+
 @pytest.mark.script_launch_mode('subprocess')
 def test_first_download(testout, script, script_runner):
   outdir=testout("first_download")
@@ -26,9 +33,8 @@ def test_first_download(testout, script, script_runner):
     args.append("--testmode")
   ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
-  if not USE_REAL_FILE:
-    assert os.path.exists(outdir/Downloader.TESTFILENAME)
   assert os.path.exists(outdir/Downloader.TIMESTAMP)
+  assert os.path.exists(outdir/CONTAINED_FILENAME)
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_no_newer_version(testout, script, script_runner):
@@ -41,7 +47,7 @@ def test_no_newer_version(testout, script, script_runner):
   args = [outdir, "--exitcode", "--testmode"]
   ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 100
-  assert not os.path.exists(outdir/Downloader.TESTFILENAME)
+  assert not os.path.exists(outdir/CONTAINED_FILENAME)
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_newer_version(testout, script, script_runner):
@@ -54,9 +60,33 @@ def test_newer_version(testout, script, script_runner):
   before_last_version = mtime - 18000
   os.utime(outdir/Downloader.TIMESTAMP, \
            (before_last_version, before_last_version))
-  os.unlink(outdir/Downloader.TESTFILENAME)
-  assert not os.path.exists(outdir/Downloader.TESTFILENAME)
+  os.unlink(outdir/CONTAINED_FILENAME)
+  assert not os.path.exists(outdir/CONTAINED_FILENAME)
   ret = script_runner.run(script("ntdownload"), *args)
   assert ret.returncode == 0
-  assert os.path.exists(outdir/Downloader.TESTFILENAME)
+  assert os.path.exists(outdir/CONTAINED_FILENAME)
+
+@pytest.mark.script_launch_mode('subprocess')
+def test_no_unpack(testout, script, script_runner):
+  outdir=testout("no_upack")
+  sh.rm(outdir, "-rf")
+  args = [outdir, "--exitcode", "--no-unpack"]
+  if not USE_REAL_FILE:
+    args.append("--testmode")
+  ret = script_runner.run(script("ntdownload"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(outdir/Downloader.TIMESTAMP)
+  assert os.path.exists(outdir/ARCHIVE_FILENAME)
+
+@pytest.mark.script_launch_mode('subprocess')
+def test_force_https(testout, script, script_runner):
+  outdir=testout("no_upack")
+  sh.rm(outdir, "-rf")
+  args = [outdir, "--exitcode", "--force-https"]
+  if not USE_REAL_FILE:
+    args.append("--testmode")
+  ret = script_runner.run(script("ntdownload"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(outdir/Downloader.TIMESTAMP)
+  assert os.path.exists(outdir/CONTAINED_FILENAME)
 

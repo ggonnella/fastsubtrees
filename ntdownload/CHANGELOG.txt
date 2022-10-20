@@ -1,3 +1,10 @@
+== 1.7 ==
+- test coverage 100%
+- better wording: decompress => unpack
+- API: force_https
+- CLI: --force-https and --no-unpack
+- README updated
+
 == 1.6 ==
 - __version__ instead of VERSION
 - expose function to extract scientific names to API

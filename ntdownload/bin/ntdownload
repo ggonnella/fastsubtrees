@@ -13,7 +13,7 @@ If in the <outdir> contains a file called "timestamp" then the download will
 only occur if the timestamp in the file is older than the timestamp of the
 NCBI taxonomy database dump on the NCBI FTP site.
 
-After download, the dump is decompressed and the compressed file is deleted.
+After download, the dump is unpacked and the compressed file is deleted.
 
 Options:
 {common}
@@ -21,6 +21,8 @@ Options:
                    because the local copy is up to date
                    (default: exit with code 0 also in this case)
   --testmode       download a test file instead of the database dump
+  --no-unpack      do not unpack the dump file
+  --force-https    always use HTTPS instead of FTP (default: first try FTP)
 """
 
 import snacli
@@ -33,7 +35,8 @@ def main(args):
   if args["--testmode"]:
     d.set_testmode()
   try:
-    has_download = d.run()
+    has_download = d.run(unpack = not args["--no-unpack"],
+                         force_https = args["--force-https"])
   except Exception as e:
     logger.error(e)
     exit(1)

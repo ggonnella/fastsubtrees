@@ -15,10 +15,11 @@ class Downloader():
   REMOTE = "ftp.ncbi.nih.gov/pub/taxonomy"
   DUMPFILENAME = "taxdump.tar.gz"
   TESTFILENAME = "taxdump_readme.txt"
+  ARCHIVE_SUFFIX = ".tar.gz"
   TIMESTAMP = "timestamp"
 
   def __init__(self, outdir):
-    self.outdir = outdir
+    self.outdir = str(outdir)
     os.makedirs(self.outdir, exist_ok=True)
     self.testmode = False
 
@@ -26,7 +27,7 @@ class Downloader():
     self.DUMPFILENAME = self.TESTFILENAME
     self.testmode = True
 
-  def run(self, decompress=True):
+  def run(self, unpack=True, force_https=False):
     remotefile = self.REMOTE + "/" + self.DUMPFILENAME
     localfile = self.outdir + "/" + self.DUMPFILENAME
     timestampfile = self.outdir + "/" + self.TIMESTAMP
@@ -35,11 +36,18 @@ class Downloader():
       args += ["-z", timestampfile]
     try:
       ret = sh.curl(self.PROTOCOL1 + remotefile, *args)
+      failed = False
     except sh.ErrorReturnCode:
+      failed = True
+    if failed or force_https:
       ret = sh.curl(self.PROTOCOL2 + remotefile, *args)
     downloaded = int(ret.rstrip())
     if downloaded > 0:
-      if decompress and not self.testmode:
+      if self.testmode:
+        localfile += self.ARCHIVE_SUFFIX
+        sh.tar("-czf", localfile, "-C", self.outdir, \
+               self.DUMPFILENAME, "--remove-files")
+      if unpack:
         sh.tar("-xzf", localfile, "-C", self.outdir)
         os.unlink(localfile)
       sh.touch(timestampfile)
