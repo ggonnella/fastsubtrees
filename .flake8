@@ -1,0 +1,6 @@
+[flake8]
+ignore = E302,E305,E126,E226,E127,E128,E131,E225,E502,E124,E402,E251,W391,C901
+max-line-length = 80
+exclude = __init__.py
+max-complexity = 10
+indent-size = 2
