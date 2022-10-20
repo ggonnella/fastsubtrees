@@ -18,7 +18,8 @@ with open(f'{gav.workdir}/{gav.SCIENTIFIC_NAMES}') as f:
   data = f.read()
 options = json.loads(data)
 
-app.layout = html.Div(style={'marginLeft': '2%', 'marginRight': '2%'}, children=[
+app.layout = html.Div(style={'marginLeft': '2%',
+                             'marginRight': '2%'}, children=[
   html.H1(style={'textAlign': 'center'}, children='Genomes Attributes Viewer'),
   dbc.NavbarSimple(
     children=[

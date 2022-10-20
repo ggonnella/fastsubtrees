@@ -14,8 +14,8 @@ def test_dbload_cli_mysql(connection, script, testdatadir,
     pytest.skip(NODBMSG)
   else:
     dbschema.drop(connection)
-    args = connection_args + [testdatadir, "--exitcode", "--dbecho", "--verbose",
-                                           "--testmode"]
+    args = connection_args + \
+        [testdatadir, "--exitcode", "--dbecho", "--verbose", "--testmode"]
     ret = script_runner.run(script("ntmirror-dbload"), *args)
     assert ret.returncode == 0
     session = Session(connection)
@@ -30,8 +30,8 @@ def test_dbload_cli_sqlalchemy(connection, script, testdatadir,
     pytest.skip(NODBMSG)
   else:
     dbschema.drop(connection)
-    args = connection_args + [testdatadir, "--exitcode", "--sqlalchemy",
-                                           "--dbecho", "--verbose", "--testmode"]
+    args = connection_args + [testdatadir, \
+        "--exitcode", "--sqlalchemy", "--dbecho", "--verbose", "--testmode"]
     ret = script_runner.run(script("ntmirror-dbload"), *args)
     assert ret.returncode == 0
     session = Session(connection)

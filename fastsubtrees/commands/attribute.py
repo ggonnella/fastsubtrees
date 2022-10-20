@@ -41,7 +41,7 @@ Further options:
   -d, --debug    print debug information
   -h, --help     show this help message and exit
   -V, --version  show program's version number and exit
-"""
+""" # noqa
 
 from fastsubtrees import logger, Tree
 from fastsubtrees.commands import _support

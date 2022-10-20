@@ -131,7 +131,8 @@ class TreeAttributes():
     if self.has_attribute(attribute) and not force:
       raise error.AttributeCreationError(\
           f"Attribute '{attribute}' already exists")
-    attribute_values = TreeAttributes.prepare_attribute_values(generator, casting_fn)
+    attribute_values = \
+        TreeAttributes.prepare_attribute_values(generator, casting_fn)
     self.save_attribute_values(attribute, attribute_values)
 
   def create_attribute_from_tabular(self, attribute, filename,
@@ -146,8 +147,9 @@ class TreeAttributes():
     if self.has_attribute(attribute) and not force:
       raise error.AttributeCreationError(\
           f"Attribute '{attribute}' already exists")
-    attribute_values = TreeAttributes.prepare_attribute_values_from_tabular(filename,
-        separator, elem_field_num, attr_field_num, comment_char, casting_fn)
+    attribute_values = \
+        TreeAttributes.prepare_attribute_values_from_tabular(filename,
+          separator, elem_field_num, attr_field_num, comment_char, casting_fn)
     self.save_attribute_values(attribute, attribute_values)
 
   def save_attribute_values(self, attribute, attrvalues):

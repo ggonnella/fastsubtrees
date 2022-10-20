@@ -120,7 +120,6 @@ class TreeEditor():
       self.subtree_sizes[p] += 1
       node_number = p
       p = self.parents[node_number]
-    # logger.info(f"Inserted node {node_number} with parent {parent} at position {inspos}")
 
   def __move_subtree(self, subtree_root, new_parent, edit_script):
     subtree_size = self.subtree_sizes[subtree_root]

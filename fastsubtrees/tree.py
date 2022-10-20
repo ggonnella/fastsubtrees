@@ -133,14 +133,15 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
       self.subtree_sizes[elem] += 1
       while parent != elem:
         if parent >= len(self.parents):
-          raise error.ConstructionError( \
-            f"The node '{elem}' has parent '{parent}', which is not in the tree")
+          raise error.ConstructionError(\
+            f"The node '{elem}' has parent '{parent}', "+\
+            "which is not in the tree")
         self.subtree_sizes[parent] += 1
         grandparent = self.parents[parent]
         if (grandparent == Tree.UNDEF):
-          raise error.ConstructionError( \
-            f"The node '{parent}' has parent '{grandparent}'"+\
-            ", which is not in the tree")
+          raise error.ConstructionError(\
+            f"The node '{parent}' has parent '{grandparent}', "+\
+            "which is not in the tree")
         elem = parent
         parent = grandparent
 

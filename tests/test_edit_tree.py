@@ -114,7 +114,8 @@ def test_update_tree(testdata, testout):
   tree.create_attribute_from_tabular("attrX2", testdata("small_tree_attrX.tsv"))
   tree.update_from_tabular(testdata('small_tree.update.tsv'))
   with open(testdata("small_tree.updated.query.root.parents.results")) as f:
-    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+    expected_results = \
+        [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert list(tree.subtree_ids(tree.root_id)) == expected_results
   t2 = Tree.construct_from_tabular(testdata('small_tree.update.tsv'))
   t2.to_file(testout('small_tree2.tree'))
@@ -141,7 +142,8 @@ def test_update_tree(testdata, testout):
   tree.create_attribute_from_tabular("attrX2", testdata("small_tree_attrX.tsv"))
   tree.update_from_ncbi_dump(testdata("small_ncbi.update.tsv"))
   with open(testdata("small_ncbi.updated.query.root.parents.results")) as f:
-    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+    expected_results = \
+        [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert list(tree.subtree_ids(tree.root_id)) == expected_results
   t2 = Tree.construct_from_ncbi_dump(testdata('small_ncbi.update.tsv'))
   t2.to_file(testout('small_ncbi2.tree'))
@@ -159,7 +161,8 @@ def test_reset_tree(testdata, testout):
   tree.create_attribute_from_tabular("attrX2", testdata("small_tree_attrX.tsv"))
   tree.reset_from_tabular(testdata('small_tree.update.tsv'))
   with open(testdata("small_tree.updated.query.root.parents.results")) as f:
-    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+    expected_results = \
+        [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert set(tree.subtree_ids(tree.root_id)) == set(expected_results)
   t2 = Tree.construct_from_tabular(testdata('small_tree.update.tsv'))
   t2.to_file(testout('small_tree2.tree'))
@@ -186,7 +189,8 @@ def test_reset_tree(testdata, testout):
   tree.create_attribute_from_tabular("attrX2", testdata("small_tree_attrX.tsv"))
   tree.reset_from_ncbi_dump(testdata("small_ncbi.update.tsv"))
   with open(testdata("small_ncbi.updated.query.root.parents.results")) as f:
-    expected_results = [int(line.split("\t")[0]) for line in f if line[0] != "#"]
+    expected_results = \
+        [int(line.split("\t")[0]) for line in f if line[0] != "#"]
   assert set(tree.subtree_ids(tree.root_id)) == set(expected_results)
   t2 = Tree.construct_from_ncbi_dump(testdata('small_ncbi.update.tsv'))
   t2.to_file(testout('small_ncbi2.tree'))

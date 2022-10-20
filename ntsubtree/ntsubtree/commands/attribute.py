@@ -20,7 +20,7 @@ Tabular file input:
   -s, --separator S    separator in the tabular file (default: tab)
   -e, --elementscol E  column with the IDs of the elements (1-based, default: 1)
   -v, --valuescol P    column with the attribute values (1-based, default: 2)
-  -c, --commentchar C  lines starting with this character are ignored (default: #)
+  -c, --commentchar C  lines starting with this char are ignored (default: #)
 
 Module input:
   -m, --module M  select file <M> as a Python module defining a function
@@ -28,7 +28,7 @@ Module input:
   <args>...       arguments to be passed to the function;
                   if they contain a '=', they are passed as keyword arguments
   -F, --fn FN     name of the function to be called (default: attribute_values)
-  -K, --nokeys    disable interpreting '=' in <args> as keyword arguments separator
+  -K, --nokeys    disable interpreting '=' in <args> as keyword args separator
 
 Conversion of attribute values:
   -t, --type T   function to apply to the attribute values; either from the
@@ -41,7 +41,7 @@ Further options:
   -d, --debug    print debug information
   -h, --help     show this help message and exit
   -V, --version  show program's version number and exit
-"""
+""" # noqa
 
 from fastsubtrees.commands.attribute import manage_attribute
 from pathlib import Path
