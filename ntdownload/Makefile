@@ -21,7 +21,7 @@ tests:
 	pytest
 
 testcov:
-	pytest --cov=ntdownload --cov-report html -v tests/
+	pytest --cov=ntdownload --cov=bin --cov-report html -v tests/
 
 # Remove distribution files
 cleanup:

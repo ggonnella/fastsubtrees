@@ -90,3 +90,17 @@ def test_force_https(testout, script, script_runner):
   assert os.path.exists(outdir/Downloader.TIMESTAMP)
   assert os.path.exists(outdir/CONTAINED_FILENAME)
 
+@pytest.mark.script_launch_mode('subprocess')
+def test_exception2(testout, script, script_runner):
+  outdir=testout("exception2")
+  sh.rm(outdir, "-rf")
+  args = [str(outdir), "--protocol", "fake"]
+  if not USE_REAL_FILE:
+    args.append("--testmode")
+  ret = script_runner.run(script("ntdownload"), *args)
+  assert ret.returncode == 1
+  assert "ERROR" in ret.stderr
+  assert not os.path.exists(outdir/Downloader.TIMESTAMP)
+  assert not os.path.exists(outdir/CONTAINED_FILENAME)
+
+
