@@ -1,3 +1,6 @@
+== 1.7.1 ==
+- fixes tests on MacOSX
+
 == 1.7 ==
 - test coverage 100%
 - better wording: decompress => unpack
