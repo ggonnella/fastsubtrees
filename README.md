@@ -191,9 +191,6 @@ docker run -p 8050:8050 --detach --name fastsubtreesC fastsubtrees
 # run the tests
 docker exec fastsubtreesC tests
 
-# run the benchmarks, skipping repeating tree creation
-docker exec fastsubtreesC benchmarks
-
 # run benchmarks
 docker exec fastsubtreesC benchmarks
 
