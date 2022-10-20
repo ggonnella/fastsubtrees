@@ -301,6 +301,56 @@ For each attribute defined in a tree, a file is created, where the attribute
 values are stored. The attributes are also stored in the same deep-first traversal
 order as the tree IDs.
 
+#### Tree construction algorithm
+
+The tree construction algorithm used here is the following,
+where the input data consists of 2-tuples ``(element_id, parent_id)``
+and the maximum node ID m is not much larger than the number of IDs n.
+
+1. iteration over the input data to construct a table _P_ of parents by ID,
+i.e. ``P[element_id]=parent_id`` if ``element_id`` is in the tree,
+and ``P[element_id]=UNDEF`` if not, where UNDEF is a special value.
+This requires _O(n)_ steps
+for reading the IDs and _O(m)_ steps for writing either the ID or the _UNDEF_
+value to _P_; since _m>=n_, the total time is in _O(m)_.
+2. iteration over table _P_: for each element the tree is climbed to the roo
+to compute the size of the subtree of each node stored in a table _S_. This
+operation requires _O(n*d)_ time, where _d_ is the height of the node,
+which is in average case much lower than _m_ and d=m is the worst case.
+3. construction of the tree data _D_, consisting of the depth first order of
+the nodes, and of the list _C_ of the coordinates of all nodes in the tree data, by id.
+For this operation, first the root is added to _D_ and _C_, then
+for each other node _x_ in _P_, the tree is climbed and nodes added to a stack until the next not-yet-added
+ancestor is found. The position where to add it this node is computed by the next
+free position in the subtree of its parent (which must have been already added,
+by definition, thus the next free position in its subtree is known). After this,
+the next stack element is added, until _x_ is added.
+Although this operation also requires climbing the tree, it takes in total _O(n)_ time,
+since each node is added only once.
+
+#### Parallelizing the tree construction
+
+Currently the slowest step of the construction, detailed in the previous
+section, is the second, i.e. the computation of _S_.
+Since each node must be count in the subtree size of all its ancestors,
+there is no easy way to reduce the time from _O(n*h)_.
+
+To parallelize this step, one divides the parents table into _t_ slices,
+and assign each to a different sub-process (not thread, because of the GIL).
+Each sub-process would then count the subtree sizes in the slice only.
+A version implemented with a shared table and a lock was too slow,
+since access to the table was concurrent among the sub-processes.
+In the current version, instead, each sub-process makes a own subtree sizes
+_S'_ table. The sub-processes _S'_ tables are summed up after completion for
+obtaining the _S_ table.
+
+This option can be activated in the CLI using the ``--processes P`` option,
+or in the API setting the ``nprocesses`` argument of ``Tree.construct`` and
+related methods. Benchmarks show that the parallel version did not significantly
+improve the performance on constructing the NCBI taxonomy tree, likely
+because of the overhead of process starting, array _S'_ initialization
+and summing up of all _S'_ to _S_ after completion.
+
 ## Community guidelines
 
 Contributions to the software are welcome. Please clone this repository
