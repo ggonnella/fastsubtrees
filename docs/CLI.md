@@ -40,13 +40,13 @@ When using ``nodes.dmp`` from
 the NCBI taxonomy tree dump, the preset ``--ncbi`` can be used.
 Example:
 ```
-fastsubtrees-construct my.tree --ncbi ntdumpsdir/nodes.dmp
+fastsubtrees my.tree --ncbi ntdumpsdir/nodes.dmp
 ```
 
 ### Generalized tree construction
 
-In the generalized tree construction mode, the path to a Python module
-is passed, using the option ``--module``, which contain a function, yielding
+In the generalized tree construction mode, using the option ``--module``,
+the path to a Python module is passed. The module defines a function, yielding
 the node and parent IDs. The default function name is ``element_parent_ids``
 and can be changed using the option ``--fn``.
 
@@ -151,7 +151,8 @@ nodes (``--elementscol``) and attribute values (``--valuescol``).
 #### Generalized source of attribute values
 
 As a generalized attribute values source, the path to a Python module
-is passed, using the option ``--module``, which contain a function, yielding
+is passed, using the option ``--module``. The module
+defines a function, yielding
 tuples ``(node_ID, attribute_value)``.
 The default function name is ``attribute_values``
 and can be changed using the option ``--fn``.
