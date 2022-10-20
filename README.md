@@ -61,20 +61,20 @@ The example below uses the ``fastsubtrees`` command, as well as the ``ntdownload
 
 ```
 ntdownload ntdumps                                     # download NCBI taxonomy data
-fastsubtrees tree nt.tree --ncbi ntdumps/nodes.dmp     # create the tree
-faststubrees query nt.tree 562                         # query node 562
+fastsubtrees tree nt.tree --ncbi ntdumps/nodes.dmp -f  # create the tree
+fastsubtrees query nt.tree 562                         # query node 562
 
 # attributes
-ATTRTAB=data/accession_taxid_attribute.tsv.gz.         # data file
+ATTRTAB=data/accession_taxid_attribute.tsv.gz          # data file
 TAXID=2; GENOME_SIZE=3; GC_CONTENT=4                   # column numbers, 1-based
 
 fastsubtrees attribute nt.tree genome_size $ATTRTAB -e $TAXID -v $GENOME_SIZE -t int
 fastsubtrees attribute nt.tree GC_content $ATTRTAB -e $TAXID -v $GC_CONTENT -t float
-             
-fastsubtrees query nt.tree 562 gemome_size GC_content  # query including attributes
+
+fastsubtrees query nt.tree 562 genome_size GC_content  # query including attributes
 
 # taxonomy names
-ntnames ntdumps > names.tsv                            # prepare data from names dump
+ntnames ntdumps >| names.tsv                           # prepare data from names dump
 fastsubtrees attribute nt.tree taxname names.tsv       # add names as attribute
 fastsubtrees query nt.tree 562 taxname genome_size     # query including taxa names
 ```
@@ -91,11 +91,11 @@ ntsubtree query 562               # taxonomic names displayed alongside the IDs
 ntsubtree query -n "Escherichia"  # Query by taxonomic name
 
 # attributes
-ATTRTAB=data/accession_taxid_attribute.tsv.gz.         # data file
+ATTRTAB=data/accession_taxid_attribute.tsv.gz          # data file
 TAXID=2; GENOME_SIZE=3; GC_CONTENT=4                   # column numbers
 
 ntsubtree attribute genome_size $ATTRTAB -e $TAXID -v $GENOME_SIZE
-ntsubtree attribute GC_content $ATTRTAB -e $TAXID -v $GENOME_SIZE
+ntsubtree attribute GC_content $ATTRTAB -e $TAXID -v $GC_CONTENT
 ntsubtree query -n "Escherichia" genome_size GC_content
 
 # check if a newer version of the taxonomy data is available
