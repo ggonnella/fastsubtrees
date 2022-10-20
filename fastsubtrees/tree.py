@@ -15,6 +15,29 @@ from .query import SubtreeQuery
 from .edit import TreeEditor
 
 class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
+  """
+  Representation of a tree, which allows fast subtree queries.
+
+  For constructing an object of this class, you can use one of the
+  following methods:
+  - from_file(cls, filename: Union[str, Path]): load a tree from a fastsubtrees
+    tree file, where it was previously saved with the to_file method.
+  - construct(cls, generator: Iterator[Tuple[int, int]]): construct a tree
+    from a generator of (node, parent) pairs.
+  - construct_from_tabular(cls, filename: Union[str, Path],
+                           separator: str = "\t", elem_field_num: int = 0,
+                          parent_field_num: int = 1, n_processes: int = 1):
+    construct a tree from a tabular file, where each line contains the
+    node ID and its parent ID, separated by the separator character.
+    The elem_field_num and parent_field_num parameters specify the (0-based)
+    column numbers of the node and parent IDs, respectively.
+  - construct_from_ncbi_dump(cls, filename: Union[str, Path]): construct a
+    tree from a NCBI taxonomy dump file; this is specialized version
+    of the construct_from_tabular method, where the separator and field
+    numbers are set to the values used in the NCBI taxonomy dump files.
+
+  The tree can be saved to a file with the to_file() method.
+  """
 
   def __init__(self):
     # treedata contains:
