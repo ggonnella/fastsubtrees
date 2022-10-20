@@ -12,7 +12,7 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='genomes_attributes_viewer',
-      version='1.2',
+      version='1.3',
       description="Example application of fastsubtrees",
       long_description=readme(),
       long_description_content_type="text/markdown",

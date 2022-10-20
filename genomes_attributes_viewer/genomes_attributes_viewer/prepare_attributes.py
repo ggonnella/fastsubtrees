@@ -7,6 +7,9 @@ TAXID_COLUMN = 1
 ATTR_COLUMN = {}
 ATTR_COLUMN["genome_size"] = 2
 ATTR_COLUMN["GC_content"] = 3
+ATTR_CAST = {}
+ATTR_CAST["genome_size"] = int
+ATTR_CAST["GC_content"] = float
 ATTR_INPUTFILE="accession_taxid_attribute.tsv.gz"
 
 def generate_attribute_files(workdir, force):
@@ -20,9 +23,9 @@ def generate_attribute_files(workdir, force):
     if tree.has_attribute(attribute) and not force:
       logger.info(f"Attribute '{attribute}' found")
     else:
-      if force:
+      if force and tree.has_attribute(attribute):
         tree.destroy_attribute(attribute)
       tree.create_attribute_from_tabular(attribute, attr_inputfile,
-          id_col=gav.TAXID_COLUMN, attr_col=ATTR_COLUMN[attribute])
+          elem_field_num=TAXID_COLUMN, attr_field_num=ATTR_COLUMN[attribute],
+          casting_fn=ATTR_CAST[attribute])
       logger.success(f"Attribute '{attribute}' added to tree")
-    return True
