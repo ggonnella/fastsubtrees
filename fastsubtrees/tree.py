@@ -9,6 +9,7 @@ from typing import Union, Iterator, Tuple
 from pathlib import Path
 from fastsubtrees import logger, tqdm, error
 from fastsubtrees.ids_modules import ids_from_tabular_file
+from multiprocessing.pool import Pool
 from .attribute import TreeAttributes
 from .query import SubtreeQuery
 from .edit import TreeEditor
@@ -123,6 +124,54 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     assert (self.parents is not None)
     return len(self.parents) - 1
 
+  def _validate_parents(self):
+    logger.info("Validating the parents table data...")
+    for elem, parent in tqdm(enumerate(self.parents), \
+                             total=self.max_node_id()+1):
+      if parent == Tree.UNDEF or parent == elem:
+        continue
+      if parent >= len(self.parents):
+        raise error.ConstructionError(\
+          f"The node '{elem}' has parent '{parent}', "+\
+          "which is not in the tree")
+      grandparent = self.parents[parent]
+      if (grandparent == Tree.UNDEF):
+        raise error.ConstructionError(\
+          f"The node '{parent}' has parent '{grandparent}', "+\
+          "which is not in the tree")
+
+  def _compute_subtree_sizes_partial(self, start, end, max_node_id, undef,
+                                     parents_array_readonly):
+    subtree_sizes = array.array("Q", [0] * (max_node_id + 1))
+    for elem in range(start, end):
+      parent = parents_array_readonly[elem]
+      if parent == undef:
+        continue
+      subtree_sizes[elem] += 1
+      while parent != elem:
+        subtree_sizes[parent] += 1
+        grandparent = parents_array_readonly[parent]
+        elem = parent
+        parent = grandparent
+    return subtree_sizes
+
+  def _parallel_compute_subtree_sizes(self, n_processes):
+    logger.info("Constructing subtree sizes table "+\
+        f"using {n_processes} processes...")
+    self.subtree_sizes = array.array("Q", [0] * (self.max_node_id() + 1))
+    results = []
+    with Pool(n_processes) as pool:
+      for i in range(n_processes):
+        start = i * self.max_node_id() // n_processes
+        end = (i + 1) * self.max_node_id() // n_processes
+        results.append(pool.apply_async(
+          self._compute_subtree_sizes_partial,
+          (start, end, self.max_node_id(), Tree.UNDEF, self.parents)))
+      pool.close()
+      pool.join()
+    for i in range(self.max_node_id() + 1):
+      self.subtree_sizes[i] = sum([r.get()[i] for r in results])
+
   def _compute_subtree_sizes(self):
     logger.info("Constructing subtree sizes table...")
     self.subtree_sizes = array.array('Q', [0] * (self.max_node_id()+1))
@@ -182,14 +231,17 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
       self.coords[elem] -= (self.subtree_sizes[elem] - 1)
 
   @classmethod
-  def construct(cls, generator: Iterator[Tuple[int, int]]):
+  def construct(cls, generator: Iterator[Tuple[int, int]], n_processes: int = 1):
     """
     Construct a tree from a generator that yields tuples of the form
     (node, parent).
     """
     self = cls()
     self._compute_parents(generator)
-    self._compute_subtree_sizes()
+    if n_processes > 1:
+      self._parallel_compute_subtree_sizes(n_processes)
+    else:
+      self._compute_subtree_sizes()
     self._compute_treedata_and_coords()
     logger.success("Tree data structure constructed")
     return self
@@ -197,22 +249,23 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
   @classmethod
   def construct_from_tabular(cls, filename: Union[str, Path],
                              separator: str = "\t", elem_field_num: int = 0,
-                             parent_field_num: int = 1):
+                             parent_field_num: int = 1, n_processes: int = 1):
     """
     Construct a tree from a tabular file.
     """
     generator = ids_from_tabular_file.element_parent_ids(filename, separator,
         elem_field_num, parent_field_num)
-    return cls.construct(generator)
+    return cls.construct(generator, n_processes)
 
   @classmethod
-  def construct_from_ncbi_dump(cls, filename: Union[str, Path]):
+  def construct_from_ncbi_dump(cls, filename: Union[str, Path],
+                               n_processes: int = 1):
     """
     Constructs a tree from a NCBI taxonomy dump nodes file.
     """
     generator = ids_from_tabular_file.element_parent_ids(filename,
         ncbi_preset=True)
-    return cls.construct(generator)
+    return cls.construct(generator, n_processes)
 
   def to_file(self, outfname: Union[str, Path]):
     """

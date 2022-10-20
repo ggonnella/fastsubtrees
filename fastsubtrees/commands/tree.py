@@ -33,12 +33,13 @@ Module input:
   -K, --nokeys    disable interpreting '=' in <args> as keyword arguments separator
 
 Further options:
-  -f, --force      overwrite the output file if it exists (action --new)
-  -C, --changes    verbosily report changes made to the tree
-  -q, --quiet      disable log messages
-  -d, --debug      print debug information
-  -h, --help       show this help message and exit
-  -V, --version    show program's version number and exit
+  -f, --force        overwrite the output file if it exists (action --new)
+  -C, --changes      verbosily report changes made to the tree
+  -q, --quiet        disable log messages
+  -d, --debug        print debug information
+  -h, --help         show this help message and exit
+  -V, --version      show program's version number and exit
+  -t, --processes N  number of processes to use (default: 1)
 """ # noqa
 
 from pathlib import Path
@@ -110,7 +111,11 @@ def main(args):
     if Path(args["<treefile>"]).exists() and not args["--force"]:
       logger.error("File {} already exists".format(args["<treefile>"]))
       exit(1)
-    tree = Tree.construct(generator)
+    if not args["--processes"]:
+      args["--processes"] = 1
+    else:
+      args["--processes"] = int(args["--processes"])
+    tree = Tree.construct(generator, args["--processes"])
     tree.set_filename(args["<treefile>"])
     tree.destroy_all_attributes()
   else:
