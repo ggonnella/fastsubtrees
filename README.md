@@ -122,7 +122,7 @@ has_downloaded = d.run()
 
 from fastsubtrees import Tree
 infile = "ntdumpsdir/nodes.dmp"
-tree = Tree.construct_from_ncbi_dumps(infile)     # create the tree
+tree = Tree.construct_from_ncbi_dump(infile)     # create the tree
 results = tree.subtree_ids(562)                   # retrieve subtree IDs
 
 attrtab="data/accession_taxid_attribute.tsv.gz"         # data file
