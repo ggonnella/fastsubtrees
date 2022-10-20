@@ -21,7 +21,9 @@ tests:
 	pytest
 
 testcov:
+	touch tests/__init__.py
 	pytest --cov=ntdownload --cov=bin --cov-report html -v tests/
+	rm tests/__init__.py
 
 # Remove distribution files
 cleanup:

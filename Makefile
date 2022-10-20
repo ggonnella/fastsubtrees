@@ -63,9 +63,11 @@ testcov:
 	pytest -v --cov=fastsubtrees --cov=bin \
 		     --cov-report=html \
 		     tests/
+	touch ntdownload/tests/__init__.py
 	pytest -v --cov=ntdownload/ntdownload --cov=ntdownload/bin \
 		     --cov-report=html --cov-report=term --cov-append \
 		     ntdownload/tests/
+	rm ntdownload/tests/__init__.py
 
 upload: tests clean sdist wheel
 	cd dist; \
