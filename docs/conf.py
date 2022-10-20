@@ -4,3 +4,7 @@ source_suffix = ['.rst', '.md']
 
 master_doc = 'index'
 project = u'FastSubtrees'
+
+author = u'Giorgio Gonnella'
+
+
