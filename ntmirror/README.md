@@ -13,6 +13,9 @@ and its C and Python connectors).
 
 ## CLI
 
+The CLI has been developed and tested exclusively using MariaDB
+as a RDBMS.
+
 ### Loading into the database
 
 The script ``ntmirror-dbload`` is used to load the dump files into the
@@ -103,4 +106,22 @@ command.
 The ``dbloader_sqlalchemy`` version of ``load_all()`` takes two arguments: the
 dump file directory and a SqlAlchemy connection object.
 
+## Tests
 
+To run the test suite, a YAML configuration file for the database connection
+must be provided. The database name, database username and password, hostname
+and port, drivername and path to the connection socket file must be provided.
+
+For example:
+
+```
+database: ntmirror_test
+username: ntmirror_user
+password: ntmirror_pass
+host: localhost
+port: 3306
+socket: ntmirror.sock
+drivername: "mysql+mysqldb"
+```
+
+Then the test suite is run using ``pytest`` (or ``make tests``)
