@@ -14,7 +14,6 @@ default:
 	@echo "Test suite:"
 	@echo "  make tests              run tests using pytest, locally"
 	@echo "  make testcov            pytest-cov coverage report"
-	@echo "  make testcov-html       pytest-cov coverage HTML report"
 	@echo "  make flake              install and run flake8"
 	@echo ""
 	@echo "Create Docker image/container:"
@@ -59,13 +58,14 @@ clean:
 tests:
 	pytest
 
-testcov-html:
-	pip install pytest-cov -qqq
-	pytest --cov=fastsubtrees --cov=bin --cov-report html -v tests/
-
 testcov:
 	pip install pytest-cov -qqq
-	pytest --cov=fastsubtrees --cov=bin -v tests/
+	pytest -v --cov=fastsubtrees --cov=bin \
+		     --cov-report=html \
+		     tests/
+	pytest -v --cov=ntdownload/ntdownload --cov=ntdownload/bin \
+		     --cov-report=html --cov-report=term --cov-append \
+		     ntdownload/tests/
 
 upload: tests clean sdist wheel
 	cd dist; \
