@@ -1,6 +1,8 @@
 FastSubtrees
 ------------
 
+:Authors: Giorgio Gonnella
+
 .. toctree::
    :glob:
 
