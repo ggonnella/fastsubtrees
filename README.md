@@ -312,3 +312,9 @@ the original repository.
 
 In case of bugs and issues, please report them through the Github Issues page
 of the repository.
+
+## Documentation
+
+The complete documentation of Fastsubtrees is available on ReadTheDocs
+at https://fastsubtrees.readthedocs.io/ in website and
+[PDF format](https://fastsubtrees.readthedocs.io/_/downloads/en/latest/pdf/).
