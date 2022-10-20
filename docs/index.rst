@@ -7,3 +7,4 @@ FastSubtrees
    README.md
    CLI.md
    API.md
+   ntdownload.md
