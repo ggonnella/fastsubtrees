@@ -15,6 +15,7 @@ default:
 	@echo "  make tests              run tests using pytest, locally"
 	@echo "  make testcov            pytest-cov coverage report"
 	@echo "  make testcov-html       pytest-cov coverage HTML report"
+	@echo "  make flake              install and run flake8"
 	@echo ""
 	@echo "Create Docker image/container:"
 	@echo "  make docker-image       build Docker image from the Dockerfile"
@@ -160,3 +161,7 @@ docker-benchmarks: docker-benchmarks-sql \
 	                 docker-benchmarks-fst \
 									 docker-benchmarks-attr
 	make tables
+
+flake:
+	@pip install flake8 -qqq
+	@flake8
