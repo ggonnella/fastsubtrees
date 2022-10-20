@@ -85,6 +85,8 @@ to simply run benchmarks, tests and the example application without this hassle.
 The first step when using _fastsubtrees_ is constructing its tree
 representation and storing it to file. Any source can be used as input (e.g. tabular files, or
 database tables) by defining a generation function (example are provided).
+A separate wrapper package _ntsubtree_, installable by ``pip``,
+is provided, which simplifies working with the NCBI taxonomy tree.
 Besides the NCBI taxonomy tree, other trees can be represented using
 _fastsubtrees_. For this, each node must be labeled by a unique non-negative integer ID.
 Furthermore, the IDs space
@@ -120,6 +122,12 @@ The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees construct_ command required
 12.5 seconds (average of 3 runs).
+A parallel version of the construction algorithm is also provided. In this version,
+the computation of the subtree sizes is splitted among processes. However,
+the parallel version did not show a significant performance improvement for
+the abovementioned test case, likely
+because of the overhead of subprocess starting, data initialization
+and results consolidation.
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
@@ -175,7 +183,9 @@ of the genome size attribute values for different subtrees.
 | 1224 | 228153 | 0.75 | 0.75 | 154.2 | 5099 | 16072 |
 | 2 | 535272 | 1.08 | 1.08 | 155.2 | 10043 | 27515 |
 
-Finally, to provide an example of usage of fastsubtrees we implemented an interactive
+# Example application: Genomes Attributes Viewer
+
+To provide an example of usage of fastsubtrees we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
 The application (in the subdirectory _genomes-attributes-viewer_ of the source
 code repository) allows displaying diagrams of the
@@ -191,7 +201,7 @@ documentation and benchmarks.
 
 Giorgio Gonnella: funding acquisition, conceptualization,
 software development, test suite, documentation, Docker image,
-project supervision and manuscript redaction.
+benchmarks, project supervision and manuscript redaction.
 
 # Funding
 
