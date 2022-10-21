@@ -1,3 +1,7 @@
+=== 2.1 ==
+- parallel option for the construction of the tree
+- slight performance improvement by validating parents before subtree size calculation
+
 === 2.0 ===
 - tree construction: removed performance bottleneck
 - tree update/subtree move and reset operations

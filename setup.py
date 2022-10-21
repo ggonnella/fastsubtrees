@@ -9,7 +9,7 @@ if not sys.version_info[0] == 3:
   sys.exit("Sorry, only Python 3 is supported")
 
 setup(name='fastsubtrees',
-      version='2.0',
+      version='2.1',
       description='Tree representation for fast subtree queries',
       long_description=readme(),
       long_description_content_type="text/markdown",
