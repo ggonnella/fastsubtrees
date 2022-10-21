@@ -28,6 +28,10 @@ def test_new_from_tabular(testout, testdata, script, script_runner):
   ret = script_runner.run(script("fastsubtrees"), *args)
   assert ret.returncode == 0
   assert os.path.exists(testout("small_tree.tree"))
+  args.extend(["--processes", "1"])
+  ret = script_runner.run(script("fastsubtrees"), *args)
+  assert ret.returncode == 0
+  assert os.path.exists(testout("small_tree.tree"))
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_update(testout, testdata, script, script_runner):

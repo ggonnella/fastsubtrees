@@ -12,6 +12,15 @@ def test_construction_small(testdata, prebuilt):
   prebuilt_subtree_ids = prebuilt_tree.subtree_ids(1)
   assert constructed_subtree_ids == prebuilt_subtree_ids
 
+def test_construction_small_parallel(testdata, prebuilt):
+  infname = testdata('small_tree.tsv')
+  generator = element_parent_ids(infname)
+  constructed_tree = Tree.construct(generator, 2)
+  constructed_subtree_ids = constructed_tree.subtree_ids(1)
+  prebuilt_tree = Tree.from_file(prebuilt('small_tree.tree'))
+  prebuilt_subtree_ids = prebuilt_tree.subtree_ids(1)
+  assert constructed_subtree_ids == prebuilt_subtree_ids
+
 def test_construction_small_from_tabular(testdata, prebuilt):
   infname = testdata('small_tree.tsv')
   constructed_tree = Tree.construct_from_tabular(infname)

@@ -185,8 +185,10 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     results = []
     with Pool(n_processes) as pool:
       for i in range(n_processes):
-        start = i * self.max_node_id() // n_processes
-        end = (i + 1) * self.max_node_id() // n_processes
+        start = i * (self.max_node_id()+1) // n_processes
+        end = (i + 1) * (self.max_node_id()+1) // n_processes
+        logger.info(f"Process {i} computes subtree sizes"+\
+            f" for nodes {start} to {end}...")
         results.append(pool.apply_async(
           self._compute_subtree_sizes_partial,
           (start, end, self.max_node_id(), Tree.UNDEF, self.parents)))
@@ -204,16 +206,8 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
         continue
       self.subtree_sizes[elem] += 1
       while parent != elem:
-        if parent >= len(self.parents):
-          raise error.ConstructionError(\
-            f"The node '{elem}' has parent '{parent}', "+\
-            "which is not in the tree")
         self.subtree_sizes[parent] += 1
         grandparent = self.parents[parent]
-        if (grandparent == Tree.UNDEF):
-          raise error.ConstructionError(\
-            f"The node '{parent}' has parent '{grandparent}', "+\
-            "which is not in the tree")
         elem = parent
         parent = grandparent
 
@@ -261,6 +255,7 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
     """
     self = cls()
     self._compute_parents(generator)
+    self._validate_parents()
     if n_processes > 1:
       self._parallel_compute_subtree_sizes(n_processes)
     else:
