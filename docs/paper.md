@@ -182,9 +182,8 @@ of the genome size attribute values for different subtrees.
 
 # Parallelizing the tree construction algorithm
 
-As seen in the previous section,
-the tree construction operation is slower than the subtree queries,
-thus it is interesting to analyze this operation in detail.
+As seen in the previous section, tree construction is slower than the subtree
+queries, thus it is interesting to analyze this operation in detail.
 
 The tree representation for fast subtree queries requires the following arrays:
 _T_, node IDs in depth-first traversal order; _P_, parent of each node, in order of ID;
@@ -197,44 +196,40 @@ The construction algorithm consists in the following 3 operations:
 2. _S_ construction: for each node, climb to the root, using
   the values in _P_ and increment the subtree size of each ancestor.
 3. _C_ and _T_ construction: first add the tree root data; then for each node,
-   climb the tree adding the node and the ancestors to a stack until a node
-   which was already added to the tree is found; the first free position after
-   this node is stored in _C_, it is used to store the data for the node in _T_
-   and updated; this is repeated until the stack is empty.
+   add the node to a stack and climb the tree, adding the ancestors to the stack
+   until an ancestor which was already added to the tree is found;
+   the first free position after this node in _T_ is located using _C_
+   the data is stored in _T_ and _C_ is updated;
+   this is repeated until the stack is empty.
 
 Given _n_ nodes with a maximum ID _m_ (not much larger than _n_),
 and a tree height _h_ (in worst case _h = m_, in average it is much
 smaller), the construction operations require the following time.
 Operation 1 requires iterating over all _O(n)_ input tuples
-and initializing _P_ requires _O(m)_. Thus the total time is _O(m)_.
-Operation 2 requires climbing the tree from each node, this _O(h)_
+and initializing _P_ requires _O(m)_. Thus the total time is in _O(m)_.
+Operation 2 requires climbing the tree from each node, thus _O(h)_
 time for each node, in total _O(n * h)_.
-Operation 3 requires climbing the treee again, but this is stopped whenever
+Operation 3 requires climbing the tree again, but this is stopped whenever
 nodes are found which were already added; thus the total time is in this
 case _O(n)_.
 
 Since the first and third operations are performed in linear time, they are
-faster than the second. Benchmarks showed that this is indeed the bottleneck
-of the construction. Thus an attempt was made to speed up this operation,
-by parallelizing it.
+faster than the second. Benchmarks showed that this is indeed the bottleneck of
+the construction. Thus an attempt was made to speed up this operation, by
+parallelizing it.
+For this, the node IDs are divided into _x_ slices, each assigned to a
+different sub-process (not thread, because of the Python Global Interpreter
+Lock). Each sub-process then counts nodes in each subtree belonging to the
+slice only. These counts could be stored in a shared subtree sizes table,
+however this requires a semaphore, and it was very slow in our tests. Thus, we
+implemented a version, in which each sub-process stores its counts in a local
+table. The results for each sub-process are summed up after completion, to
+obtain the _S_ table.
 
-In the parallel version, the node IDs are divided into _x_ slices, each
-assigned to a different sub-process (not thread, because of the Python
-Global Interpreter Lock).
-Each sub-process then counts the subtree sizes in the slice only.
-The counts can be stored in a shared subtree sizes table, however this
-requires a semaphore and was very slow in practice. Thus, in the implemented
-version, each sub-process stores subtree sizes in a local table and the
-results for each sub-process are summed up after completion, to obtain the _S_
-table.
-
-The parallel version is activated in ``fastsubtrees tree`` using the
-``--processes x`` option, where _x_ is the number of processes to use. In the
-API, this parameter can be passed as the ``n_processes`` argument to the
-``Tree.construct`` and related methods. However, benchmarks did not show a
-significant performance improvement for the construction of the NCBI taxonomy
-tree, likely because of the overhead of subprocess starting, data
-initialization and results consolidation.
+Despite the distribution of the work among processes,
+benchmarks did not show a significant performance improvement in the parallel
+version for the construction of the NCBI taxonomy tree, likely because of the
+overhead of subprocess starting, data initialization and results consolidation.
 
 # Example application: Genomes Attributes Viewer
 
