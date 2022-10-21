@@ -57,7 +57,7 @@ in multiple subtrees, which are compared to each other.
 This allows for instance to identify uncommon values in some members of a taxon,
 which in turn can be used in a primer for new biological hypotheses.
 
-No Python package currently allows for a simple and efficient extraction of a
+No package currently allows for a simple and efficient extraction of a
 subtree, including data associated with the subtree nodes.
 While software exists for visualizing data associated with phylogenetic
 or taxonomic subtrees, e.g. AnnoTree [@Mendler:2019] and Treehouse
@@ -66,7 +66,7 @@ to integrate in other applications.
 
 # The fastsubtrees Python package
 
-Here we present the  _fastsubtrees_ Python package [@FastsubtreesRepo], which was developed
+Here we present the  _fastsubtrees_ Python package which was developed
 for storing tree information using a compact representation,
 suitable for fast extraction of any subtree.
 This package can be applied to any tree in which the nodes
@@ -75,7 +75,7 @@ tested mainly for the NCBI taxonomy tree, it is not limited to it.
 
 It can be installed using ``pip install fastsubtrees``.
 The package functionality can be used
-through either executable scripts or an API, which can be employed from other
+through either a command line script or an API, which can be employed from other
 Python programs. Manuals are provided for both kind of interfaces. A complete
 test suite based on _pytest_ is provided. Running the complete tests, comparative
 benchmarks and the example application (see below) requires a database
@@ -84,9 +84,10 @@ to simply run benchmarks, tests and the example application without this hassle.
 
 The first step when using _fastsubtrees_ is constructing its tree
 representation and storing it to file. Any source can be used as input (e.g. tabular files, or
-database tables) by defining a generation function (example are provided).
-A separate wrapper package _ntsubtree_, installable by ``pip``,
-is provided, which simplifies working with the NCBI taxonomy tree.
+database tables) by defining a generation function (examples are provided).
+A separate wrapper package _ntsubtree_, installable by ``pip install ntsubtree``,
+is provided (version 1.1; directory ``ntsubtree`` of the source code repository),
+which simplifies working with the NCBI taxonomy tree.
 Besides the NCBI taxonomy tree, other trees can be represented using
 _fastsubtrees_. For this, each node must be labeled by a unique non-negative integer ID.
 Furthermore, the IDs space
@@ -106,7 +107,7 @@ dynamic, i.e. it is possible to add and remove subtrees.
 
 # Subtree extraction benchmarks
 
-Benchmarks were performed on a MacBook Pro 2021 with Apple M1 Pro CPU and 32 Gb
+Benchmarks were performed on a MacBook Pro 2021 with an Apple M1 Pro CPU and 32 Gb
 RAM. Running times were measured as an average of 3 runs using GNU time version
 1.9 [@GNUtime]. Thereby, CPU time was computed as the sum of user and system
 time. For the tests Python version 3.10.2 was used. The tested version of
@@ -115,9 +116,9 @@ fastsubtrees was 2.0.
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
 For downloading and keeping up-to-date a copy of the dump files using Python
-we developed the _ntdownload_ package (located in the directory ``ntdownload``
-of the source code repository, version 1.4)
-[@NTDOWNLOAD] installable using ``pip install ntdownload``.
+we developed the _ntdownload_ package (version 1.7; directory ``ntdownload``
+of the source code repository)
+installable using ``pip install ntdownload``.
 The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees construct_ command required
@@ -131,13 +132,14 @@ and results consolidation.
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
-this solution in a package _ntmirror_. First, the dump data downloaded by
+this solution in a package _ntmirror_ (version 1.4;
+directory ``ntmirror`` of the repository). First, the dump data downloaded by
 _ntdownload_ is loaded into a MariaDB database (version 10.6.10) using the
 script _ntmirror-dbload_, requiring 28.8 seconds (average of 3 runs).
 Thereafter, subtrees are extracted using the script _ntmirror-extract-subtree_,
 based on SQLAlchemy, implementing a hierarchical SQL query. The installation of
-_ntmirror_ using ``pip`` requires the installation of MariaDB and its Python
-connector (_mariadb_ package).
+_ntmirror_ using ``pip install ntmirror`` requires the installation of
+MariaDB and its Python connector (_mariadb_ package).
 
 To select subtrees of different sizes for the benchmarks, we started from the
 taxonomy ID of _Escherichia coli_ K12 MG1655 (511145) and climbed up the
@@ -146,7 +148,7 @@ node (TaxID 2), i.e. nodes 83333 (_Escherichia coli_ K12),
 562 (_Escherichia coli_), 561 (_Escherichia_ genus), 543 (Enterobacteriaceae),
 91347 (Enterobacterales), 1236 (Gammaproteobacteria) and 1224 (Proteobacteria).
 The running time and memory usage of _fastsubtree_ are compared with those for
-hierarchical SQL queries in Table 1, and show that _fastsubtrees_ better scales
+hierarchical SQL queries in Table 1, and show that _fastsubtrees_ scales better
 to the extraction of large subtrees, both in terms of memory consumption (which
 does not change) and running time.
 
@@ -163,7 +165,8 @@ does not change) and running time.
 | 1224 | 228153 | 2.55 | 0.26 | 86.53 | 0.26 | 511.8 | 153.1 |
 | 2 | 535272 | 5.59 | 0.39 | 126.48 | 0.40 | 1142.0 | 153.1 |
 
-As an example of attributes associated to tree nodes, we computed GC content and genome size for each bacterial
+As an example of attributes associated to tree nodes, we computed guanine-cytosine
+(GC) content and genome size for each bacterial
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
 The genome size attribute file generation using the
@@ -187,8 +190,9 @@ of the genome size attribute values for different subtrees.
 
 To provide an example of usage of fastsubtrees we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
-The application (in the subdirectory _genomes-attributes-viewer_ of the source
-code repository) allows displaying diagrams of the
+and installable by ``pip install genomes-attributes-viewer``.
+The application (version 1.3; directory _genomes_attributes_viewer_ of the
+repository) allows displaying diagrams of the
 value distribution of GC content and genome size values in any subtree of the
 NCBI taxonomy tree (we have included in the example only values for
 bacterial genomes, see above). Attribute value distributions for multiple
