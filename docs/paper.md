@@ -187,10 +187,8 @@ the tree construction operation is slower than the subtree queries,
 thus it is interesting to analyze this operation in detail.
 
 The tree representation for fast subtree queries requires the following arrays:
-- _T_, node IDs in depth-first traversal order
-- _P_, parent of each node, in order of ID
-- _S_, subtree size of each node, in order of ID
-- _C_, coordinate in _T_ of each node, in order of ID
+_T_, node IDs in depth-first traversal order; _P_, parent of each node, in order of ID;
+_S_, subtree size of each node, in order of ID; _C_, coordinate in _T_ of each node, in order of ID.
 
 The construction algorithm consists in the following 3 operations:
 1. _P_ construction: initialization with _undef_ values;
