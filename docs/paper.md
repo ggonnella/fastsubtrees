@@ -123,12 +123,6 @@ The tree contained 2447574 nodes. The generation of the tree
 representation of the NCBI taxonomy tree from the dump files
 using the _fastsubtrees construct_ command required
 12.5 seconds (average of 3 runs).
-A parallel version of the construction algorithm is also provided. In this version,
-the computation of the subtree sizes is splitted among processes. However,
-the parallel version did not show a significant performance improvement for
-the abovementioned test case, likely
-because of the overhead of subprocess starting, data initialization
-and results consolidation.
 
 An alternative to the use of _fastsubtrees_ is to store the tree data in a SQL
 database and extract subtrees using hierarchical SQL queries. We implemented
@@ -185,6 +179,64 @@ of the genome size attribute values for different subtrees.
 | 1236 | 123300 | 0.63 | 0.64 | 154.0 | 2830 | 11178 |
 | 1224 | 228153 | 0.75 | 0.75 | 154.2 | 5099 | 16072 |
 | 2 | 535272 | 1.08 | 1.08 | 155.2 | 10043 | 27515 |
+
+# Parallelizing the tree construction algorithm
+
+As seen in the previous section,
+the tree construction operation is slower than the subtree queries,
+thus it is interesting to analyze this operation in detail.
+
+The tree representation for fast subtree queries requires the following arrays:
+- _T_, node IDs in depth-first traversal order
+- _P_, parent of each node, in order of ID
+- _S_, subtree size of each node, in order of ID
+- _C_, coordinate in _T_ of each node, in order of ID
+
+The construction algorithm consists in the following 3 operations:
+1. _P_ construction: initialization with _undef_ values;
+   iteration over the input data, 2-tuples _(node, parent)_
+   storing _parent_ at position _node_ in _P_.
+2. _S_ construction: for each node, climb to the root, using
+  the values in _P_ and increment the subtree size of each ancestor.
+3. _C_ and _T_ construction: first add the tree root data; then for each node,
+   climb the tree adding the node and the ancestors to a stack until a node
+   which was already added to the tree is found; the first free position after
+   this node is stored in _C_, it is used to store the data for the node in _T_
+   and updated; this is repeated until the stack is empty.
+
+Given _n_ nodes with a maximum ID _m_ (not much larger than _n_),
+and a tree height _h_ (in worst case _h = m_, in average it is much
+smaller), the construction operations require the following time.
+Operation 1 requires iterating over all _O(n)_ input tuples
+and initializing _P_ requires _O(m)_. Thus the total time is _O(m)_.
+Operation 2 requires climbing the tree from each node, this _O(h)_
+time for each node, in total _O(n*h)_.
+Operation 3 requires climbing the treee again, but this is stopped whenever
+nodes are found which were already added; thus the total time is in this
+case _O(n)_.
+
+Since the first and third operations are performed in linear time, they are
+faster than the second. Benchmarks showed that this is indeed the bottleneck
+of the construction. Thus an attempt was made to speed up this operation,
+by parallelizing it.
+
+In the parallel version, the node IDs are divided into _x_ slices, each
+assigned to a different sub-process (not thread, because of the Python
+Global Interpreter Lock).
+Each sub-process then counts the subtree sizes in the slice only.
+The counts can be stored in a shared subtree sizes table, however this
+requires a semaphore and was very slow in practice. Thus, in the implemented
+version, each sub-process stores subtree sizes in a local table and the
+results for each sub-process are summed up after completion, to obtain the _S_
+table.
+
+The parallel version is activated in ``fastsubtrees tree`` using the
+``--processes x`` option, where _x_ is the number of processes to use. In the
+API, this parameter can be passed as the ``n_processes`` argument to the
+``Tree.construct`` and related methods. However, benchmarks did not show a
+significant performance improvement for the construction of the NCBI taxonomy
+tree, likely because of the overhead of subprocess starting, data
+initialization and results consolidation.
 
 # Example application: Genomes Attributes Viewer
 
