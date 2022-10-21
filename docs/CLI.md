@@ -127,7 +127,7 @@ Attributes are managed by the subcommand ``fastsubtrees attribute``.
 ### Adding an attribute
 
 To create a new attribute, a source of attribute values is
-passed to ``fastsubtree attribute``. Similar to the tree construction case,
+passed to ``fastsubtrees attribute``. Similar to the tree construction case,
 the source can be a tabular file, or a Python module, specifiying a function
 yielding node IDs and attribute values.
 The same node ID can appear multiple times, in which case the

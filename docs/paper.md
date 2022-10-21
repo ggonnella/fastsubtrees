@@ -111,7 +111,7 @@ Benchmarks were performed on a MacBook Pro 2021 with an Apple M1 Pro CPU and 32 
 RAM. Running times were measured as an average of 3 runs using GNU time version
 1.9 [@GNUtime]. Thereby, CPU time was computed as the sum of user and system
 time. For the tests Python version 3.10.2 was used. The tested version of
-fastsubtrees was 2.0.
+_fastsubtrees_ was 2.0.
 
 The NCBI taxonomy tree used for the tests was downloaded on October 7, 2022
 from the NCBI FTP website [@NCBI:FTP].
@@ -147,12 +147,12 @@ taxonomy tree, including all parent nodes in the benchmarks, up to the Bacteria
 node (TaxID 2), i.e. nodes 83333 (_Escherichia coli_ K12),
 562 (_Escherichia coli_), 561 (_Escherichia_ genus), 543 (Enterobacteriaceae),
 91347 (Enterobacterales), 1236 (Gammaproteobacteria) and 1224 (Proteobacteria).
-The running time and memory usage of _fastsubtree_ are compared with those for
+The running time and memory usage of _fastsubtrees_ are compared with those for
 hierarchical SQL queries in Table 1, and show that _fastsubtrees_ scales better
 to the extraction of large subtrees, both in terms of memory consumption (which
 does not change) and running time.
 
-| Subtree root ID | Subtree size | SQL CPU time (s) | fastsubtrees CPU time (s) | SQL real time (s) | fastsubtrees real time (s) | SQL memory peak (MB) | fastsubtrees memory peak (MB) |
+| Subtree root ID | Subtree size | SQL CPU time (s) | _fastsubtrees_ CPU time (s) | SQL real time (s) | _fastsubtrees_ real time (s) | SQL memory peak (MB) | _fastsubtrees_ memory peak (MB) |
 |-----------------|--------------|------------------|---------------------------|-------------------|----------------------------|----------------------|-------------------------------|
 | _setup_  |   | 0.57 | 12.47 | 28.83 | 12.48 | 40.7 | 153.7 |
 | 511145 | 1 | 0.26 | 0.16 | 1.58 | 0.16 | 41.4 | 153.1 |
@@ -188,7 +188,7 @@ of the genome size attribute values for different subtrees.
 
 # Example application: Genomes Attributes Viewer
 
-To provide an example of usage of fastsubtrees we implemented an interactive
+To provide an example of usage of _fastsubtrees_ we implemented an interactive
 web application, Genomes Attributes Viewer, based on the _dash_ library version 2.0.0 [@Dash]
 and installable by ``pip install genomes-attributes-viewer``.
 The application (version 1.3; directory _genomes_attributes_viewer_ of the
