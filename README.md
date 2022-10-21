@@ -313,12 +313,13 @@ and ``P[element_id]=UNDEF`` if not, where UNDEF is a special value.
 This requires _O(n)_ steps
 for reading the IDs and _O(m)_ steps for writing either the ID or the _UNDEF_
 value to _P_; since _m>=n_, the total time is in _O(m)_.
-2. iteration over table _P_: for each element the tree is climbed to the roo
-to compute the size of the subtree of each node stored in a table _S_. This
+2. iteration over table _P_ to construct a table _S_ of subtree sizes
+by ID; for each element the tree is climbed to the root, to add the
+element to the counts of each ancestor. This
 operation requires _O(n*d)_ time, where _d_ is the height of the node,
-which is in average case much lower than _m_ and d=m is the worst case.
-3. construction of the tree data _D_, consisting of the depth first order of
-the nodes, and of the list _C_ of the coordinates of all nodes in the tree data, by id.
+which is in average case much lower than _m_ and _d=m_ is the worst case.
+3. iteration over each node ID to construct the list _D_, consisting of the depth first order of
+the nodes, and the table _C_ of the coordinates of all nodes in the tree data, by id.
 For this operation, first the root is added to _D_ and _C_, then
 for each other node _x_ in _P_, the tree is climbed and nodes added to a stack until the next not-yet-added
 ancestor is found. The position where to add it this node is computed by the next
