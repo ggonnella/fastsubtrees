@@ -163,25 +163,21 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
           f"The node '{parent}' has parent '{grandparent}', "+\
           "which is not in the tree")
 
-  def _compute_subtree_sizes_partial(self, start, end, max_node_id, undef,
-                                     parents_array_readonly):
-    subtree_sizes = array.array("Q", [0] * (max_node_id + 1))
+  def _compute_subtree_sizes_partial(self, start, end, parents):
+    subtree_sizes = array.array("Q", [0] * (len(parents) + 1))
     for elem in range(start, end):
-      parent = parents_array_readonly[elem]
-      if parent == undef:
-        continue
-      subtree_sizes[elem] += 1
-      while parent != elem:
-        subtree_sizes[parent] += 1
-        grandparent = parents_array_readonly[parent]
-        elem = parent
-        parent = grandparent
+      parent = parents[elem]
+      if parent != Tree.UNDEF:
+        subtree_sizes[elem] += 1
+        while parent != elem:
+          subtree_sizes[parent] += 1
+          elem = parent
+          parent = parents[parent]
     return subtree_sizes
 
   def _parallel_compute_subtree_sizes(self, n_processes):
     logger.info("Constructing subtree sizes table "+\
         f"using {n_processes} processes...")
-    self.subtree_sizes = array.array("Q", [0] * (self.max_node_id() + 1))
     results = []
     with Pool(n_processes) as pool:
       for i in range(n_processes):
@@ -190,10 +186,10 @@ class Tree(TreeAttributes, SubtreeQuery, TreeEditor):
         logger.info(f"Process {i} computes subtree sizes"+\
             f" for nodes {start} to {end}...")
         results.append(pool.apply_async(
-          self._compute_subtree_sizes_partial,
-          (start, end, self.max_node_id(), Tree.UNDEF, self.parents)))
+          self._compute_subtree_sizes_partial, (start, end, self.parents)))
       pool.close()
       pool.join()
+    self.subtree_sizes = array.array("Q", [0] * (self.max_node_id() + 1))
     for i in range(self.max_node_id() + 1):
       self.subtree_sizes[i] = sum([r.get()[i] for r in results])
 
