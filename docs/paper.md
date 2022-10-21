@@ -210,7 +210,7 @@ smaller), the construction operations require the following time.
 Operation 1 requires iterating over all _O(n)_ input tuples
 and initializing _P_ requires _O(m)_. Thus the total time is _O(m)_.
 Operation 2 requires climbing the tree from each node, this _O(h)_
-time for each node, in total _O(n*h)_.
+time for each node, in total _O(n * h)_.
 Operation 3 requires climbing the treee again, but this is stopped whenever
 nodes are found which were already added; thus the total time is in this
 case _O(n)_.
