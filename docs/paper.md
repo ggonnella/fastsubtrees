@@ -107,7 +107,7 @@ dynamic, i.e. it is possible to add and remove subtrees.
 
 # Subtree extraction benchmarks
 
-Benchmarks were performed on a MacBook Pro 2021 with an Apple M1 Pro CPU and 32 Gb
+Benchmarks were performed on a MacBook Pro 2021 with an Apple M1 Pro CPU and 32 GB
 RAM. Running times were measured as an average of 3 runs using GNU time version
 1.9 [@GNUtime]. Thereby, CPU time was computed as the sum of user and system
 time. For the tests Python version 3.10.2 was used. The tested version of
@@ -263,6 +263,6 @@ manuscript.
 # Acknowledgements
 
 The authors would like to thank Serena Lam (Department of Bioinformatics,
-University of Göttingen) for language style suggestions and grammar corrections
+University of Göttingen) for language style suggestions and grammar corrections.
 
 # References
