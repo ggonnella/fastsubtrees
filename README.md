@@ -366,3 +366,11 @@ of the repository.
 The complete documentation of Fastsubtrees is available on ReadTheDocs
 at https://fastsubtrees.readthedocs.io/ in website and
 [PDF format](https://fastsubtrees.readthedocs.io/_/downloads/en/latest/pdf/).
+
+## Licence
+
+All code of Fastsubtrees is released under the ISC license.
+(see LICENSE file).
+It is functionally equivalent to a two-term BSD copyright with
+language removed that is made unnecessary by the Berne convention.
+See http://openbsd.org/policy.html for more information on copyrights.

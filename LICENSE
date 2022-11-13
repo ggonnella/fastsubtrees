@@ -1,8 +1,3 @@
-All code of fastsubtrees is released under the following ISC license.
-It is functionally equivalent to a two-term BSD copyright with
-language removed that is made unnecessary by the Berne convention.
-See http://openbsd.org/policy.html for more information on copyrights.
-
 Copyright (c) 2021-2022 Giorgio Gonnella and other CONTRIBUTORS
 Copyright (c) 2021-2022 University of Goettingen, Germany
 
