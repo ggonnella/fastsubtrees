@@ -53,7 +53,7 @@ wheel:
 
 # Remove distribution files
 clean:
-	rm -rf dist/ build/ gfapy.egg-info/
+	rm -rf dist/ build/ fastsubtrees.egg-info/
 
 tests:
 	pytest
