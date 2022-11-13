@@ -52,9 +52,10 @@ is the NCBI taxonomy database [@Schoch:2020].
 If the taxonomic tree
 is annotated with data associated to taxa, hereafter called _attributes_
 (e.g. sequence or annotation statistics), an interesting operation is the
-extraction of distribution of values of an attribute in a given subtree, or
+extraction of the values distribution of an attribute in a given subtree, or
 in multiple subtrees, which are compared to each other.
-This allows for instance to identify uncommon values in some members of a taxon,
+This, for instance, allows for the identification of uncommon values
+in some members of a taxon,
 which in turn can be used in a primer for new biological hypotheses.
 
 No package currently allows for a simple and efficient extraction of a
@@ -70,8 +71,8 @@ Here we present the  _fastsubtrees_ Python package which was developed
 for storing tree information using a compact representation,
 suitable for fast extraction of any subtree.
 This package can be applied to any tree in which the nodes
-are labeled by non-negative integers. I.e., although it was designed and
-tested mainly for the NCBI taxonomy tree, it is not limited to it.
+are labeled by non-negative integers. Although it was designed and
+tested mainly for the NCBI taxonomy tree, it is thus not limited to it.
 
 It can be installed using ``pip install fastsubtrees``.
 The package functionality can be used
@@ -163,8 +164,8 @@ As an example of attributes associated to tree nodes, we computed guanine-cytosi
 (GC) content and genome size for each bacterial
 genome in the NCBI Refseq database [@Oleary:2015]. The results, available
 in the repository, contain values for 27967 genomes.
-The genome size attribute file generation using the
-_fastsubtrees attribute_ command required 2.9 seconds.
+The genome size attribute file generation, using the
+_fastsubtrees attribute_ command, required 2.9 seconds.
 Table 2 reports the running time and memory usage for the extraction
 of the genome size attribute values for different subtrees.
 
@@ -190,11 +191,14 @@ _T_, node IDs in depth-first traversal order; _P_, parent of each node, in order
 _S_, subtree size of each node, in order of ID; _C_, coordinate in _T_ of each node, in order of ID.
 
 The construction algorithm consists in the following 3 operations:
+
 1. _P_ construction: initialization with _undef_ values;
    iteration over the input data, 2-tuples _(node, parent)_
    storing _parent_ at position _node_ in _P_.
+
 2. _S_ construction: for each node, climb to the root, using
   the values in _P_ and increment the subtree size of each ancestor.
+
 3. _C_ and _T_ construction: first add the tree root data; then for each node,
    add the node to a stack and climb the tree, adding the ancestors to the stack
    until an ancestor which was already added to the tree is found;
@@ -203,7 +207,7 @@ The construction algorithm consists in the following 3 operations:
    this is repeated until the stack is empty.
 
 Given _n_ nodes with a maximum ID _m_ (not much larger than _n_),
-and a tree height _h_ (in worst case _h = m_, in average it is much
+and a tree height _h_ (in the worst case _h = m_, however, in general it is much
 smaller), the construction operations require the following time.
 Operation 1 requires iterating over all _O(n)_ input tuples
 and initializing _P_ requires _O(m)_. Thus the total time is in _O(m)_.
