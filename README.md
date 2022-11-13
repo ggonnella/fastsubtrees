@@ -4,6 +4,7 @@
 [![Latest Github tag](https://img.shields.io/github/v/tag/ggonnella/fastsubtrees)](https://github.com/ggonnella/fastsubtrees/tags)
 [![ReadTheDocs](https://readthedocs.org/projects/pip/badge/?version=stable)](https://fastsubtrees.readthedocs.io/)
 [![PyPI](https://img.shields.io/pypi/v/fastsubtrees)](https://pypi.org/project/fastsubtrees/)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.04755/status.svg)](https://doi.org/10.21105/joss.04755)
 
 _Fastsubtrees_ is a Python library and a command line script, for handling fairly
 large trees (in the order of magnitude of millions nodes), in particular
