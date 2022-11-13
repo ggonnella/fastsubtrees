@@ -1,5 +1,13 @@
 # Fastsubtrees
 
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+
+[![Latest Github tag](https://img.shields.io/github/v/tag/ggonnella/fastsubtrees)](https://github.com/ggonnella/fastsubtrees/tags)
+
+[![ReadTheDocs](https://readthedocs.org/projects/pip/badge/?version=stable)](https://fastsubtrees.readthedocs.io/)
+
+[![PyPI](https://img.shields.io/pypi/v/fastsubtrees)](https://pypi.org/project/fastsubtrees/)
+
 _Fastsubtrees_ is a Python library and a command line script, for handling fairly
 large trees (in the order of magnitude of millions nodes), in particular
 allowing the fast extraction of any subtree.
@@ -374,3 +382,4 @@ All code of Fastsubtrees is released under the ISC license.
 It is functionally equivalent to a two-term BSD copyright with
 language removed that is made unnecessary by the Berne convention.
 See http://openbsd.org/policy.html for more information on copyrights.
+
