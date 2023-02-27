@@ -381,3 +381,7 @@ It is functionally equivalent to a two-term BSD copyright with
 language removed that is made unnecessary by the Berne convention.
 See http://openbsd.org/policy.html for more information on copyrights.
 
+## Acknowledgements
+This software has been originally created in context of the DFG project GO 3192/1-1
+“Automated characterization of microbial genomes and metagenomes by collection and verification of association rules”.
+The funders had no role in study design, data collection and analysis.
