@@ -4,10 +4,11 @@ from pathlib import Path
 from shutil import rmtree
 
 from .constants import \
+   NCBI_NODES_DUMP_TAXID_COL, NCBI_NODES_DUMP_RANK_COL, \
    NCBI_NAMES_DUMP_TAXID_COL, NCBI_NAMES_DUMP_NAME_COL, \
    NCBI_NAMES_DUMP_CLASS_COL, NCBI_NAMES_DUMP_CLASS_SCIENTIFIC, \
    NCBI_NAMES_DUMP_FILENAME, NCBI_NODES_DUMP_FILENAME, \
-   NTDUMPSDIR, TREEFILE, NCBI_DUMP_SEP, APPDATADIR
+   NTDUMPSDIR, TREEFILE, NCBI_DUMP_SEP, APPDATADIR, NCBI_ROOT_TAXID
 
 def yield_names():
   names_dump = NTDUMPSDIR / NCBI_NAMES_DUMP_FILENAME
@@ -24,6 +25,21 @@ def read_names():
   result = {}
   for taxid, name in yield_names():
     result[taxid] = name
+  return result
+
+def yield_ranks():
+  nodes_dump = NTDUMPSDIR / NCBI_NODES_DUMP_FILENAME
+  fastsubtrees.logger.info("Source of ranks: {}".format(nodes_dump))
+  with open(nodes_dump, 'r') as f:
+    for line in f:
+      fields = line.split(NCBI_DUMP_SEP)
+      yield int(fields[NCBI_NODES_DUMP_TAXID_COL]), \
+            fields[NCBI_NODES_DUMP_RANK_COL]
+
+def read_ranks():
+  result = {}
+  for taxid, rank in yield_ranks():
+    result[taxid] = rank
   return result
 
 def n_lines(filename):
@@ -74,6 +90,10 @@ def update(force_download=False, force_construct=False):
       tree.create_attribute("taxname", yield_names())
     global names_index
     names_index = None
+    if tree.has_attribute("rank"):
+      tree.replace_attribute_values("rank", read_ranks())
+    else:
+      tree.create_attribute("rank", yield_ranks())
   else:
     fastsubtrees.logger.info("No tree update needed.")
 
@@ -103,6 +123,8 @@ def setup():
   tree.to_file(TREEFILE)
   fastsubtrees.logger.info("Loading taxonomy names...")
   tree.create_attribute("taxname", yield_names())
+  fastsubtrees.logger.info("Loading taxonomy ranks...")
+  tree.create_attribute("rank", yield_ranks())
 
 def __auto_setup():
   """
