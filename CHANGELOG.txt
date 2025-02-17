@@ -1,3 +1,8 @@
+=== 2.2 ==
+- exposed to API method for navigating up the tree
+- added methods for reading attribute values for a node
+- added method for finding ancestors for a node with a given attribute value
+
 === 2.1 ==
 - parallel option for the construction of the tree
 - slight performance improvement by validating parents before subtree size calculation
