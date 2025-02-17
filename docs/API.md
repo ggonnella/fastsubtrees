@@ -127,6 +127,19 @@ In both cases, a single-argument casting function can be passed as the argument
 ``casting_fn``, which converts the values from the values source, e.g. from
 strings to another datatype.
 
+### Reading attributes
+
+To read the attribute values of a node, use
+``tree.get_attribute_values(node_id, attribute_name)``.
+Usually, the return value will be a list.
+If each node has only one value, you can use the method
+``tree.get_scalar_attribute_value(node_id, attribute_name)`` instead.
+
+By default, these query methods will memoize the attribute values, so that
+subsequent queries for the same attribute values are faster.
+To disable memoization, use the option ``cache=False``.
+To remove the memoized values, use the method ``tree.clear_attributes_cache()``.
+
 ### Modifying attributes
 
 To delete the value of an attribute for a list of nodes, the method
@@ -147,6 +160,9 @@ After loading, the dictionary entries are changed, by deleting, adding or
 modifying some values and finally passed to the method
 ``tree.save_attribute_values(tree, attribute_name, attrvalues)``.
 
+After modifying the attributes, the method ``tree.clear_attributes_cache()``
+should be called to remove the memoized values.
+
 ### Checking if an attribute exists
 
 To check if an attribute exists, the ``tree.has_attribute(attribute_name)``
@@ -158,6 +174,24 @@ method can be used. The list of all attributes is returned by
 To remove an attribute completely, the
 ``tree.destroy_attribute(attribute_name)`` method is used. To remove all
 attributes, the ``tree.destroy_all_attributes()`` method is used.
+
+## Navigating the tree
+
+### Parent of a node
+
+The parent of a node is obtained using the method ``tree.get_parent(node_id)``.
+
+### Recognizing the root
+
+The root of the tree is obtained using the method ``tree.get_root()``.
+The parent of the root is the root itself.
+
+### Finding an ancestor by attribute value
+
+To find an ancestor of a node with a specific attribute value, the method
+``tree.find_ancestor_by_attribute_value(node_id, attribute_name, value)``
+is used. If a node has multiple values for the attribute, then any of them
+can match. If no ancestor is found, the method returns `None`.
 
 ## Subtree queries
 

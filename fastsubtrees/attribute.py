@@ -192,6 +192,53 @@ class TreeAttributes():
             format(attrname, len(flattened)))
     return result
 
+  def clear_attributes_cache(self):
+    if hasattr(self, 'attribute_cache'):
+      del self.attribute_cache
+
+  def get_attribute_values(self, node_id, attribute, cache=True):
+    self._check_filename_set()
+    self.__check_has_attribute(attribute)
+    coord = self.get_treedata_coord(node_id) - 1
+    if cache:
+      if not hasattr(self, 'attribute_cache'):
+        self.attribute_cache = {}
+      if attribute not in self.attribute_cache:
+        self.attribute_cache[attribute] = \
+                self.subtree_attribute_data(self.root_id, attribute)
+      return self.attribute_cache[attribute][coord]
+    else:
+      attrfilename = self.attribute_filename(attribute)
+      with open(attrfilename, 'r') as f:
+        line_no = 0
+        for line in f:
+          if line_no == coord:
+            return json.loads(line.rstrip())
+          line_no += 1
+      return None
+
+  def get_scalar_attribute_value(self, node_id, attribute, cache=True):
+    values = self.get_attribute_values(node_id, attribute, cache=cache)
+    if isinstance(values, list):
+      if len(value) > 1:
+        raise error.AttributeError(\
+                f"Scalar attribute '{attribute}' has multiple " + \
+                f"values for node '{node_id}'")
+      return value[0]
+    else:
+      return value
+
+  def find_ancestor_by_attribute_value(self, node_id, attribute, value):
+    self._check_filename_set()
+    self.__check_has_attribute(attribute)
+    while node_id != self.root_id:
+      attr_values = self.get_attribute_value(node_id, attribute)
+      if (value == attr_values) or \
+         (isinstance(attr_values, list) and value in attr_values):
+        return node_id
+      node_id = self.get_parent(node_id)
+    return None
+
   def load_attribute_values(self, attribute):
     self._check_filename_set()
     self.__check_has_attribute(attribute)
