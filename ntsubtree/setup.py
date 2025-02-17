@@ -9,7 +9,7 @@ def readme():
     return f.read()
 
 setup(name='ntsubtree',
-      version='1.1',
+      version='1.2',
       description='Tree representation for fast queries of '+\
                    'the subtree of a taxon in the NCBI taxonomy tree',
       long_description=readme(),

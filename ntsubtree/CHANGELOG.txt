@@ -1,3 +1,6 @@
+=== 1.2 ===
+- load ranks as attributes
+
 === 1.1 ===
 - memoize scientific names to tax ID index
 
