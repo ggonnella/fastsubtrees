@@ -220,13 +220,13 @@ class TreeAttributes():
   def get_scalar_attribute_value(self, node_id, attribute, cache=True):
     values = self.get_attribute_values(node_id, attribute, cache=cache)
     if isinstance(values, list):
-      if len(value) > 1:
+      if len(values) > 1:
         raise error.AttributeError(\
                 f"Scalar attribute '{attribute}' has multiple " + \
                 f"values for node '{node_id}'")
-      return value[0]
+      return values[0]
     else:
-      return value
+      return values
 
   def find_ancestor_by_attribute_value(self, node_id, attribute, value):
     self._check_filename_set()
