@@ -232,7 +232,7 @@ class TreeAttributes():
     self._check_filename_set()
     self.__check_has_attribute(attribute)
     while node_id != self.root_id:
-      attr_values = self.get_attribute_value(node_id, attribute)
+      attr_values = self.get_attribute_values(node_id, attribute)
       if (value == attr_values) or \
          (isinstance(attr_values, list) and value in attr_values):
         return node_id
